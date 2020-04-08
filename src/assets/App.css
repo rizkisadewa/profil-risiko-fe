@@ -1,0 +1,15 @@
+@media (min-width: 768px){
+    .gx-logo-size{
+        max-height: 3.5rem!important;
+    }
+}
+
+@media (max-width: 767px){
+    .gx-logo-size{
+        max-height: 3rem!important;
+    }
+}
+
+.gx-justify-content-center{
+    justify-content: center!important;
+}
