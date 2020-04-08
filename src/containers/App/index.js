@@ -100,7 +100,8 @@ class App extends Component {
   }
 
   render() {
-    const {match, location, themeType, layoutType, navStyle, locale, token, initURL} = this.props;
+    var {match, location, themeType, layoutType, navStyle, locale, token, initURL} = this.props;
+
     if (themeType === THEME_TYPE_DARK) {
       document.body.classList.add('dark-theme');
     }

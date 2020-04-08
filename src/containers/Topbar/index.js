@@ -50,7 +50,7 @@ class Topbar extends Component {
       <Auxiliary>
         <Header>
           {navStyle === NAV_STYLE_DRAWER || ((navStyle === NAV_STYLE_FIXED || navStyle === NAV_STYLE_MINI_SIDEBAR) && width < TAB_SIZE) ?
-            <div className="gx-linebar gx-mr-3">
+            <div className="gx-linebar gx-mr-3" style="z-index: 10">
               <i className="gx-icon-btn icon icon-menu"
                  onClick={() => {
                    this.props.toggleCollapsedSideNav(!navCollapsed);

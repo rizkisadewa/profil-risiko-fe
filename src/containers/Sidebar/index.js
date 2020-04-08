@@ -11,7 +11,8 @@ import {
   NAV_STYLE_NO_HEADER_EXPANDED_SIDEBAR,
   NAV_STYLE_NO_HEADER_MINI_SIDEBAR,
   TAB_SIZE,
-  THEME_TYPE_LITE
+  THEME_TYPE_LITE,
+  THEME_TYPE_SEMI_DARK
 } from "../../constants/ThemeSetting";
 
 const {Sider} = Layout;
@@ -53,12 +54,12 @@ export class Sidebar extends Component {
         className={`gx-app-sidebar ${drawerStyle} ${themeType !== THEME_TYPE_LITE ? 'gx-layout-sider-dark' : null}`}
         trigger={null}
         collapsed={(width < TAB_SIZE ? false : navStyle === NAV_STYLE_MINI_SIDEBAR || navStyle === NAV_STYLE_NO_HEADER_MINI_SIDEBAR)}
-        theme={themeType === THEME_TYPE_LITE ? "lite" : "dark"}
+        theme={themeType === THEME_TYPE_SEMI_DARK ? "lite" : "dark"}
         collapsible>
         {
           navStyle === NAV_STYLE_DRAWER || width < TAB_SIZE ?
             <Drawer
-              wrapClassName={`gx-drawer-sidebar ${themeType !== THEME_TYPE_LITE ? 'gx-drawer-sidebar-dark' : null}`}
+              wrapClassName={`gx-drawer-sidebar ${themeType !== THEME_TYPE_SEMI_DARK ? 'gx-drawer-sidebar-dark' : null}`}
               placement="left"
               closable={false}
               onClose={this.onToggleCollapsedNav.bind(this)}

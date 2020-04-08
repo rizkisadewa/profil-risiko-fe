@@ -9,7 +9,8 @@ import {
   NAV_STYLE_MINI_SIDEBAR,
   NAV_STYLE_NO_HEADER_MINI_SIDEBAR,
   TAB_SIZE,
-  THEME_TYPE_LITE
+  THEME_TYPE_LITE,
+  THEME_TYPE_SEMI_DARK
 } from "../../constants/ThemeSetting";
 
 
@@ -22,7 +23,7 @@ class SidebarLogo extends Component {
     }
     return (
       <div className="gx-layout-sider-header gx-justify-content-center">
-
+        
         {(navStyle === NAV_STYLE_FIXED || navStyle === NAV_STYLE_MINI_SIDEBAR) ? <div className="gx-linebar">
 
           <i
@@ -44,7 +45,7 @@ class SidebarLogo extends Component {
         <Link to="/" className="gx-site-logo">
           {navStyle === NAV_STYLE_NO_HEADER_MINI_SIDEBAR && width >= TAB_SIZE ?
             <img alt="" src={require("assets/images/logobjbs.png")}/> :
-            themeType === THEME_TYPE_LITE ?
+            themeType === THEME_TYPE_SEMI_DARK ?
               <img alt="" className="gx-logo-size" src={require("assets/images/logobjbs.png")}/> :
               <img alt="" className="gx-logo-size" src={require("assets/images/logobjbs.png")}/>}
 
