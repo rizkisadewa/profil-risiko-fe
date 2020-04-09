@@ -48,10 +48,10 @@ class Topbar extends Component {
     const {locale, width, navCollapsed, navStyle} = this.props;
     return (
       <Auxiliary>
-        <Header>
+        <Header style={{zIndex : "9999"}}>
           {navStyle === NAV_STYLE_DRAWER || ((navStyle === NAV_STYLE_FIXED || navStyle === NAV_STYLE_MINI_SIDEBAR) && width < TAB_SIZE) ?
-            <div className="gx-linebar gx-mr-3" style="z-index: 10">
-              <i className="gx-icon-btn icon icon-menu"
+            <div className="gx-linebar gx-mr-3" style={{zIndex : "10"}}>
+              <i className="gx-icon-btn icon icon-menu-fold gx-text-white"
                  onClick={() => {
                    this.props.toggleCollapsedSideNav(!navCollapsed);
                  }}
