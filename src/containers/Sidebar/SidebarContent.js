@@ -54,25 +54,25 @@ class SidebarContent extends Component {
               theme={themeType === THEME_TYPE_LITE ? 'lite' : 'dark'}
               mode="inline">
 
-              <MenuItemGroup key="main" className="gx-menu-group" title={<IntlMessages id="sidebar.main"/>}>
-                  <Menu.Item key="home">
-                      <Link to="/home"><i className="icon icon-home"/>
+              <MenuItemGroup key="bjbs" className="gx-menu-group" title={<IntlMessages id="sidebar.main"/>}>
+                  <Menu.Item key="bjbs/home">
+                      <Link to="/bjbs/home"><i className="icon icon-home"/>
                           <IntlMessages id="sidebar.home"/></Link>
                   </Menu.Item>
 
                   <SubMenu key="dashboard" className={this.getNavStyleSubMenuClass(navStyle)}
                            title={<span> <i className="icon icon-dasbhoard"/>
                          <IntlMessages id="sidebar.dashboard"/></span>}>
-                      <Menu.Item key="dashboard/riskprofile">
-                        <Link to="/dashboard/riskprofile"><i className="icon icon-profile"/>
+                      <Menu.Item key="bjbs/dashboard/riskprofile">
+                        <Link to="/bjbs/dashboard/riskprofile"><i className="icon icon-profile"/>
                           <IntlMessages id="sidebar.dashboard.riskprofile"/></Link>
                       </Menu.Item>
-                      <Menu.Item key="dashboard/grafikuser">
-                        <Link to="/dashboard/grafikuser"><i className="icon icon-growth"/>
+                      <Menu.Item key="bjbs/dashboard/grafikuser">
+                        <Link to="/bjbs/dashboard/grafikuser"><i className="icon icon-growth"/>
                           <IntlMessages id="sidebar.dashboard.grafikuser"/></Link>
                       </Menu.Item>
-                      <Menu.Item key="dashboard/grafikperingkatkonsolidasi">
-                        <Link to="/dashboard/grafikperingkatkonsolidasi"><i className="icon icon-chart-line"/>
+                      <Menu.Item key="bjbs/dashboard/grafikperingkatkonsolidasi">
+                        <Link to="/bjbs/dashboard/grafikperingkatkonsolidasi"><i className="icon icon-chart-line"/>
                           <IntlMessages id="sidebar.dashboard.grafikperingkatkonsolidasi"/></Link>
                       </Menu.Item>
                   </SubMenu>
@@ -80,32 +80,32 @@ class SidebarContent extends Component {
                   <SubMenu key="masterdata" className={this.getNavStyleSubMenuClass(navStyle)}
                            title={<span> <i className="icon icon-inbox"/>
                          <IntlMessages id="sidebar.masterdata"/></span>}>
-                      <Menu.Item key="masterdata/jenisrisiko">
-                          <Link to="/masterdata/jenisrisiko">
+                      <Menu.Item key="bjbs/masterdata/jenisrisiko">
+                          <Link to="/bjbs/masterdata/jenisrisiko">
                               <i className="icon icon-affix"/>
                               <IntlMessages id="sidebar.masterdata.risiko"/>
                           </Link>
                       </Menu.Item>
-                      <Menu.Item key="masterdata/jenispenilaian">
-                          <Link to="/masterdata/jenispenilaian">
+                      <Menu.Item key="bjbs/masterdata/jenispenilaian">
+                          <Link to="/bjbs/masterdata/jenispenilaian">
                               <i className="icon icon-data-display"/>
                               <IntlMessages id="sidebar.masterdata.penilaian"/>
                           </Link>
                       </Menu.Item>
-                      <Menu.Item key="masterdata/jenisperingkatrisiko">
-                          <Link to="/masterdata/jenisperingkatrisiko">
+                      <Menu.Item key="bjbs/masterdata/jenisperingkatrisiko">
+                          <Link to="/bjbs/masterdata/jenisperingkatrisiko">
                               <i className="icon icon-crm"/>
                               <IntlMessages id="sidebar.masterdata.peringkatrisiko"/>
                           </Link>
                       </Menu.Item>
-                      <Menu.Item key="masterdata/faktor">
-                          <Link to="/masterdata/faktor">
+                      <Menu.Item key="bjbs/masterdata/faktor">
+                          <Link to="/bjbs/masterdata/faktor">
                               <i className="icon icon-badge"/>
                               <IntlMessages id="sidebar.masterdata.faktor"/>
                           </Link>
                       </Menu.Item>
-                      <Menu.Item key="masterdata/parameter">
-                          <Link to="/masterdata/parameter">
+                      <Menu.Item key="bjbs/masterdata/parameter">
+                          <Link to="/bjbs/masterdata/parameter">
                               <i className="icon icon-listing-dbrd"/>
                               <IntlMessages id="sidebar.masterdata.parameter"/>
                           </Link>

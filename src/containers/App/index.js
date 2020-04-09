@@ -109,7 +109,7 @@ class App extends Component {
       if (token === null) {
         return ( <Redirect to={'/signin'}/> );
       } else if (initURL === '' || initURL === '/' || initURL === '/signin') {
-        return ( <Redirect to={'/home'}/> );
+        return ( <Redirect to={'/bjbs/home'}/> );
       } else {
         return ( <Redirect to={initURL}/> );
       }
