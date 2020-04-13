@@ -1,87 +1,54 @@
 import React from "react";
 import SweetAlert from "react-bootstrap-sweetalert";
 import {NotificationContainer, NotificationManager} from "react-notifications";
-import {Divider, Button, Card, Table} from "antd";
+import {Divider, Button, Card, Table, Input} from "antd";
 import IntlMessages from "util/IntlMessages";
+import Highlighter from "react-highlight-words";
+import {SearchOutlined} from "@ant-design/icons";
 
 import SaveJenisRisiko from "./SaveJenisRisiko";
 import EditJenisRisiko from "./EditJenisRisiko";
 
 const data = [{
-    nama: 'John Brown',
-    ket: 'Active',
+    nama: 'Risiko Kredit',
+    ket: 'Risiko kredit merupakan risiko yang timbul akibat kegagalan counterparty memenuhi kewajibannya.',
     created: '2020-04-08 12:10.00',
     action: 'BJBS001',
 },{
-    nama: 'Radja Nainggolan',
-    ket: 'Suspend',
+    nama: 'Risiko Pasar',
+    ket: 'Risiko pasar merupakan risiko yang timbul karena adanya pergerakan variabel pasar dari portofolio bank yang dapat merugikan bank.',
     created: '2020-04-08 11:22.00',
     action: 'BJBS002',
 },{
-    nama: 'Edin Dzeko',
-    ket: 'Active',
+    nama: 'Risiko Likuiditas',
+    ket: 'Risiko likuiditas merupakan risiko di mana pihak perbankan tidak mampu memenuhi kewajiban yang telah jatuh tempo. Risiko ini benar2 berbahaya dan bisa sangat merugikan para nasabahnya.',
     created: '2020-04-08 08:22.00',
     action: 'BJBS003',
 },{
-    nama: 'Francesco Totti',
-    ket: 'Inactive',
+    nama: 'Risiko Operasional',
+    ket: 'Risiko ini merupakan risiko yang antara lain disebabkan karena adanya ketidakcukupan dan atau tidak berfungsinya proses internal, kesalahan manusia, kegagalan sistem atau adanya problem eksternal yang mempengaruhi operasional bank.',
     created: '2020-04-04 19:22.00',
     action: 'BJBS004',
 },{
-    nama: 'Alisson Becker',
-    ket: 'Inactive',
+    nama: 'Risiko Hukum',
+    ket: 'Risiko ini disebabkan oleh adanya kelemahan aspek yuridis. Kelemahan yuridis yang dimaksud antara lain disebabkan karena adanya tuntutan hukum, ketiadaan peraturan perundang-udangan yang mendukung atau kelemahan perikatan, seperti tidak dipenuhi syarat sahnya kontrak.',
     created: '2020-04-03 19:22.00',
     action: 'BJBS005',
 },{
-    nama: 'Miralem Pjanic',
-    ket: 'Suspend',
+    nama: 'Risiko Reputasi',
+    ket: 'Risiko ini disebabkan antara lain karena adanya publikasi negatif yang terkait dengan kegiatan usaha bank atau persepsi negatif terhadap bank.',
     created: '2020-04-03 19:22.00',
     action: 'BJBS006',
 },{
-    nama: 'Kevin Strootman',
-    ket: 'Suspend',
+    nama: 'Risiko Strategik',
+    ket: 'Risiko ini antara lain disebabkan karena penetapan dan pelaksanaan strategi bank yang tidak tepat, pengambilan keputusan bisnis yang tidak tepat, atau kurang responnya bank terhadap perubahan eksternal.',
     created: '2020-04-01 19:22.00',
     action: 'BJBS007',
 },{
-    nama: 'Diego Perotti',
-    ket: 'Inactive',
+    nama: 'Risiko Kepatuhan',
+    ket: 'Risiko ini disebabkan karena bank tidak mematuhi atau tidak melaksanakan peraturan perundang-udangan dan ketentuan lain yang berlaku.',
     created: '2020-04-10 19:22.00',
     action: 'BJBS008',
-},{
-    nama: 'Charles Peres',
-    ket: 'Active',
-    created: '2020-04-11 03:22.00',
-    action: 'BJBS009',
-},{
-    nama: 'Nicolo Zaniolo',
-    ket: 'Active',
-    created: '2020-04-06 10:22.00',
-    action: 'BJBS010',
-},{
-    nama: 'Cengiz Under',
-    ket: 'Inactive',
-    created: '2020-04-05 19:22.00',
-    action: 'BJBS011',
-},{
-    nama: 'Bryan Cristante',
-    ket: 'Suspend',
-    created: '2020-04-10 19:22.00',
-    action: 'BJBS012',
-},{
-    nama: 'Pau Lopez',
-    ket: 'Active',
-    created: '2020-04-09 00:22.00',
-    action: 'BJBS013',
-},{
-    nama: 'Kostas Manolas',
-    ket: 'Inactive',
-    created: '2020-04-09 14:22.00',
-    action: 'BJBS014',
-},{
-    nama: 'Alexander Kolarov',
-    ket: 'Active',
-    created: '2020-04-09 09:22.00',
-    action: 'BJBS015',
 }];
 
 class TableJenisRisiko extends React.PureComponent {
@@ -92,6 +59,8 @@ class TableJenisRisiko extends React.PureComponent {
             sortedInfo: null,
             warning: false,
             datatable: data,
+            searchText: '',
+            searchedColumn: '',
             addbutton : false,
             editbutton : false,
             eid : "",
@@ -99,6 +68,68 @@ class TableJenisRisiko extends React.PureComponent {
             eket : ""
         };
     }
+
+    getColumnSearchProps = dataIndex => ({
+        filterDropdown : ({setSelectedKeys, selectedKeys, confirm, clearFilters}) => (
+            <div style={{padding : 8}}>
+                <Input
+                    ref={node => {
+                        this.searchInput = node;
+                    }}
+                    placeholder={`Search ${dataIndex}`}
+                    value={selectedKeys[0]}
+                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                    onPressEnter={() => this.handleSearch(selectedKeys, confirm, dataIndex)}
+                    style={{width:188, marginBottom:8, display:'block'}}
+                />
+
+                <Button
+                    type="primary"
+                    onClick={() => this.handleSearch(selectedKeys, confirm, dataIndex)}
+                    icon={<SearchOutlined/>}
+                    size="small"
+                    style={{width:90, marginRight:8}}
+                >Search</Button>
+
+                <Button onClick={() => this.handleReset(clearFilters)} size="small" style={{width:90}}>Reset</Button>
+            </div>
+        ),
+        filterIcon : filtered => <SearchOutlined style={{color: filtered ? '#1890ff' : undefined}}/>,
+        onFilter : (value, record) =>
+            record[dataIndex]
+                .toString()
+                .toLowerCase()
+                .includes(value.toLowerCase()),
+        onFilterDropdownVisibleChange : visible => {
+            if (visible){
+                setTimeout(() => this.searchInput.select());
+            }
+        },
+        render : text =>
+            this.state.searchedColumn === dataIndex ? (
+                <Highlighter
+                    highlightStyle={{backgroundColor: 'ffc069', padding:0}}
+                    searchWords={[this.state.searchText]}
+                    autoEscape
+                    textToHighlight={text.toString()}
+                />
+            ) : (text),
+    });
+
+    handleSearch = (selectedKeys, confirm, dataIndex) => {
+        confirm();
+        this.setState({
+            searchText: selectedKeys[0],
+            searchedColumn: dataIndex,
+        });
+    };
+
+    handleReset = clearFilters => {
+        clearFilters();
+        this.setState({
+            searchText: ''
+        });
+    };
 
     deleteFile = () => {
         this.setState({
@@ -146,6 +177,7 @@ class TableJenisRisiko extends React.PureComponent {
             title: 'Nama',
             dataIndex: 'nama',
             key: 'nama',
+            ...this.getColumnSearchProps('nama'),
             /*filters: [
                 {text: 'Joe', value: 'Joe'},
                 {text: 'Jim', value: 'Jim'},
@@ -158,6 +190,7 @@ class TableJenisRisiko extends React.PureComponent {
             title: 'Keterangan',
             dataIndex: 'ket',
             key: 'ket',
+            width : '500px',
             sorter: (a, b) => a.ket.localeCompare(b.ket),
             sortOrder: sortedInfo.columnKey === 'ket' && sortedInfo.order,
         }, {
