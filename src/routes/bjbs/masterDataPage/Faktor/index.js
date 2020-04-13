@@ -1,6 +1,9 @@
 import React from "react";
+import {Col, Row} from "antd";
 
 import IntlMessages from "util/IntlMessages";
+
+import TableFaktor from "./TableFaktor";
 
 const Faktor = () => {
     return (
@@ -8,7 +11,11 @@ const Faktor = () => {
             <h2 className="title gx-mb-4"><IntlMessages id="sidebar.masterdata.faktor"/></h2>
 
             <div className="gx-d-flex justify-content-center">
-                <h4>This is Faktor Page.</h4>
+                <Row className={"w-100"}>
+                    <Col span={24}>
+                        <TableFaktor/>
+                    </Col>
+                </Row>
             </div>
 
         </div>

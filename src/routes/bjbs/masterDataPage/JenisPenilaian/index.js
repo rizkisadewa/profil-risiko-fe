@@ -1,6 +1,9 @@
 import React from "react";
+import {Col, Row} from "antd";
 
 import IntlMessages from "util/IntlMessages";
+
+import TablePenilaian from "./TablePenilaian";
 
 const JenisPenilaian = () => {
     return (
@@ -8,7 +11,11 @@ const JenisPenilaian = () => {
             <h2 className="title gx-mb-4"><IntlMessages id="sidebar.masterdata.penilaian"/></h2>
 
             <div className="gx-d-flex justify-content-center">
-                <h4>This is Jenis Penilaian Page.</h4>
+                <Row className={"w-100"}>
+                    <Col span={24}>
+                        <TablePenilaian/>
+                    </Col>
+                </Row>
             </div>
 
         </div>

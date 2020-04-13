@@ -35,11 +35,11 @@ class EditJenisRisiko extends React.PureComponent{
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="Nama">
-                        <Input id="nama" defaultValue={this.props.enama} required/>
+                        <Input id="nama" defaultValue={this.props.enama} placeholder="Input Nama" required/>
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="Keterangan">
-                        <TextArea id="ket" defaultValue={this.props.eket} required/>
+                        <TextArea id="ket" defaultValue={this.props.eket} placeholder="Input Keterangan" required/>
                     </FormItem>
 
                     <FormItem style={{ float : "right", paddingRight : "1rem" }}>

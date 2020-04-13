@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Modal, Input, Form} from "antd";
+import {Button, Input, Form} from "antd";
 
 const FormItem = Form.Item;
 const {TextArea} = Input;
@@ -31,11 +31,11 @@ class SaveJenisRisiko extends React.PureComponent{
             <>
                 <Form onSubmit={this.handleSubmit}>
                     <FormItem {...formItemLayout} label="Nama">
-                        <Input id="nama" required/>
+                        <Input id="nama" placeholder="Input Nama" required/>
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="Keterangan">
-                        <TextArea id="ket" required/>
+                        <TextArea id="ket" placeholder="Input Keterangan" required/>
                     </FormItem>
 
                     <FormItem style={{ float : "right", paddingRight : "1rem" }}>

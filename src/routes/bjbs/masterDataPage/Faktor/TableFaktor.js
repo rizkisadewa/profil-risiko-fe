@@ -5,69 +5,67 @@ import {Divider, Button, Card, Table, Input} from "antd";
 import IntlMessages from "util/IntlMessages";
 import Highlighter from "react-highlight-words";
 import {SearchOutlined} from "@ant-design/icons";
-
-import SaveJenisRisiko from "./SaveJenisRisiko";
-import EditJenisRisiko from "./EditJenisRisiko";
+import SaveFaktor from "./SaveFaktor";
+import EditFaktor from "./EditFaktor";
 
 const data = [{
-    nama: 'Risiko Kredit',
-    ket: 'Risiko kredit merupakan risiko yang timbul akibat kegagalan counterparty memenuhi kewajibannya.',
-    created: '2020-04-08 12:10.00',
+    risk: 'Risiko Kredit',
+    parameter: 'Risk Probability ( P )',
+    bobot: '50',
+    level: '1',
     action: 'BJBS001',
 },{
-    nama: 'Risiko Pasar',
-    ket: 'Risiko pasar merupakan risiko yang timbul karena adanya pergerakan variabel pasar dari portofolio bank yang dapat merugikan bank.',
-    created: '2020-04-08 11:22.00',
+    risk: 'Risiko Pasar',
+    parameter: 'Likelyhood Justification',
+    bobot: '75',
+    level: '1',
     action: 'BJBS002',
 },{
-    nama: 'Risiko Likuiditas',
-    ket: 'Risiko likuiditas merupakan risiko di mana pihak perbankan tidak mampu memenuhi kewajiban yang telah jatuh tempo. Risiko ini benar2 berbahaya dan bisa sangat merugikan para nasabahnya.',
-    created: '2020-04-08 08:22.00',
+    risk: 'Risiko Likuiditas',
+    parameter: 'Cost ( L )',
+    bobot: '90',
+    level: '2',
     action: 'BJBS003',
 },{
-    nama: 'Risiko Operasional',
-    ket: 'Risiko ini merupakan risiko yang antara lain disebabkan karena adanya ketidakcukupan dan atau tidak berfungsinya proses internal, kesalahan manusia, kegagalan sistem atau adanya problem eksternal yang mempengaruhi operasional bank.',
-    created: '2020-04-04 19:22.00',
+    risk: 'Risiko Operasional',
+    parameter: 'Likelyhood Cost Justification',
+    bobot: '30',
+    level: '1',
     action: 'BJBS004',
 },{
-    nama: 'Risiko Hukum',
-    ket: 'Risiko ini disebabkan oleh adanya kelemahan aspek yuridis. Kelemahan yuridis yang dimaksud antara lain disebabkan karena adanya tuntutan hukum, ketiadaan peraturan perundang-udangan yang mendukung atau kelemahan perikatan, seperti tidak dipenuhi syarat sahnya kontrak.',
-    created: '2020-04-03 19:22.00',
+    risk: 'Risiko Reputasi',
+    parameter: 'Risk Exposure ( R )',
+    bobot: '100',
+    level: '2',
     action: 'BJBS005',
-},{
-    nama: 'Risiko Reputasi',
-    ket: 'Risiko ini disebabkan antara lain karena adanya publikasi negatif yang terkait dengan kegiatan usaha bank atau persepsi negatif terhadap bank.',
-    created: '2020-04-03 19:22.00',
-    action: 'BJBS006',
-},{
-    nama: 'Risiko Strategik',
-    ket: 'Risiko ini antara lain disebabkan karena penetapan dan pelaksanaan strategi bank yang tidak tepat, pengambilan keputusan bisnis yang tidak tepat, atau kurang responnya bank terhadap perubahan eksternal.',
-    created: '2020-04-01 19:22.00',
-    action: 'BJBS007',
-},{
-    nama: 'Risiko Kepatuhan',
-    ket: 'Risiko ini disebabkan karena bank tidak mematuhi atau tidak melaksanakan peraturan perundang-udangan dan ketentuan lain yang berlaku.',
-    created: '2020-04-10 19:22.00',
-    action: 'BJBS008',
 }];
 
-class TableJenisRisiko extends React.PureComponent {
+class TableFaktor extends React.PureComponent{
     constructor(props) {
         super(props);
         this.state = {
-            //filteredInfo: null,
             sortedInfo: null,
-            warning: false,
             datatable: data,
+            warning : false,
             searchText: '',
             searchedColumn: '',
             addbutton : false,
             editbutton : false,
             eid : "",
-            enama : "",
-            eket : ""
-        };
+            erisk : "",
+            eparam : "",
+            ebobot : "",
+            elevel : ""
+        }
     }
+
+    handleChange = (pagination, filters, sorter) => {
+        console.log('Various parameters', pagination, filters, sorter);
+        this.setState({
+            // filteredInfo: filters,
+            sortedInfo: sorter,
+        });
+    };
 
     getColumnSearchProps = dataIndex => ({
         filterDropdown : ({setSelectedKeys, selectedKeys, confirm, clearFilters}) => (
@@ -143,14 +141,6 @@ class TableJenisRisiko extends React.PureComponent {
         })
     };
 
-    handleChange = (pagination, filters, sorter) => {
-        console.log('Various parameters', pagination, filters, sorter);
-        this.setState({
-            // filteredInfo: filters,
-            sortedInfo: sorter,
-        });
-    };
-
     clickAddButton = () => {
         this.setState({
             addbutton: true
@@ -170,35 +160,32 @@ class TableJenisRisiko extends React.PureComponent {
     }
 
     render() {
-        let {sortedInfo, filteredInfo} = this.state;
+        let {sortedInfo} = this.state;
         sortedInfo = sortedInfo || {};
-        filteredInfo = filteredInfo || {};
         const columns = [{
-            title: 'Nama',
-            dataIndex: 'nama',
-            key: 'nama',
-            ...this.getColumnSearchProps('nama'),
-            /*filters: [
-                {text: 'Joe', value: 'Joe'},
-                {text: 'Jim', value: 'Jim'},
-            ],
-            filteredValue: filteredInfo.name || null,
-            onFilter: (value, record) => record.name.includes(value),*/
-            sorter: (a, b) => a.nama.localeCompare(b.nama),
-            sortOrder: sortedInfo.columnKey === 'nama' && sortedInfo.order,
+            title: 'Risk',
+            dataIndex: 'risk',
+            key: 'risk',
+            ...this.getColumnSearchProps('risk'),
+            sorter: (a, b) => a.risk.localeCompare(b.risk),
+            sortOrder: sortedInfo.columnKey === 'risk' && sortedInfo.order,
         }, {
-            title: 'Keterangan',
-            dataIndex: 'ket',
-            key: 'ket',
-            width : '500px',
-            sorter: (a, b) => a.ket.localeCompare(b.ket),
-            sortOrder: sortedInfo.columnKey === 'ket' && sortedInfo.order,
+            title: 'Parameter',
+            dataIndex: 'parameter',
+            key: 'parameter',
+            ...this.getColumnSearchProps('parameter'),
+            sorter: (a, b) => a.parameter.localeCompare(b.parameter),
+            sortOrder: sortedInfo.columnKey === 'parameter' && sortedInfo.order,
         }, {
-            title: 'Created at',
-            dataIndex: 'created',
-            key: 'created',
-            sorter: (a, b) => Date.parse(a.created) - Date.parse(b.created),
-            sortOrder: sortedInfo.columnKey === 'created' && sortedInfo.order,
+            title: 'Bobot',
+            dataIndex: 'bobot',
+            key: 'bobot',
+            ...this.getColumnSearchProps('bobot'),
+            sorter: (a, b) => a.bobot - b.bobot,
+            sortOrder: sortedInfo.columnKey === 'bobot' && sortedInfo.order,
+            render: (data) => (
+                data+'%'
+            )
         }, {
             title: 'Action',
             key: 'action',
@@ -208,8 +195,10 @@ class TableJenisRisiko extends React.PureComponent {
                         this.setState({
                             editbutton: true,
                             eid : text.action,
-                            enama : text.nama,
-                            eket : text.ket,
+                            erisk : text.risk,
+                            eparam : text.parameter,
+                            ebobot : text.bobot,
+                            elevel : text.level
                         })
                     }}>Edit</span>
                     <Divider type="vertical"/>
@@ -219,14 +208,16 @@ class TableJenisRisiko extends React.PureComponent {
                 </span>
             ),
         }];
-        const {warning, datatable, addbutton, editbutton, eid, enama, eket} = this.state;
+        const {datatable, warning, addbutton, editbutton, eid, erisk, eparam, ebobot, elevel} = this.state;
         return (
-            <Card title={addbutton ? "Add New Data" : editbutton ? "Edit Data : "+eid : "Read Table Jenis Risiko"}>
+            <Card title={addbutton ? "Add New Data" : editbutton ? "Edit Data : "+eid : "Read Table Faktor"}>
                 {
                     addbutton ?
-                        <SaveJenisRisiko clickCancelAddButton={this.clickCancelAddButton}/> :
+                        <SaveFaktor clickCancelAddButton={this.clickCancelAddButton}/> :
                     editbutton ?
-                        <EditJenisRisiko clickCancelEditButton={this.clickCancelEditButton} eid={eid} enama={enama} eket={eket}/> :
+                        <EditFaktor clickCancelEditButton={this.clickCancelEditButton}
+                                       eid={eid} erisk={erisk} eparam={eparam} ebobot={ebobot} elevel={elevel}
+                        /> :
                     <>
                         <div className="table-operations">
                             <Button className="ant-btn ant-btn-primary" onClick={this.clickAddButton}>Add</Button>
@@ -252,5 +243,4 @@ class TableJenisRisiko extends React.PureComponent {
     }
 }
 
-export default TableJenisRisiko;
-export {data};
+export default TableFaktor;
