@@ -17,3 +17,8 @@
 .w-100 {
     width: 100% !important;
 }
+
+.ant-menu-submenu-inline > .ant-menu.ant-menu-sub.ant-menu-inline > .gx-wrap-sidebar{
+    white-space: pre-wrap!important;
+    padding-bottom: 80px!important;
+}
