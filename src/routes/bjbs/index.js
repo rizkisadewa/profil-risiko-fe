@@ -5,6 +5,7 @@ import DashboardPage from "./dashboardPage";
 import MasterDataPage from "./masterDataPage";
 import KeperluanDataPage from "./keperluanDataPage";
 import LaporanPage from "./laporanPage";
+import ProfileUserPage from "./profileUserPage";
 
 import asyncComponent from "util/asyncComponent";
 
@@ -16,6 +17,7 @@ const Bjbs = ({match}) => (
         <Route path={`${match.url}/masterdata`} component={MasterDataPage}/>
         <Route path={`${match.url}/keperluandata`} component={KeperluanDataPage}/>
         <Route path={`${match.url}/laporan`} component={LaporanPage}/>
+        <Route path={`${match.url}/profileuser`} component={ProfileUserPage}/>
     </Switch>
 );
 

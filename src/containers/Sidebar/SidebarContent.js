@@ -15,6 +15,7 @@ import {
   THEME_TYPE_LITE
 } from "../../constants/ThemeSetting";
 import IntlMessages from "../../util/IntlMessages";
+import SignOutApp from "./SignOutApp";
 
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
@@ -221,7 +222,7 @@ class SidebarContent extends Component {
                           </Link>
                       </Menu.Item>
                   </SubMenu>
-
+                  {/* Laporan */}
                   <SubMenu key="laporan" className={this.getNavStyleSubMenuClass(navStyle)}
                            title={<span> <i className="icon icon-feedback"/>
                          <IntlMessages id="sidebar.laporan"/></span>}>
@@ -242,6 +243,37 @@ class SidebarContent extends Component {
                               <i className="icon icon-tasks"/>
                               <IntlMessages id="sidebar.laporan.laporanakhirtahun"/>
                           </Link>
+                      </Menu.Item>
+                  </SubMenu>
+                  {/* Profile User */}
+                  <SubMenu key="profileuser" className={this.getNavStyleSubMenuClass(navStyle)}
+                           title={<span> <i className="icon icon-user-o"/>
+                         <IntlMessages id="sidebar.profileuser"/></span>}>
+                      <Menu.Item key="bjbs/profileuser/kotakmasuk">
+                          <Link to="/bjbs/profileuser/kotakmasuk">
+                              <i className="icon icon-mail-open"/>
+                              <IntlMessages id="sidebar.profileuser.kotakmasuk"/>
+                          </Link>
+                      </Menu.Item>
+                      <Menu.Item key="bjbs/profileuser/ubahpassword">
+                          <Link to="/bjbs/profileuser/ubahpassword">
+                              <i className="icon icon-forgot-password"/>
+                              <IntlMessages id="sidebar.profileuser.ubahpassword"/>
+                          </Link>
+                      </Menu.Item>
+                      <Menu.Item key="bjbs/profileuser/ubahpin">
+                          <Link to="/bjbs/profileuser/ubahpin">
+                              <i className="icon icon-reset-password"/>
+                              <IntlMessages id="sidebar.profileuser.ubahpin"/>
+                          </Link>
+                      </Menu.Item>
+                  </SubMenu>
+                  {/*Lain-Lain*/}
+                  <SubMenu key="lainlain" className={this.getNavStyleSubMenuClass(navStyle)}
+                           title={<span> <i className="icon icon-setting"/>
+                         <IntlMessages id="sidebar.lainlain"/></span>}>
+                      <Menu.Item key="bjbs/lainlain/logout">
+                         <SignOutApp/>
                       </Menu.Item>
                   </SubMenu>
               </MenuItemGroup>
