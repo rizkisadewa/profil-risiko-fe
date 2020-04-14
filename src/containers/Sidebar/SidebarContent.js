@@ -160,7 +160,7 @@ class SidebarContent extends Component {
                       </Menu.Item>
                       <Menu.Item key="bjbs/keperluandata/datamaturityprofile">
                           <Link to="/bjbs/keperluandata/datamaturityprofile">
-                              <i className="icon icon-data-entry"/>
+                              <i className="icon icon-auth-screen"/>
                               <IntlMessages id="sidebar.keperluandata.datamaturityprofile"/>
                           </Link>
                       </Menu.Item>
@@ -168,6 +168,43 @@ class SidebarContent extends Component {
                           <Link to="/bjbs/keperluandata/norminatifk241">
                               <i className="icon icon-noodles"/>
                               <IntlMessages id="sidebar.keperluandata.norminatifk241"/>
+                          </Link>
+                      </Menu.Item>
+                      {/* Keperluan Data 3 */}
+                      <Menu.Item key="bjbs/keperluandata/neracalabarugi">
+                          <Link to="/bjbs/keperluandata/neracalabarugi">
+                              <i className="icon icon-transfer"/>
+                              <IntlMessages id="sidebar.keperluandata.neracalabarugi"/>
+                          </Link>
+                      </Menu.Item>
+                      <Menu.Item key="bjbs/keperluandata/rasiocar">
+                          <Link to="/bjbs/keperluandata/rasiocar">
+                              <i className="icon icon-backtop"/>
+                              <IntlMessages id="sidebar.keperluandata.rasiocar"/>
+                          </Link>
+                      </Menu.Item>
+                      <Menu.Item key="bjbs/keperluandata/lsmk">
+                          <Link to="/bjbs/keperluandata/lsmk">
+                              <i className="icon icon-cascader"/>
+                              <IntlMessages id="sidebar.keperluandata.lsmk"/>
+                          </Link>
+                      </Menu.Item>
+                      <Menu.Item key="bjbs/keperluandata/datafraud">
+                          <Link to="/bjbs/keperluandata/datafraud">
+                              <i className="icon icon-family"/>
+                              <IntlMessages id="sidebar.keperluandata.datafraud"/>
+                          </Link>
+                      </Menu.Item>
+                      <Menu.Item key="bjbs/keperluandata/maturitysistem">
+                          <Link to="/bjbs/keperluandata/maturitysistem">
+                              <i className="icon icon-schedule"/>
+                              <IntlMessages id="sidebar.keperluandata.maturitysistem"/>
+                          </Link>
+                      </Menu.Item>
+                      <Menu.Item key="bjbs/keperluandata/datalitigasi">
+                          <Link to="/bjbs/keperluandata/datalitigasi">
+                              <i className="icon icon-team"/>
+                              <IntlMessages id="sidebar.keperluandata.datalitigasi"/>
                           </Link>
                       </Menu.Item>
                   </SubMenu>
