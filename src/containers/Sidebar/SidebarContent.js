@@ -221,6 +221,29 @@ class SidebarContent extends Component {
                           </Link>
                       </Menu.Item>
                   </SubMenu>
+
+                  <SubMenu key="laporan" className={this.getNavStyleSubMenuClass(navStyle)}
+                           title={<span> <i className="icon icon-feedback"/>
+                         <IntlMessages id="sidebar.laporan"/></span>}>
+                      <Menu.Item key="bjbs/laporan/laporanprofilrisikokeojk">
+                          <Link to="/bjbs/laporan/laporanprofilrisikokeojk">
+                              <i className="icon icon-product-grid"/>
+                              <IntlMessages id="sidebar.laporan.laporanprofilrisikokeojk"/>
+                          </Link>
+                      </Menu.Item>
+                      <Menu.Item key="bjbs/laporan/laporanpertriwulan">
+                          <Link to="/bjbs/laporan/laporanpertriwulan">
+                              <i className="icon icon-select"/>
+                              <IntlMessages id="sidebar.laporan.laporanpertriwulan"/>
+                          </Link>
+                      </Menu.Item>
+                      <Menu.Item key="bjbs/laporan/laporanakhirtahun">
+                          <Link to="/bjbs/laporan/laporanakhirtahun">
+                              <i className="icon icon-tasks"/>
+                              <IntlMessages id="sidebar.laporan.laporanakhirtahun"/>
+                          </Link>
+                      </Menu.Item>
+                  </SubMenu>
               </MenuItemGroup>
             </Menu>
           </CustomScrollbars>
