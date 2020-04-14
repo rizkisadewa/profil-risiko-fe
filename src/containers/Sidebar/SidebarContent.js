@@ -113,7 +113,7 @@ class SidebarContent extends Component {
                   </SubMenu>
 
                   <SubMenu key="keperluandata" className={this.getNavStyleSubMenuClass(navStyle)}
-                           title={<span> <i className="icon icon-feedback"/>
+                           title={<span> <i className="icon icon-files"/>
                          <IntlMessages id="sidebar.keperluandata"/></span>}>
                       <Menu.Item key="bjbs/keperluandata/debiturinti">
                           <Link to="/bjbs/keperluandata/debiturinti">
@@ -205,6 +205,19 @@ class SidebarContent extends Component {
                           <Link to="/bjbs/keperluandata/datalitigasi">
                               <i className="icon icon-team"/>
                               <IntlMessages id="sidebar.keperluandata.datalitigasi"/>
+                          </Link>
+                      </Menu.Item>
+                      {/* Keperluan Data 4 */}
+                      <Menu.Item key="bjbs/keperluandata/rbb">
+                          <Link to="/bjbs/keperluandata/rbb">
+                              <i className="icon icon-invert-color"/>
+                              <IntlMessages id="sidebar.keperluandata.rbb"/>
+                          </Link>
+                      </Menu.Item>
+                      <Menu.Item key="bjbs/keperluandata/datafrekuensipelanggaran">
+                          <Link to="/bjbs/keperluandata/datafrekuensipelanggaran">
+                              <i className="icon icon-important-o"/>
+                              <IntlMessages id="sidebar.keperluandata.datafrekuensipelanggaran"/>
                           </Link>
                       </Menu.Item>
                   </SubMenu>

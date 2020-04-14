@@ -22,6 +22,9 @@ const KeperluanDataPage = ({match}) => (
         <Route path={`${match.url}/datafraud`} component={asyncComponent(() => import('./DataFraud'))}/>
         <Route path={`${match.url}/maturitysistem`} component={asyncComponent(() => import('./MaturitySistem'))}/>
         <Route path={`${match.url}/datalitigasi`} component={asyncComponent(() => import('./DataLitigasi'))}/>
+        {/*Keperluan Data 4*/}
+        <Route path={`${match.url}/rbb`} component={asyncComponent(() => import('./Rbb'))}/>
+        <Route path={`${match.url}/datafrekuensipelanggaran`} component={asyncComponent(() => import('./DataFrekuensiPelanggaran'))}/>
     </switch>
 );
 
