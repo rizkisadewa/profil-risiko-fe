@@ -133,16 +133,41 @@ class SidebarContent extends Component {
                               <IntlMessages id="sidebar.keperluandata.asetlukuid"/>
                           </Link>
                       </Menu.Item>
-                      <Menu.Item key="bjbs/keperluandata/manajemensdi" className="gx-wrap-sidebar">
+                      <Menu.Item key="bjbs/keperluandata/manajemensdi">
                           <Link to="/bjbs/keperluandata/manajemensdi">
                               <i className="icon icon-timeline-with-icons"/>
                               <IntlMessages id="sidebar.keperluandata.manajemensdi"/>
                           </Link>
                       </Menu.Item>
-                      <Menu.Item key="bjbs/keperluandata/frekmaterialitas" className="gx-wrap-sidebar">
+                      <Menu.Item key="bjbs/keperluandata/frekmaterialitas">
                           <Link to="/bjbs/keperluandata/frekmaterialitas">
                               <i className="icon icon-frequent"/>
                               <IntlMessages id="sidebar.keperluandata.frekmaterialitas"/>
+                          </Link>
+                      </Menu.Item>
+                      {/* Keperluan Data 2 */}
+                      <Menu.Item key="bjbs/keperluandata/roa">
+                          <Link to="/bjbs/keperluandata/roa">
+                              <i className="icon icon-ripple"/>
+                              <IntlMessages id="sidebar.keperluandata.roa"/>
+                          </Link>
+                      </Menu.Item>
+                      <Menu.Item key="bjbs/keperluandata/k020">
+                          <Link to="/bjbs/keperluandata/k020">
+                              <i className="icon icon-map-km-layer"/>
+                              <IntlMessages id="sidebar.keperluandata.k020"/>
+                          </Link>
+                      </Menu.Item>
+                      <Menu.Item key="bjbs/keperluandata/datamaturityprofile">
+                          <Link to="/bjbs/keperluandata/datamaturityprofile">
+                              <i className="icon icon-data-entry"/>
+                              <IntlMessages id="sidebar.keperluandata.datamaturityprofile"/>
+                          </Link>
+                      </Menu.Item>
+                      <Menu.Item key="bjbs/keperluandata/norminatifk241">
+                          <Link to="/bjbs/keperluandata/norminatifk241">
+                              <i className="icon icon-noodles"/>
+                              <IntlMessages id="sidebar.keperluandata.norminatifk241"/>
                           </Link>
                       </Menu.Item>
                   </SubMenu>

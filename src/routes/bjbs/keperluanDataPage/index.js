@@ -10,6 +10,11 @@ const KeperluanDataPage = ({match}) => (
         <Route path={`${match.url}/asetlukuid`} component={asyncComponent(() => import('./AsetLukuid'))}/>
         <Route path={`${match.url}/manajemensdi`} component={asyncComponent(() => import('./ManajemenSDI'))}/>
         <Route path={`${match.url}/frekmaterialitas`} component={asyncComponent(() => import('./FrekuensiMaterialitasEksposurPemberitaanNegatif'))}/>
+        {/*Keperluan 2*/}
+        <Route path={`${match.url}/roa`} component={asyncComponent(() => import('./Roa'))}/>
+        <Route path={`${match.url}/k020`} component={asyncComponent(() => import('./K020'))}/>
+        <Route path={`${match.url}/datamaturityprofile`} component={asyncComponent(() => import('./DataMaturityProfile'))}/>
+        <Route path={`${match.url}/nominatifk241`} component={asyncComponent(() => import('./NominatifK241'))}/>
     </switch>
 );
 

@@ -18,7 +18,7 @@
     width: 100% !important;
 }
 
-.ant-menu-submenu-inline > .ant-menu.ant-menu-sub.ant-menu-inline > .gx-wrap-sidebar{
+.ant-menu-submenu-inline > .ant-menu.ant-menu-sub.ant-menu-inline > .ant-menu-item{
     white-space: pre-wrap!important;
-    padding-bottom: 80px!important;
+    height: auto!important;
 }
