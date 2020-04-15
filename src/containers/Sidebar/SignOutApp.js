@@ -9,11 +9,12 @@ class SignOutApp extends Component {
         const {authUser} = this.props;
         console.log("authUser", authUser)
         const userMenuOptions = (
-            <span className="ant-menu-item" ref={element => {
-                if (element) element.style.setProperty('padding', '0', 'important');
-            }} onClick={() => this.props.userSignOut()}>
+            <span onClick={() => this.props.userSignOut()}>
+                {/*<span className="ant-menu-item" ref={element => {
+                    if (element) element.style.setProperty('padding', '0', 'important');
+                }} onClick={() => this.props.userSignOut()}></span>*/}
                 <i className="icon icon-signin"/>
-                <IntlMessages id="sidebar.lainlain.logout"/>
+                <IntlMessages id="sidebar.logout"/>
             </span>
         );
 

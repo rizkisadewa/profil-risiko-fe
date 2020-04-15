@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import {Avatar, Popover} from "antd";
 import {userSignOut} from "appRedux/actions/Auth";
+import IntlMessages from "../../util/IntlMessages";
 
 class UserProfile extends Component {
 
@@ -19,15 +20,15 @@ class UserProfile extends Component {
 
     return (
 
-      <div className="gx-flex-row gx-align-items-center gx-avatar-row">
-        Welcome,&nbsp;<span className="gx-avatar-name">{authUser ? authUser.name : "Admin"}</span>
+      <span>
+        {authUser ? authUser : <IntlMessages id="sidebar.main"/>}
         {/*<Popover placement="bottomRight" content={userMenuOptions} trigger="click">
           <Avatar src='https://via.placeholder.com/150x150'
                   className="gx-size-40 gx-pointer gx-mr-3" alt=""/>
           <span className="gx-avatar-name">{authUser ? authUser.name : "Loading"}<i
             className="icon icon-chevron-down gx-fs-xxs gx-ml-2"/></span>
         </Popover>*/}
-      </div>
+      </span>
 
     )
 

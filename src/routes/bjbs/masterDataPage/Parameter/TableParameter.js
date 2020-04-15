@@ -9,35 +9,35 @@ import SaveParameter from "./SaveParameter";
 import EditParameter from "./EditParameter";
 
 const data = [{
-    risk: 'Risiko Kredit',
-    parameter: 'Risk Probability ( P )',
+    name: 'Risiko Kredit',
+    risk_id: 'Risk Probability ( P )',
     bobot: '50',
     level: '1',
-    action: 'BJBS001',
+    id: 'BJBS001',
 },{
-    risk: 'Risiko Pasar',
-    parameter: 'Likelyhood Justification',
+    name: 'Risiko Pasar',
+    risk_id: 'Likelyhood Justification',
     bobot: '75',
     level: '1',
-    action: 'BJBS002',
+    id: 'BJBS002',
 },{
-    risk: 'Risiko Likuiditas',
-    parameter: 'Cost ( L )',
+    name: 'Risiko Likuiditas',
+    risk_id: 'Cost ( L )',
     bobot: '90',
     level: '2',
-    action: 'BJBS003',
+    id: 'BJBS003',
 },{
-    risk: 'Risiko Operasional',
-    parameter: 'Likelyhood Cost Justification',
+    name: 'Risiko Operasional',
+    risk_id: 'Likelyhood Cost Justification',
     bobot: '30',
     level: '1',
-    action: 'BJBS004',
+    id: 'BJBS004',
 },{
-    risk: 'Risiko Reputasi',
-    parameter: 'Risk Exposure ( R )',
+    name: 'Risiko Reputasi',
+    risk_id: 'Risk Exposure ( R )',
     bobot: '100',
     level: '2',
-    action: 'BJBS005',
+    id: 'BJBS005',
 }];
 
 class TableParameter extends React.PureComponent{
@@ -163,19 +163,19 @@ class TableParameter extends React.PureComponent{
         let {sortedInfo} = this.state;
         sortedInfo = sortedInfo || {};
         const columns = [{
-            title: 'Risk',
-            dataIndex: 'risk',
-            key: 'risk',
-            ...this.getColumnSearchProps('risk'),
-            sorter: (a, b) => a.risk.localeCompare(b.risk),
-            sortOrder: sortedInfo.columnKey === 'risk' && sortedInfo.order,
+            title: 'Risk ID',
+            dataIndex: 'risk_id',
+            key: 'risk_id',
+            ...this.getColumnSearchProps('risk_id'),
+            sorter: (a, b) => a.risk_id - b.risk_id,
+            sortOrder: sortedInfo.columnKey === 'risk_id' && sortedInfo.order,
         }, {
             title: 'Parameter',
-            dataIndex: 'parameter',
-            key: 'parameter',
-            ...this.getColumnSearchProps('parameter'),
-            sorter: (a, b) => a.parameter.localeCompare(b.parameter),
-            sortOrder: sortedInfo.columnKey === 'parameter' && sortedInfo.order,
+            dataIndex: 'name',
+            key: 'name',
+            ...this.getColumnSearchProps('name'),
+            sorter: (a, b) => a.name.localeCompare(b.name),
+            sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order,
         }, {
             title: 'Bobot',
             dataIndex: 'bobot',
@@ -188,15 +188,15 @@ class TableParameter extends React.PureComponent{
             )
         }, {
             title: 'Action',
-            key: 'action',
+            key: 'id',
             render: (text, record) => (
                 <span>
                     <span className="gx-link" onClick={()=>{
                         this.setState({
                             editbutton: true,
-                            eid : text.action,
-                            erisk : text.risk,
-                            eparam : text.parameter,
+                            eid : text.id,
+                            erisk : text.risk_id,
+                            eparam : text.name,
                             ebobot : text.bobot,
                             elevel : text.level
                         })

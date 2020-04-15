@@ -50,18 +50,18 @@ class SignIn extends React.Component {
               <Form onSubmit={this.handleSubmit} className="gx-signin-form gx-form-row0">
 
                 <FormItem>
-                  {getFieldDecorator('email', {
-                    initialValue: "demo@example.com",
+                  {getFieldDecorator('username', {
+                    initialValue: "s0581",
                     rules: [{
-                      required: true, type: 'email', message: 'The input is not valid E-mail!',
+                      required: true, message: 'Please input your Username!',
                     }],
                   })(
-                    <Input placeholder="Email"/>
+                    <Input placeholder="Username"/>
                   )}
                 </FormItem>
                 <FormItem>
                   {getFieldDecorator('password', {
-                    initialValue: "demo#123",
+                    initialValue: "123456",
                     rules: [{required: true, message: 'Please input your Password!'}],
                   })(
                     <Input type="password" placeholder="Password"/>

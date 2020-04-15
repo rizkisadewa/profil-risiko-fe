@@ -55,7 +55,7 @@ class SidebarContent extends Component {
               theme={themeType === THEME_TYPE_LITE ? 'lite' : 'dark'}
               mode="inline">
 
-              <MenuItemGroup key="bjbs" className="gx-menu-group" title={<IntlMessages id="sidebar.main"/>}>
+              <MenuItemGroup key="bjbs" className="gx-menu-group" title={<UserProfile/>}>
                   <Menu.Item key="bjbs/home">
                       <Link to="/bjbs/home"><i className="icon icon-home"/>
                           <IntlMessages id="sidebar.home"/></Link>
@@ -269,13 +269,16 @@ class SidebarContent extends Component {
                       </Menu.Item>
                   </SubMenu>
                   {/*Lain-Lain*/}
-                  <SubMenu key="lainlain" className={this.getNavStyleSubMenuClass(navStyle)}
-                           title={<span> <i className="icon icon-setting"/>
-                         <IntlMessages id="sidebar.lainlain"/></span>}>
-                      <Menu.Item key="bjbs/lainlain/logout">
-                         <SignOutApp/>
-                      </Menu.Item>
-                  </SubMenu>
+                  <Menu.Item key="bjbs/lainlain">
+                      <Link to="/bjbs/lainlain">
+                          <i className="icon icon-setting"/>
+                          <IntlMessages id="sidebar.lainlain"/>
+                      </Link>
+                  </Menu.Item>
+
+                  <Menu.Item key="bjbs/logout">
+                      <SignOutApp/>
+                  </Menu.Item>
               </MenuItemGroup>
             </Menu>
           </CustomScrollbars>

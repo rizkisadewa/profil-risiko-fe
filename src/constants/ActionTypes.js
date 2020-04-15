@@ -31,3 +31,6 @@ export const INIT_URL = 'INIT_URL';
 export const USER_DATA = 'user_data';
 export const USER_TOKEN_SET = 'user_token_set';
 
+//Table const
+export const GET_ALL_PARAMETER_FAKTOR_TABLE = [];
+
