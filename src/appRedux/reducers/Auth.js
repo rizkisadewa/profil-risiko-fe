@@ -1,4 +1,4 @@
-import {INIT_URL, SIGNOUT_USER_SUCCESS, USER_DATA, USER_TOKEN_SET, GET_ALL_PARAMETER_FAKTOR_TABLE} from "../../constants/ActionTypes";
+import {INIT_URL, SIGNOUT_USER_SUCCESS, USER_DATA, USER_TOKEN_SET} from "../../constants/ActionTypes";
 
 const INIT_STATE = {
   token: JSON.parse(localStorage.getItem('token')),
@@ -35,13 +35,6 @@ export default (state = INIT_STATE, action) => {
       return {
         ...state,
         token: action.payload,
-      };
-    }
-
-    case GET_ALL_PARAMETER_FAKTOR_TABLE: {
-      return {
-        ...state,
-        getallparameterfaktortable: action.payload,
       };
     }
 

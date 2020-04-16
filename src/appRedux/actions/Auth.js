@@ -1,7 +1,7 @@
 import {
     FETCH_ERROR,
     FETCH_START,
-    FETCH_SUCCESS, GET_ALL_PARAMETER_FAKTOR_TABLE,
+    FETCH_SUCCESS,
     INIT_URL,
     SIGNOUT_USER_SUCCESS,
     USER_DATA,
@@ -28,7 +28,7 @@ export const userSignUp = ({email, password, name}) => {
     ).then(({data}) => {
       console.log("data:", data);
       if (data.result) {
-        localStorage.setItem("token", JSON.stringify(data.token.access_token));
+        localStorage.setItem("user", JSON.stringify(data.token.access_token));
         axios.defaults.headers.common['access-token'] = "Bearer " + data.token.access_token;
         dispatch({type: FETCH_SUCCESS});
         dispatch({type: USER_TOKEN_SET, payload: data.token.access_token});
@@ -55,6 +55,7 @@ export const userSignIn = ({username, password}) => {
       console.log("userSignIn: ", data.data.user_data.user_real_name);
       if (data.data) {
         localStorage.setItem("token", JSON.stringify(data.data.token));
+        localStorage.setItem("user", JSON.stringify(data.data.user_data.user_real_name));
         axios.defaults.headers.common['access-token'] = "Bearer " + data.data.token;
         dispatch({type: FETCH_SUCCESS});
         dispatch({type: USER_TOKEN_SET, payload: data.data.token});
@@ -63,8 +64,8 @@ export const userSignIn = ({username, password}) => {
         dispatch({type: FETCH_ERROR, payload: data.error});
       }
     }).catch(function (error) {
-      dispatch({type: FETCH_ERROR, payload: error.message});
-      console.log("Error****:", error.message);
+      dispatch({type: FETCH_ERROR, payload: error.response.data.message});
+      console.log("Error****:", error.response.data.message);
     });
   }
 };
@@ -94,28 +95,9 @@ export const userSignOut = () => {
     dispatch({type: FETCH_START});
     setTimeout(() => {
       localStorage.removeItem("token");
+      localStorage.removeItem("user");
       dispatch({type: FETCH_SUCCESS});
       dispatch({type: SIGNOUT_USER_SUCCESS});
     }, 2000);
   }
-};
-
-export const getAllFaktorParameterTable = ({page, token}) => {
-    return (dispatch) => {
-        dispatch({type: FETCH_START});
-        axios.get('api/parameter-faktor-table?page=1',{
-            headers: {
-                Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDAyLCJ1c2VybmFtZSI6InMwNTgxIiwicGFzc3dvcmQiOiIkMmEkMTAkbHZ5cHJSOUV4Y1V0S0Q0bjhZc0ZydXFuTjQyY0hSSy5JSGMvTnljNEx3OUpxTzNUcEJ3QUsiLCJ1c2VyX3JlYWxfbmFtZSI6IlRFRERZIFRSSSBBR1VORyBSIiwidXNlcl9lbWFpbCI6InRlZGR5LnRyaS5hZ3VuZ0BiamJzLmNvLmlkIiwidXNlcl9waG9uZV9udW1iZXIiOiIwODExMTExMTMyNiIsImlzX2FjdGl2ZSI6MSwia3RwIjoiMzI3MzEzMTQwNzg5MDAwMSIsIm5pcCI6IjEzLjg5LjA1MjQiLCJqYWJhdGFuIjoiU3RhZiBEaXZpc2kgUGVtYmlheWFhbiBLb25zdW1lciIsImJyYW5jaF9uYW1lIjoiS0FOVE9SIFBVU0FUIEJKQiBTWUFSSUFIIiwiYnJhbmNoX2NvZGUiOiIwMDAiLCJicmFuY2hfYWRkcmVzcyI6IkpMLiBCUkFHQSBOTy4gMTM1Iiwia29kZV93aWxheWFoIjoiMzI3MyIsImZvdG8iOm51bGwsImlhdCI6MTU4NjU5OTIxMywiZXhwIjoxNTg3NDk5MjEzfQ._zy8Dtjm12oYFcvcbUOJo5VnEdSQ4FcY0Siy6mTSfNQ"
-            }
-        }).then(({data}) => {
-            if (data.data){
-                dispatch({type: GET_ALL_PARAMETER_FAKTOR_TABLE, payload: data.data.rows});
-            } else {
-                dispatch({type: FETCH_ERROR, payload: data.error});
-            }
-        }).catch(function (error) {
-            dispatch({type: FETCH_ERROR, payload: error.message});
-            console.log("Error****:", error.message);
-        });
-    }
 };

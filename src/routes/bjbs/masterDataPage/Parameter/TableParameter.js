@@ -8,55 +8,43 @@ import {SearchOutlined} from "@ant-design/icons";
 import SaveParameter from "./SaveParameter";
 import EditParameter from "./EditParameter";
 
-const data = [{
-    name: 'Risiko Kredit',
-    risk_id: 'Risk Probability ( P )',
-    bobot: '50',
-    level: '1',
-    id: 'BJBS001',
-},{
-    name: 'Risiko Pasar',
-    risk_id: 'Likelyhood Justification',
-    bobot: '75',
-    level: '1',
-    id: 'BJBS002',
-},{
-    name: 'Risiko Likuiditas',
-    risk_id: 'Cost ( L )',
-    bobot: '90',
-    level: '2',
-    id: 'BJBS003',
-},{
-    name: 'Risiko Operasional',
-    risk_id: 'Likelyhood Cost Justification',
-    bobot: '30',
-    level: '1',
-    id: 'BJBS004',
-},{
-    name: 'Risiko Reputasi',
-    risk_id: 'Risk Exposure ( R )',
-    bobot: '100',
-    level: '2',
-    id: 'BJBS005',
-}];
+import {connect} from "react-redux";
+import {getAllFaktorParameterTable, getFaktorParameter} from "./../../../../appRedux/actions/Tabledata";
+import {Redirect} from 'react-router-dom';
 
 class TableParameter extends React.PureComponent{
     constructor(props) {
         super(props);
+        this.handleProp=this.handleProp.bind(this);
         this.state = {
+            paging: null,
             sortedInfo: null,
-            datatable: data,
-            warning : false,
+            warning: false,
             searchText: '',
             searchedColumn: '',
-            addbutton : false,
-            editbutton : false,
-            eid : "",
-            erisk : "",
-            eparam : "",
-            ebobot : "",
-            elevel : ""
+            addbutton: false,
+            editbutton: false,
+            eid: "",
+            fetchdata: [],
+            datatable: [],
+            test:false,
         }
+
+    }
+
+    componentDidMount(){
+        this.props.getAllFaktorParameterTable({page:this.state.paging, token:this.props.token});
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.handleProp(nextProps);
+    }
+    handleProp(props) {
+        this.props.getAllFaktorParameterTable({page:this.state.paging, token:this.props.token});
+        this.setState({
+            datatable : props.getallparameterfaktortable
+        });
+        return props.getallparameterfaktortable;
     }
 
     handleChange = (pagination, filters, sorter) => {
@@ -84,7 +72,7 @@ class TableParameter extends React.PureComponent{
                 <Button
                     type="primary"
                     onClick={() => this.handleSearch(selectedKeys, confirm, dataIndex)}
-                    icon={<SearchOutlined/>}
+                    icon={'<SearchOutlined/>'}
                     size="small"
                     style={{width:90, marginRight:8}}
                 >Search</Button>
@@ -159,8 +147,20 @@ class TableParameter extends React.PureComponent{
         })
     }
 
+    clickEditSuccessButton = () => {
+        // this.props.getAllFaktorParameterTable({page:this.state.paging, token:this.props.token});
+        this.setState({
+            editbutton: false,
+            test: true,
+        });
+        NotificationManager.success("Data has updated.", "Success !!");
+    }
+
     render() {
         let {sortedInfo} = this.state;
+        const {warning, addbutton, editbutton, eid, fetchdata, datatable, test} = this.state;
+        const {getallparameterfaktortable, location} = this.props;
+        // console.log('ini parameters :: ', getallparameterfaktortable);
         sortedInfo = sortedInfo || {};
         const columns = [{
             title: 'Risk ID',
@@ -174,6 +174,7 @@ class TableParameter extends React.PureComponent{
             dataIndex: 'name',
             key: 'name',
             ...this.getColumnSearchProps('name'),
+            width : '500px',
             sorter: (a, b) => a.name.localeCompare(b.name),
             sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order,
         }, {
@@ -191,14 +192,18 @@ class TableParameter extends React.PureComponent{
             key: 'id',
             render: (text, record) => (
                 <span>
-                    <span className="gx-link" onClick={()=>{
+                    <span className="gx-link" onClick={() => {
                         this.setState({
-                            editbutton: true,
                             eid : text.id,
-                            erisk : text.risk_id,
-                            eparam : text.name,
-                            ebobot : text.bobot,
-                            elevel : text.level
+                            editbutton: true,
+                            fetchdata : [{
+                                id : text.id,
+                                risk_id : text.risk_id,
+                                name : text.name,
+                                bobot : text.bobot,
+                                level : text.level,
+                                penomoran : text.penomoran
+                            }]
                         })
                     }}>Edit</span>
                     <Divider type="vertical"/>
@@ -208,21 +213,23 @@ class TableParameter extends React.PureComponent{
                 </span>
             ),
         }];
-        const {datatable, warning, addbutton, editbutton, eid, erisk, eparam, ebobot, elevel} = this.state;
+
         return (
             <Card title={addbutton ? "Add New Data" : editbutton ? "Edit Data : "+eid : "Read Table Parameter"}>
                 {
+                    /*test ? <Redirect to={{
+                            pathname: '/bjbs/masterdata/parameter'
+                        }}/> :*/
                     addbutton ?
                         <SaveParameter clickCancelAddButton={this.clickCancelAddButton}/> :
                     editbutton ?
-                        <EditParameter clickCancelEditButton={this.clickCancelEditButton}
-                           eid={eid} erisk={erisk} eparam={eparam} ebobot={ebobot} elevel={elevel}
+                        <EditParameter clickCancelEditButton={this.clickCancelEditButton} clickEditSuccessButton={this.clickEditSuccessButton} fetchdata={fetchdata}
                         /> :
                     <>
                         <div className="table-operations">
                             <Button className="ant-btn ant-btn-primary" onClick={this.clickAddButton}>Add</Button>
                         </div>
-                        <Table className="gx-table-responsive" columns={columns} dataSource={datatable} onChange={this.handleChange}/>
+                        <Table className="gx-table-responsive" columns={columns} dataSource={datatable} onChange={this.handleChange} rowKey="id"/>
                         <SweetAlert show={warning}
                                     warning
                                     showCancel
@@ -243,4 +250,10 @@ class TableParameter extends React.PureComponent{
     }
 }
 
-export default TableParameter;
+const mapStateToProps = ({auth, tabledata}) => {
+    const {token} = auth;
+    const {getallparameterfaktortable,getparameterfaktor} = tabledata;
+    return {getallparameterfaktortable,getparameterfaktor,token}
+};
+
+export default connect(mapStateToProps, {getAllFaktorParameterTable})(TableParameter);

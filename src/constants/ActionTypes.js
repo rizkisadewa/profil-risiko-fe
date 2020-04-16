@@ -33,4 +33,6 @@ export const USER_TOKEN_SET = 'user_token_set';
 
 //Table const
 export const GET_ALL_PARAMETER_FAKTOR_TABLE = [];
+export const GET_PARAMETER_FAKTOR = [];
+export const PUT_PARAMETER_FAKTOR = [];
 
