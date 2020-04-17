@@ -1,17 +1,13 @@
 import React from "react";
 import {Button, Input, Form, Select, InputNumber} from "antd";
-import {data} from "./../JenisRisiko/TableJenisRisiko";
 import connect from "react-redux/es/connect/connect";
 import IntlMessages from "util/IntlMessages";
-import {updateFaktorParameter} from "../../../../appRedux/actions";
-import {Redirect} from "react-router-dom";
+import {updateFaktorParameter, getAllRisks, jenisNilaiParam} from "../../../../appRedux/actions";
 import SweetAlerts from "react-bootstrap-sweetalert";
-import {NotificationManager} from "react-notifications";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-const options = data;
 const optionsLevel = [
     {label:"Level Pertama (1)", value:1},
     {label:"Level Kedua (2)", value:2}
@@ -20,13 +16,30 @@ const optionsLevel = [
 class EditFaktor extends React.PureComponent{
     constructor(props) {
         super(props);
+        this.handleProp=this.handleProp.bind(this);
         this.state = {
-            dataoptions : options,
+            dataoptions : [],
             dataoptionslevel : optionsLevel,
             ewarning: false,
+            basic: false,
             datavalue:[]
         }
     }
+
+    componentDidMount(){
+        this.props.getAllRisks({token:this.props.token});
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.handleProp(nextProps);
+    }
+    handleProp(props) {
+        this.setState({
+            dataoptions : props.getallrisks
+        });
+        return (props.getallrisks);
+    }
+
 
     render() {
         const formItemLayout = {
@@ -40,7 +53,7 @@ class EditFaktor extends React.PureComponent{
             },
         };
 
-        const {dataoptions, dataoptionslevel, ewarning, datavalue} = this.state;
+        const {dataoptions, dataoptionslevel, ewarning, datavalue, basic} = this.state;
         const {fetchdata, token, putparameterfaktor} = this.props;
         const {getFieldDecorator} = this.props.form;
         return (
@@ -66,7 +79,7 @@ class EditFaktor extends React.PureComponent{
                                             required: true, message: 'Please input id field.',
                                         }],
                                     })(
-                                        <Input id="id" type="hidden" placeholder="Input Penomoran"/>
+                                        <Input id="id" type="hidden" placeholder="Input Id"/>
                                     )}
                                 </FormItem>
 
@@ -85,7 +98,7 @@ class EditFaktor extends React.PureComponent{
                                         >
                                             {
                                                 dataoptions.map((prop, index) => {
-                                                    var value = prop.action;
+                                                    var value = prop.id;
                                                     var label = prop.nama;
                                                     return (
                                                         <Option key={index} value={value}>{label}</Option>
@@ -103,7 +116,7 @@ class EditFaktor extends React.PureComponent{
                                             required: true, message: 'Please input penomoran field.',
                                         }],
                                     })(
-                                        <Input id="penomoran" placeholder="Input Penomoran"/>
+                                        <Input id="penomoran" placeholder="Input Penomoran" maxLength={2}/>
                                     )}
                                 </FormItem>
 
@@ -130,7 +143,7 @@ class EditFaktor extends React.PureComponent{
                                                 placeholder="Select level"
                                                 optionFilterProp="children"
                                                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                                                required>
+                                        >
                                             {
                                                 dataoptionslevel.map((prop, index) => {
                                                     var value = prop.value;
@@ -149,12 +162,20 @@ class EditFaktor extends React.PureComponent{
                                         initialValue:prop.bobot,
                                         rules: [{
                                             required: true, message: 'Please input bobot field.',
-                                        }],
+                                        },{type:"number", message: 'Input must be number type.'}],
                                     })(
                                         <InputNumber id="bobot" placeholder="Input Bobot"
                                                      className="w-100"
                                                      min={0}
                                                      max={100}
+                                                     onKeyUp={(e, value)=> {
+                                                         var val = parseInt(e.target.value);
+                                                         if (val>100 || val<0){
+                                                             this.setState({
+                                                                 basic: true,
+                                                             })
+                                                         }
+                                                     }}
                                                      formatter={value => `${value}%`}
                                                      parser={value => value.replace('%', '')}
                                         />
@@ -182,27 +203,35 @@ class EditFaktor extends React.PureComponent{
                     <Button type="primary" htmlType="submit">Save</Button>
                 </FormItem>
                 <SweetAlerts show={ewarning}
-                            warning
-                            showCancel
-                            confirmBtnText={'Yes, updated it!'}
-                            confirmBtnBsStyle="danger"
-                            cancelBtnBsStyle="default"
-                            title={<IntlMessages id="sweetAlerts.areYouSure"/>}
-                            onConfirm={()=>{
-                                this.setState({
-                                    ewarning: false
-                                });
-                                this.props.updateFaktorParameter(datavalue);
-                                this.props.clickEditSuccessButton();
-                            }}
-                            onCancel={() => {
-                                this.setState({
-                                    ewarning: false
-                                })
-                            }}
+                             warning
+                             showCancel
+                             confirmBtnText={'Yes, updated it!'}
+                             confirmBtnBsStyle="danger"
+                             cancelBtnBsStyle="default"
+                             title={<IntlMessages id="sweetAlerts.areYouSure"/>}
+                             onConfirm={()=>{
+                                 this.setState({
+                                     ewarning: false
+                                 });
+                                 this.props.updateFaktorParameter(datavalue);
+                                 this.props.clickEditSuccessButton();
+                             }}
+                             onCancel={() => {
+                                 this.setState({
+                                     ewarning: false
+                                 })
+                             }}
                 >
                     <IntlMessages id="sweetAlerts.youWillNotAble"/>
                 </SweetAlerts>
+                <SweetAlerts show={basic}
+                             customClass="gx-sweet-alert-top-space"
+                             title={"Input must be 0-100 %"}
+                             onConfirm={()=>{
+                                 this.setState({
+                                     basic: false,
+                                 })
+                             }}/>
             </Form>
         );
     }
@@ -213,7 +242,8 @@ const WrapperdEditFaktor = Form.create()(EditFaktor);
 
 const mapStateToProps = ({auth,tabledata}) => {
     const {token} = auth;
-    return {token}
+    const {getallrisks,jenisnilaiparam} = tabledata;
+    return {token, getallrisks, jenisnilaiparam}
 };
 
-export default connect(mapStateToProps, {updateFaktorParameter})(WrapperdEditFaktor);
+export default connect(mapStateToProps, {updateFaktorParameter, getAllRisks, jenisNilaiParam})(WrapperdEditFaktor);

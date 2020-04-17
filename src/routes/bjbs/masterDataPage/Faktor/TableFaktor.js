@@ -9,7 +9,7 @@ import SaveFaktor from "./SaveFaktor";
 import EditFaktor from "./EditFaktor";
 
 import {connect} from "react-redux";
-import {getAllFaktorParameterTable, getFaktorParameter} from "./../../../../appRedux/actions/Tabledata";
+import {getAllFaktorParameterTable, getFaktorParameter, deleteFaktorParameter} from "./../../../../appRedux/actions/Tabledata";
 import {Redirect} from 'react-router-dom';
 
 class TableFaktor extends React.PureComponent{
@@ -156,10 +156,19 @@ class TableFaktor extends React.PureComponent{
         NotificationManager.success("Data has updated.", "Success !!");
     }
 
+    clickAddSuccessButton = () => {
+        // this.props.getAllFaktorParameterTable({page:this.state.paging, token:this.props.token});
+        this.setState({
+            addbutton: false,
+            test: true,
+        });
+        NotificationManager.success("Data has saved.", "Success !! ");
+    }
+
     render() {
         let {sortedInfo} = this.state;
         const {warning, addbutton, editbutton, eid, fetchdata, datatable, test} = this.state;
-        const {getallparameterfaktortable, location} = this.props;
+        const {getallparameterfaktortable} = this.props;
         // console.log('ini parameters :: ', getallparameterfaktortable);
         sortedInfo = sortedInfo || {};
         const columns = [{
@@ -198,7 +207,7 @@ class TableFaktor extends React.PureComponent{
                             editbutton: true,
                             fetchdata : [{
                                 id : text.id,
-                                risk_id : text.risk_id,
+                                risk_id : parseInt(text.risk_id),
                                 name : text.name,
                                 bobot : text.bobot,
                                 level : text.level,
@@ -209,6 +218,7 @@ class TableFaktor extends React.PureComponent{
                     <Divider type="vertical"/>
                     <span className="gx-link" onClick={() => {
                         this.setState({warning: true})
+                        this.props.deleteFaktorParameter({id:text.id, token:this.props.token});
                     }}>Delete</span>
                 </span>
             ),
@@ -221,7 +231,7 @@ class TableFaktor extends React.PureComponent{
                             pathname: '/bjbs/masterdata/parameter'
                         }}/> :*/
                     addbutton ?
-                        <SaveFaktor clickCancelAddButton={this.clickCancelAddButton}/> :
+                        <SaveFaktor clickCancelAddButton={this.clickCancelAddButton} clickAddSuccessButton={this.clickAddSuccessButton}/> :
                         editbutton ?
                             <EditFaktor clickCancelEditButton={this.clickCancelEditButton} clickEditSuccessButton={this.clickEditSuccessButton} fetchdata={fetchdata}
                             /> :
@@ -256,4 +266,4 @@ const mapStateToProps = ({auth, tabledata}) => {
     return {getallparameterfaktortable,getparameterfaktor,token}
 };
 
-export default connect(mapStateToProps, {getAllFaktorParameterTable})(TableFaktor);
+export default connect(mapStateToProps, {getAllFaktorParameterTable, deleteFaktorParameter})(TableFaktor);

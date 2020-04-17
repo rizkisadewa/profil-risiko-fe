@@ -35,4 +35,9 @@ export const USER_TOKEN_SET = 'user_token_set';
 export const GET_ALL_PARAMETER_FAKTOR_TABLE = [];
 export const GET_PARAMETER_FAKTOR = [];
 export const PUT_PARAMETER_FAKTOR = [];
+export const POST_PARAMETER_FAKTOR = [];
+export const DELETE_PARAMETER_FAKTOR = [];
+export const GET_ALL_RISKS = [];
+export const STATUS_POST_PARAMETER_FAKTOR = 'status_post_parameter_faktor';
+export const JENIS_NILAI_PARAM = [];
 

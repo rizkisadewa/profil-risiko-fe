@@ -5,60 +5,63 @@ import {Divider, Button, Card, Table, Input} from "antd";
 import IntlMessages from "util/IntlMessages";
 import Highlighter from "react-highlight-words";
 import {SearchOutlined} from "@ant-design/icons";
+import {getAllRisks} from "../../../../appRedux/actions";
+import connect from "react-redux/es/connect/connect";
 
 import SaveJenisRisiko from "./SaveJenisRisiko";
 import EditJenisRisiko from "./EditJenisRisiko";
 
 const data = [{
     nama: 'Risiko Kredit',
-    ket: 'Risiko kredit merupakan risiko yang timbul akibat kegagalan counterparty memenuhi kewajibannya.',
-    created: '2020-04-08 12:10.00',
-    action: 'BJBS001',
+    keterangan: 'Risiko kredit merupakan risiko yang timbul akibat kegagalan counterparty memenuhi kewajibannya.',
+    created_at: '2020-04-08 12:10.00',
+    id: 'BJBS001',
 },{
     nama: 'Risiko Pasar',
-    ket: 'Risiko pasar merupakan risiko yang timbul karena adanya pergerakan variabel pasar dari portofolio bank yang dapat merugikan bank.',
-    created: '2020-04-08 11:22.00',
-    action: 'BJBS002',
+    keterangan: 'Risiko pasar merupakan risiko yang timbul karena adanya pergerakan variabel pasar dari portofolio bank yang dapat merugikan bank.',
+    created_at: '2020-04-08 11:22.00',
+    id: 'BJBS002',
 },{
     nama: 'Risiko Likuiditas',
-    ket: 'Risiko likuiditas merupakan risiko di mana pihak perbankan tidak mampu memenuhi kewajiban yang telah jatuh tempo. Risiko ini benar2 berbahaya dan bisa sangat merugikan para nasabahnya.',
-    created: '2020-04-08 08:22.00',
-    action: 'BJBS003',
+    keterangan: 'Risiko likuiditas merupakan risiko di mana pihak perbankan tidak mampu memenuhi kewajiban yang telah jatuh tempo. Risiko ini benar2 berbahaya dan bisa sangat merugikan para nasabahnya.',
+    created_at: '2020-04-08 08:22.00',
+    id: 'BJBS003',
 },{
     nama: 'Risiko Operasional',
-    ket: 'Risiko ini merupakan risiko yang antara lain disebabkan karena adanya ketidakcukupan dan atau tidak berfungsinya proses internal, kesalahan manusia, kegagalan sistem atau adanya problem eksternal yang mempengaruhi operasional bank.',
-    created: '2020-04-04 19:22.00',
-    action: 'BJBS004',
+    keterangan: 'Risiko ini merupakan risiko yang antara lain disebabkan karena adanya ketidakcukupan dan atau tidak berfungsinya proses internal, kesalahan manusia, kegagalan sistem atau adanya problem eksternal yang mempengaruhi operasional bank.',
+    created_at: '2020-04-04 19:22.00',
+    id: 'BJBS004',
 },{
     nama: 'Risiko Hukum',
-    ket: 'Risiko ini disebabkan oleh adanya kelemahan aspek yuridis. Kelemahan yuridis yang dimaksud antara lain disebabkan karena adanya tuntutan hukum, ketiadaan peraturan perundang-udangan yang mendukung atau kelemahan perikatan, seperti tidak dipenuhi syarat sahnya kontrak.',
-    created: '2020-04-03 19:22.00',
-    action: 'BJBS005',
+    keterangan: 'Risiko ini disebabkan oleh adanya kelemahan aspek yuridis. Kelemahan yuridis yang dimaksud antara lain disebabkan karena adanya tuntutan hukum, ketiadaan peraturan perundang-udangan yang mendukung atau kelemahan perikatan, seperti tidak dipenuhi syarat sahnya kontrak.',
+    created_at: '2020-04-03 19:22.00',
+    id: 'BJBS005',
 },{
     nama: 'Risiko Reputasi',
-    ket: 'Risiko ini disebabkan antara lain karena adanya publikasi negatif yang terkait dengan kegiatan usaha bank atau persepsi negatif terhadap bank.',
-    created: '2020-04-03 19:22.00',
-    action: 'BJBS006',
+    keterangan: 'Risiko ini disebabkan antara lain karena adanya publikasi negatif yang terkait dengan kegiatan usaha bank atau persepsi negatif terhadap bank.',
+    created_at: '2020-04-03 19:22.00',
+    id: 'BJBS006',
 },{
     nama: 'Risiko Strategik',
-    ket: 'Risiko ini antara lain disebabkan karena penetapan dan pelaksanaan strategi bank yang tidak tepat, pengambilan keputusan bisnis yang tidak tepat, atau kurang responnya bank terhadap perubahan eksternal.',
-    created: '2020-04-01 19:22.00',
-    action: 'BJBS007',
+    keterangan: 'Risiko ini antara lain disebabkan karena penetapan dan pelaksanaan strategi bank yang tidak tepat, pengambilan keputusan bisnis yang tidak tepat, atau kurang responnya bank terhadap perubahan eksternal.',
+    created_at: '2020-04-01 19:22.00',
+    id: 'BJBS007',
 },{
     nama: 'Risiko Kepatuhan',
-    ket: 'Risiko ini disebabkan karena bank tidak mematuhi atau tidak melaksanakan peraturan perundang-udangan dan ketentuan lain yang berlaku.',
-    created: '2020-04-10 19:22.00',
-    action: 'BJBS008',
+    keterangan: 'Risiko ini disebabkan karena bank tidak mematuhi atau tidak melaksanakan peraturan perundang-udangan dan ketentuan lain yang berlaku.',
+    created_at: '2020-04-10 19:22.00',
+    id: 'BJBS008',
 }];
 
 class TableJenisRisiko extends React.PureComponent {
     constructor(props) {
         super(props);
+        this.handleProp=this.handleProp.bind(this);
         this.state = {
             //filteredInfo: null,
             sortedInfo: null,
             warning: false,
-            datatable: data,
+            datatable: [],
             searchText: '',
             searchedColumn: '',
             addbutton : false,
@@ -67,6 +70,20 @@ class TableJenisRisiko extends React.PureComponent {
             enama : "",
             eket : ""
         };
+    }
+
+    componentDidMount(){
+        this.props.getAllRisks({token:this.props.token});
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.handleProp(nextProps);
+    }
+    handleProp(props) {
+        this.setState({
+            datatable : props.getallrisks
+        });
+        return props.getallrisks;
     }
 
     getColumnSearchProps = dataIndex => ({
@@ -188,28 +205,28 @@ class TableJenisRisiko extends React.PureComponent {
             sortOrder: sortedInfo.columnKey === 'nama' && sortedInfo.order,
         }, {
             title: 'Keterangan',
-            dataIndex: 'ket',
-            key: 'ket',
+            dataIndex: 'keterangan',
+            key: 'keterangan',
             width : '500px',
-            sorter: (a, b) => a.ket.localeCompare(b.ket),
-            sortOrder: sortedInfo.columnKey === 'ket' && sortedInfo.order,
+            sorter: (a, b) => a.keterangan.localeCompare(b.keterangan),
+            sortOrder: sortedInfo.columnKey === 'keterangan' && sortedInfo.order,
         }, {
             title: 'Created at',
-            dataIndex: 'created',
-            key: 'created',
-            sorter: (a, b) => Date.parse(a.created) - Date.parse(b.created),
-            sortOrder: sortedInfo.columnKey === 'created' && sortedInfo.order,
+            dataIndex: 'created_at',
+            key: 'created_at',
+            sorter: (a, b) => Date.parse(a.created_at) - Date.parse(b.created_at),
+            sortOrder: sortedInfo.columnKey === 'created_at' && sortedInfo.order,
         }, {
             title: 'Action',
-            key: 'action',
+            key: 'id',
             render: (text, record) => (
                 <span>
                     <span className="gx-link" onClick={()=>{
                         this.setState({
                             editbutton: true,
-                            eid : text.action,
+                            eid : text.id,
                             enama : text.nama,
-                            eket : text.ket,
+                            eket : text.keterangan,
                         })
                     }}>Edit</span>
                     <Divider type="vertical"/>
@@ -252,5 +269,12 @@ class TableJenisRisiko extends React.PureComponent {
     }
 }
 
-export default TableJenisRisiko;
+
+const mapStateToProps = ({auth,tabledata}) => {
+    const {token} = auth;
+    const {getallrisks} = tabledata;
+    return {token, getallrisks}
+};
+
+export default connect(mapStateToProps, {getAllRisks})(TableJenisRisiko);
 export {data};
