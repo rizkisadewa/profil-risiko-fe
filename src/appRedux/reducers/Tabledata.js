@@ -6,6 +6,9 @@ import {
     STATUS_POST_PARAMETER_FAKTOR,
     DELETE_PARAMETER_FAKTOR,
     GET_ALL_RISKS,
+    POST_ALL_RISKS,
+    PUT_ALL_RISKS,
+    DELETE_ALL_RISKS,
     JENIS_NILAI_PARAM
 } from "../../constants/ActionTypes";
 
@@ -16,6 +19,9 @@ const initialTable = {
     deleteparameterfaktor: POST_PARAMETER_FAKTOR,
     statuspostparameterfaktor: STATUS_POST_PARAMETER_FAKTOR,
     getallrisks: GET_ALL_RISKS,
+    putallrisks: PUT_ALL_RISKS,
+    postallrisks: POST_ALL_RISKS,
+    deleteallrisks: DELETE_ALL_RISKS,
     jenisnilaiparam: JENIS_NILAI_PARAM
 };
 
@@ -51,12 +57,6 @@ const tabledata = (state = initialTable, action) => {
                 statuspostparameterfaktor: action.payload,
             };
         }
-        case GET_ALL_RISKS: {
-            return {
-                ...state,
-                getallrisks: action.payload,
-            };
-        }
         case JENIS_NILAI_PARAM: {
             return {
                 ...state,
@@ -67,6 +67,30 @@ const tabledata = (state = initialTable, action) => {
             return {
                 ...state,
                 deleteparameterfaktor: action.payload,
+            };
+        }
+        case GET_ALL_RISKS: {
+            return {
+                ...state,
+                getallrisks: action.payload,
+            };
+        }
+        case POST_ALL_RISKS: {
+            return {
+                ...state,
+                postallrisks: action.payload,
+            };
+        }
+        case PUT_ALL_RISKS: {
+            return {
+                ...state,
+                putallrisks: action.payload,
+            };
+        }
+        case DELETE_ALL_RISKS: {
+            return {
+                ...state,
+                deleteallrisks: action.payload,
             };
         }
         default:

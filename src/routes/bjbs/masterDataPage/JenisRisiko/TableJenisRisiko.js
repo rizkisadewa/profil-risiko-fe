@@ -5,53 +5,12 @@ import {Divider, Button, Card, Table, Input} from "antd";
 import IntlMessages from "util/IntlMessages";
 import Highlighter from "react-highlight-words";
 import {SearchOutlined} from "@ant-design/icons";
-import {getAllRisks} from "../../../../appRedux/actions";
+import {getAllRisks, deleteRisk} from "../../../../appRedux/actions";
 import connect from "react-redux/es/connect/connect";
 
 import SaveJenisRisiko from "./SaveJenisRisiko";
 import EditJenisRisiko from "./EditJenisRisiko";
-
-const data = [{
-    nama: 'Risiko Kredit',
-    keterangan: 'Risiko kredit merupakan risiko yang timbul akibat kegagalan counterparty memenuhi kewajibannya.',
-    created_at: '2020-04-08 12:10.00',
-    id: 'BJBS001',
-},{
-    nama: 'Risiko Pasar',
-    keterangan: 'Risiko pasar merupakan risiko yang timbul karena adanya pergerakan variabel pasar dari portofolio bank yang dapat merugikan bank.',
-    created_at: '2020-04-08 11:22.00',
-    id: 'BJBS002',
-},{
-    nama: 'Risiko Likuiditas',
-    keterangan: 'Risiko likuiditas merupakan risiko di mana pihak perbankan tidak mampu memenuhi kewajiban yang telah jatuh tempo. Risiko ini benar2 berbahaya dan bisa sangat merugikan para nasabahnya.',
-    created_at: '2020-04-08 08:22.00',
-    id: 'BJBS003',
-},{
-    nama: 'Risiko Operasional',
-    keterangan: 'Risiko ini merupakan risiko yang antara lain disebabkan karena adanya ketidakcukupan dan atau tidak berfungsinya proses internal, kesalahan manusia, kegagalan sistem atau adanya problem eksternal yang mempengaruhi operasional bank.',
-    created_at: '2020-04-04 19:22.00',
-    id: 'BJBS004',
-},{
-    nama: 'Risiko Hukum',
-    keterangan: 'Risiko ini disebabkan oleh adanya kelemahan aspek yuridis. Kelemahan yuridis yang dimaksud antara lain disebabkan karena adanya tuntutan hukum, ketiadaan peraturan perundang-udangan yang mendukung atau kelemahan perikatan, seperti tidak dipenuhi syarat sahnya kontrak.',
-    created_at: '2020-04-03 19:22.00',
-    id: 'BJBS005',
-},{
-    nama: 'Risiko Reputasi',
-    keterangan: 'Risiko ini disebabkan antara lain karena adanya publikasi negatif yang terkait dengan kegiatan usaha bank atau persepsi negatif terhadap bank.',
-    created_at: '2020-04-03 19:22.00',
-    id: 'BJBS006',
-},{
-    nama: 'Risiko Strategik',
-    keterangan: 'Risiko ini antara lain disebabkan karena penetapan dan pelaksanaan strategi bank yang tidak tepat, pengambilan keputusan bisnis yang tidak tepat, atau kurang responnya bank terhadap perubahan eksternal.',
-    created_at: '2020-04-01 19:22.00',
-    id: 'BJBS007',
-},{
-    nama: 'Risiko Kepatuhan',
-    keterangan: 'Risiko ini disebabkan karena bank tidak mematuhi atau tidak melaksanakan peraturan perundang-udangan dan ketentuan lain yang berlaku.',
-    created_at: '2020-04-10 19:22.00',
-    id: 'BJBS008',
-}];
+import EditParameter from "../Parameter/EditParameter";
 
 class TableJenisRisiko extends React.PureComponent {
     constructor(props) {
@@ -66,9 +25,8 @@ class TableJenisRisiko extends React.PureComponent {
             searchedColumn: '',
             addbutton : false,
             editbutton : false,
-            eid : "",
-            enama : "",
-            eket : ""
+            eid : "",fetchdata: [],
+            idvalue : '',
         };
     }
 
@@ -80,6 +38,7 @@ class TableJenisRisiko extends React.PureComponent {
         this.handleProp(nextProps);
     }
     handleProp(props) {
+        this.props.getAllRisks({token:this.props.token});
         this.setState({
             datatable : props.getallrisks
         });
@@ -148,12 +107,6 @@ class TableJenisRisiko extends React.PureComponent {
         });
     };
 
-    deleteFile = () => {
-        this.setState({
-            warning: false
-        });
-        NotificationManager.success("Data has deleted.", "Success !!");
-    };
     onCancelDelete = () => {
         this.setState({
             warning: false
@@ -186,8 +139,24 @@ class TableJenisRisiko extends React.PureComponent {
         })
     }
 
+    clickEditSuccessButton = () => {
+        this.setState({
+            editbutton: false,
+        });
+        NotificationManager.success("Data has updated.", "Success !!");
+    }
+
+    clickAddSuccessButton = () => {
+        this.setState({
+            addbutton: false,
+        });
+        NotificationManager.success("Data has saved.", "Success !! ");
+    }
+
     render() {
         let {sortedInfo, filteredInfo} = this.state;
+        const {warning, datatable, addbutton, editbutton, eid, fetchdata, idvalue} = this.state;
+        const {token} = this.props;
         sortedInfo = sortedInfo || {};
         filteredInfo = filteredInfo || {};
         const columns = [{
@@ -223,27 +192,34 @@ class TableJenisRisiko extends React.PureComponent {
                 <span>
                     <span className="gx-link" onClick={()=>{
                         this.setState({
-                            editbutton: true,
                             eid : text.id,
-                            enama : text.nama,
-                            eket : text.keterangan,
+                            editbutton: true,
+                            fetchdata : [{
+                                id : text.id,
+                                nama : text.nama,
+                                keterangan : text.keterangan,
+                                jenis : text.jenis,
+                            }]
                         })
                     }}>Edit</span>
                     <Divider type="vertical"/>
                     <span className="gx-link" onClick={() => {
-                        this.setState({warning: true})
+                        this.setState({
+                            warning: true,
+                            idvalue: text.id
+                        })
                     }}>Delete</span>
                 </span>
             ),
         }];
-        const {warning, datatable, addbutton, editbutton, eid, enama, eket} = this.state;
+
         return (
             <Card title={addbutton ? "Add New Data" : editbutton ? "Edit Data : "+eid : "Read Table Jenis Risiko"}>
                 {
                     addbutton ?
-                        <SaveJenisRisiko clickCancelAddButton={this.clickCancelAddButton}/> :
+                        <SaveJenisRisiko clickCancelAddButton={this.clickCancelAddButton} clickAddSuccessButton={this.clickAddSuccessButton}/> :
                     editbutton ?
-                        <EditJenisRisiko clickCancelEditButton={this.clickCancelEditButton} eid={eid} enama={enama} eket={eket}/> :
+                        <EditJenisRisiko clickCancelEditButton={this.clickCancelEditButton} clickEditSuccessButton={this.clickEditSuccessButton} fetchdata={fetchdata}/> :
                     <>
                         <div className="table-operations">
                             <Button className="ant-btn ant-btn-primary" onClick={this.clickAddButton}>Add</Button>
@@ -256,7 +232,13 @@ class TableJenisRisiko extends React.PureComponent {
                                     confirmBtnBsStyle="danger"
                                     cancelBtnBsStyle="default"
                                     title={<IntlMessages id="sweetAlerts.areYouSure"/>}
-                                    onConfirm={this.deleteFile}
+                                    onConfirm={() => {
+                                        this.setState({
+                                            warning: false
+                                        });
+                                        this.props.deleteRisk({id:idvalue, token:token});
+                                        NotificationManager.success("Data has deleted.", "Success !!");
+                                    }}
                                     onCancel={this.onCancelDelete}
                         >
                             <IntlMessages id="sweetAlerts.youWillNotAble"/>
@@ -276,5 +258,4 @@ const mapStateToProps = ({auth,tabledata}) => {
     return {token, getallrisks}
 };
 
-export default connect(mapStateToProps, {getAllRisks})(TableJenisRisiko);
-export {data};
+export default connect(mapStateToProps, {getAllRisks,deleteRisk})(TableJenisRisiko);

@@ -1,6 +1,5 @@
 import React from "react";
 import {Button, Input, Form, Select, InputNumber} from "antd";
-import {data} from "./../JenisRisiko/TableJenisRisiko";
 import connect from "react-redux/es/connect/connect";
 import {getAllRisks, postFaktorParameter} from "../../../../appRedux/actions";
 import SweetAlerts from "react-bootstrap-sweetalert";
@@ -8,7 +7,6 @@ import SweetAlerts from "react-bootstrap-sweetalert";
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-const options = data;
 const optionsLevel = [
     {label:"Level Pertama (1)", value:"1"},
     {label:"Level Kedua (2)", value:"2"}

@@ -28,6 +28,7 @@ class TableFaktor extends React.PureComponent{
             fetchdata: [],
             datatable: [],
             test:false,
+            idvalue : '',
         }
 
     }
@@ -117,12 +118,6 @@ class TableFaktor extends React.PureComponent{
         });
     };
 
-    deleteFile = () => {
-        this.setState({
-            warning: false
-        });
-        NotificationManager.success("Data has deleted.", "Success !!");
-    };
     onCancelDelete = () => {
         this.setState({
             warning: false
@@ -167,8 +162,8 @@ class TableFaktor extends React.PureComponent{
 
     render() {
         let {sortedInfo} = this.state;
-        const {warning, addbutton, editbutton, eid, fetchdata, datatable, test} = this.state;
-        const {getallparameterfaktortable} = this.props;
+        const {warning, addbutton, editbutton, eid, fetchdata, datatable, test, idvalue} = this.state;
+        const {getallparameterfaktortable, token} = this.props;
         // console.log('ini parameters :: ', getallparameterfaktortable);
         sortedInfo = sortedInfo || {};
         const columns = [{
@@ -217,8 +212,10 @@ class TableFaktor extends React.PureComponent{
                     }}>Edit</span>
                     <Divider type="vertical"/>
                     <span className="gx-link" onClick={() => {
-                        this.setState({warning: true})
-                        this.props.deleteFaktorParameter({id:text.id, token:this.props.token});
+                        this.setState({
+                            warning: true,
+                            idvalue : text.id
+                        })
                     }}>Delete</span>
                 </span>
             ),
@@ -247,7 +244,13 @@ class TableFaktor extends React.PureComponent{
                                             confirmBtnBsStyle="danger"
                                             cancelBtnBsStyle="default"
                                             title={<IntlMessages id="sweetAlerts.areYouSure"/>}
-                                            onConfirm={this.deleteFile}
+                                            onConfirm={() => {
+                                                this.setState({
+                                                    warning: false
+                                                });
+                                                this.props.deleteFaktorParameter({id:idvalue, token:token});
+                                                NotificationManager.success("Data has deleted.", "Success !!");
+                                            }}
                                             onCancel={this.onCancelDelete}
                                 >
                                     <IntlMessages id="sweetAlerts.youWillNotAble"/>
