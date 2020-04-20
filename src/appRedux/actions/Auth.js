@@ -65,7 +65,7 @@ export const userSignIn = ({username, password}) => {
       }
     }).catch(function (error) {
       dispatch({type: FETCH_ERROR, payload: error.response.data.message});
-      console.log("Error****:", error.response.data.message);
+      console.log("Error****:", error.message);
     });
   }
 };
