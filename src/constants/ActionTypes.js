@@ -4,9 +4,9 @@ export const WINDOW_WIDTH = 'WINDOW-WIDTH';
 export const SWITCH_LANGUAGE = 'SWITCH-LANGUAGE';
 
 //Contact Module const
-export const FETCH_START = 'fetch_start';
-export const FETCH_SUCCESS = 'fetch_success';
-export const FETCH_ERROR = 'fetch_error';
+export const FETCH_START = 'FETCH_START';
+export const FETCH_SUCCESS = 'FETCH_SUCCESS';
+export const FETCH_ERROR = 'FETCH_ERROR';
 export const SHOW_MESSAGE = 'SHOW_MESSAGE';
 export const HIDE_MESSAGE = 'HIDE_MESSAGE';
 export const ON_SHOW_LOADER = 'ON_SHOW_LOADER';
@@ -22,14 +22,14 @@ export const SIGNIN_FACEBOOK_USER_SUCCESS = 'SIGNIN_FACEBOOK_USER_SUCCESS';
 export const SIGNIN_TWITTER_USER = 'SIGNIN_TWITTER_USER';
 export const SIGNIN_TWITTER_USER_SUCCESS = 'SIGNIN_TWITTER_USER_SUCCESS';
 export const SIGNIN_GITHUB_USER = 'SIGNIN_GITHUB_USER';
-export const SIGNIN_GITHUB_USER_SUCCESS = 'signin_github_user_success';
+export const SIGNIN_GITHUB_USER_SUCCESS = 'SIGNIN_GITHUB_USER_SUCCESS';
 export const SIGNIN_USER = 'SIGNIN_USER';
 export const SIGNIN_USER_SUCCESS = 'SIGNIN_USER_SUCCESS';
 export const SIGNOUT_USER = 'SIGNOUT_USER';
 export const SIGNOUT_USER_SUCCESS = 'SIGNOUT_USER_SUCCESS';
 export const INIT_URL = 'INIT_URL';
-export const USER_DATA = 'user_data';
-export const USER_TOKEN_SET = 'user_token_set';
+export const USER_DATA = 'USER_DATA';
+export const USER_TOKEN_SET = 'USER_TOKEN_SET';
 
 //Table const
 export const GET_ALL_PARAMETER_FAKTOR_TABLE = [];
@@ -41,6 +41,6 @@ export const GET_ALL_RISKS = [];
 export const POST_ALL_RISKS = [];
 export const DELETE_ALL_RISKS = [];
 export const PUT_ALL_RISKS = [];
-export const STATUS_POST_PARAMETER_FAKTOR = 'status_post_parameter_faktor';
+export const STATUS_POST_PARAMETER_FAKTOR = 'STATUS_POST_PARAMETER_FAKTOR';
 export const JENIS_NILAI_PARAM = [];
 
