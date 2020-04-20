@@ -2,7 +2,8 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import URLSearchParams from 'url-search-params'
 import {Redirect, Route, Switch} from "react-router-dom";
-import {LocaleProvider} from "antd";
+// import {LocaleProvider} from "antd";
+import {ConfigProvider} from "antd";
 import {IntlProvider} from "react-intl";
 
 import AppLocale from "lngProvider";
@@ -120,7 +121,8 @@ class App extends Component {
 
     const currentAppLocale = AppLocale[locale.locale];
     return (
-      <LocaleProvider locale={currentAppLocale.antd}>
+      <ConfigProvider locale={currentAppLocale.antd}>
+      {/*<LocaleProvider locale={currentAppLocale.antd}>*/}
         <IntlProvider
           locale={currentAppLocale.locale}
           messages={currentAppLocale.messages}>
@@ -132,7 +134,8 @@ class App extends Component {
                              component={MainApp}/>
           </Switch>
         </IntlProvider>
-      </LocaleProvider>
+      {/*</LocaleProvider>*/}
+      </ConfigProvider>
     )
   }
 }

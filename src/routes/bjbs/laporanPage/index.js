@@ -4,11 +4,11 @@ import {Route, Switch} from "react-router-dom";
 import asyncComponent from "util/asyncComponent";
 
 const LaporanPage = ({match}) => (
-    <switch>
+    <Switch>
         <Route path={`${match.url}/laporanprofilrisikokeojk`} component={asyncComponent(() => import('./LaporanProfilRisikoKeOjk'))}/>
         <Route path={`${match.url}/laporanpertriwulan`} component={asyncComponent(() => import('./LaporanPerTriwulan'))}/>
         <Route path={`${match.url}/laporanakhirtahun`} component={asyncComponent(() => import('./LaporanAkhirTahun'))}/>
-    </switch>
+    </Switch>
 );
 
 export default LaporanPage;

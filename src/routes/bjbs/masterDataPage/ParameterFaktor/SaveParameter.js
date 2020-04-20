@@ -1,7 +1,7 @@
 import React from "react";
 import {Button, Input, Form, Select, InputNumber} from "antd";
 import connect from "react-redux/es/connect/connect";
-import {getAllRisks, postFaktorParameter} from "../../../../appRedux/actions";
+import {getAllRisks, postFaktorParameter, resetPostFaktorParameter} from "../../../../appRedux/actions";
 import SweetAlerts from "react-bootstrap-sweetalert";
 
 const FormItem = Form.Item;
@@ -12,14 +12,15 @@ const optionsLevel = [
     {label:"Level Kedua (2)", value:"2"}
 ];
 
-class SaveFaktor extends React.PureComponent{
+class SaveParameter extends React.PureComponent{
     constructor(props) {
         super(props);
-        this.handleProp=this.handleProp.bind(this);
+        // this.handleProp=this.handleProp.bind(this);
         this.state = {
             dataoptions : [],
             dataoptionslevel : optionsLevel,
             basic: false,
+            statuspost: ''
         }
     }
 
@@ -28,13 +29,16 @@ class SaveFaktor extends React.PureComponent{
     }
 
     componentWillReceiveProps(nextProps) {
-        this.handleProp(nextProps);
-    }
-    handleProp(props) {
+        // this.handleProp(nextProps);
         this.setState({
-            dataoptions : props.getallrisks
+            dataoptions : nextProps.getallrisks,
+            statuspost : nextProps.statuspostparameterfaktor,
         });
-        return (props.getallrisks);
+
+        if (nextProps.statuspostparameterfaktor === 201 || nextProps.statuspostparameterfaktor === 200){
+            this.props.clickAddSuccessButton(nextProps.statuspostparameterfaktor);
+            this.props.resetPostFaktorParameter();
+        }
     }
 
     render() {
@@ -50,7 +54,7 @@ class SaveFaktor extends React.PureComponent{
         };
 
         const {dataoptions, dataoptionslevel, basic} = this.state;
-        const {token, statuspostparameterfaktor} = this.props;
+        const {token} = this.props;
         const {getFieldDecorator} = this.props.form;
         return (
             <>
@@ -59,7 +63,6 @@ class SaveFaktor extends React.PureComponent{
                     this.props.form.validateFields((err, values) => {
                         if (!err) {
                             this.props.postFaktorParameter(values);
-                            this.props.clickAddSuccessButton();
                         }
                     });
                 }}>
@@ -173,13 +176,13 @@ class SaveFaktor extends React.PureComponent{
                     </FormItem>
 
                     <SweetAlerts show={basic}
-                                 customClass="gx-sweet-alert-top-space"
-                                 title={"Input must be 0-100 %"}
-                                 onConfirm={()=>{
-                                     this.setState({
-                                         basic: false,
-                                     })
-                                 }}/>
+                                customClass="gx-sweet-alert-top-space"
+                                title={"Input must be 0-100 %"}
+                                onConfirm={()=>{
+                                    this.setState({
+                                        basic: false,
+                                    })
+                                }}/>
                 </Form>
             </>
         );
@@ -187,7 +190,7 @@ class SaveFaktor extends React.PureComponent{
 
 }
 
-const WrappedSaveFaktor = Form.create()(SaveFaktor);
+const WrappedSaveParameter = Form.create()(SaveParameter);
 
 const mapStateToProps = ({auth, tabledata}) => {
     const {token} = auth;
@@ -195,4 +198,4 @@ const mapStateToProps = ({auth, tabledata}) => {
     return {statuspostparameterfaktor,token,getallrisks}
 };
 
-export default connect(mapStateToProps, {postFaktorParameter,getAllRisks})(WrappedSaveFaktor);
+export default connect(mapStateToProps, {postFaktorParameter,getAllRisks, resetPostFaktorParameter})(WrappedSaveParameter);

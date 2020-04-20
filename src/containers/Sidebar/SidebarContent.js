@@ -99,16 +99,10 @@ class SidebarContent extends Component {
                               <IntlMessages id="sidebar.masterdata.peringkatrisiko"/>
                           </Link>
                       </Menu.Item>
-                      <Menu.Item key="bjbs/masterdata/faktor">
-                          <Link to="/bjbs/masterdata/faktor">
+                      <Menu.Item key="bjbs/masterdata/parameter-faktor">
+                          <Link to="/bjbs/masterdata/parameter-faktor">
                               <i className="icon icon-badge"/>
-                              <IntlMessages id="sidebar.masterdata.faktor"/>
-                          </Link>
-                      </Menu.Item>
-                      <Menu.Item key="bjbs/masterdata/parameter">
-                          <Link to="/bjbs/masterdata/parameter">
-                              <i className="icon icon-listing-dbrd"/>
-                              <IntlMessages id="sidebar.masterdata.parameter"/>
+                              <IntlMessages id="sidebar.masterdata.parameterfaktor"/>
                           </Link>
                       </Menu.Item>
                   </SubMenu>

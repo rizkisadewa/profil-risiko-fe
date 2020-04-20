@@ -4,7 +4,7 @@ import {Route, Switch} from "react-router-dom";
 import asyncComponent from "util/asyncComponent";
 
 const KeperluanDataPage = ({match}) => (
-    <switch>
+    <Switch>
         <Route path={`${match.url}/debiturinti`} component={asyncComponent(() => import('./DebiturInti15'))}/>
         <Route path={`${match.url}/ayda`} component={asyncComponent(() => import('./Ayda'))}/>
         <Route path={`${match.url}/asetlukuid`} component={asyncComponent(() => import('./AsetLukuid'))}/>
@@ -25,7 +25,7 @@ const KeperluanDataPage = ({match}) => (
         {/*Keperluan Data 4*/}
         <Route path={`${match.url}/rbb`} component={asyncComponent(() => import('./Rbb'))}/>
         <Route path={`${match.url}/datafrekuensipelanggaran`} component={asyncComponent(() => import('./DataFrekuensiPelanggaran'))}/>
-    </switch>
+    </Switch>
 );
 
 export default KeperluanDataPage;

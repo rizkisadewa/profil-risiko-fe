@@ -9,20 +9,28 @@ import {
     POST_ALL_RISKS,
     PUT_ALL_RISKS,
     DELETE_ALL_RISKS,
-    JENIS_NILAI_PARAM
+    JENIS_NILAI_PARAM,
+    STATUS_ALL_PARAMETER_FAKTOR_TABLE,
+    STATUS_ALL_PARAMETER_FAKTOR,
+    COUNT_ALL_PARAMETER_FAKTOR,
+    STATUS_PUT_PARAMETER_FAKTOR
 } from "../../constants/ActionTypes";
 
 const initialTable = {
     getallparameterfaktortable: GET_ALL_PARAMETER_FAKTOR_TABLE,
     getparameterfaktor: GET_PARAMETER_FAKTOR,
     postparameterfaktor: POST_PARAMETER_FAKTOR,
-    deleteparameterfaktor: POST_PARAMETER_FAKTOR,
+    deleteparameterfaktor: DELETE_PARAMETER_FAKTOR,
     statuspostparameterfaktor: STATUS_POST_PARAMETER_FAKTOR,
     getallrisks: GET_ALL_RISKS,
     putallrisks: PUT_ALL_RISKS,
     postallrisks: POST_ALL_RISKS,
     deleteallrisks: DELETE_ALL_RISKS,
-    jenisnilaiparam: JENIS_NILAI_PARAM
+    jenisnilaiparam: JENIS_NILAI_PARAM,
+    statusallparameterfaktortable: STATUS_ALL_PARAMETER_FAKTOR_TABLE,
+    statusallparameterfaktor: STATUS_ALL_PARAMETER_FAKTOR,
+    countallparameterfaktor: COUNT_ALL_PARAMETER_FAKTOR,
+    statusputparameterfaktor : STATUS_PUT_PARAMETER_FAKTOR
 };
 
 const tabledata = (state = initialTable, action) => {
@@ -55,6 +63,12 @@ const tabledata = (state = initialTable, action) => {
             return {
                 ...state,
                 statuspostparameterfaktor: action.payload,
+            };
+        }
+         case STATUS_PUT_PARAMETER_FAKTOR: {
+            return {
+                ...state,
+                statusputparameterfaktor: action.payload,
             };
         }
         case JENIS_NILAI_PARAM: {
@@ -91,6 +105,24 @@ const tabledata = (state = initialTable, action) => {
             return {
                 ...state,
                 deleteallrisks: action.payload,
+            };
+        }
+        case STATUS_ALL_PARAMETER_FAKTOR_TABLE: {
+            return {
+                ...state,
+                statusallparameterfaktortable: action.payload,
+            };
+        }
+        case STATUS_ALL_PARAMETER_FAKTOR: {
+            return {
+                ...state,
+                statusallparameterfaktor: action.payload,
+            };
+        }
+        case COUNT_ALL_PARAMETER_FAKTOR: {
+            return {
+                ...state,
+                countallparameterfaktor: action.payload,
             };
         }
         default:

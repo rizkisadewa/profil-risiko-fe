@@ -10,7 +10,7 @@ import connect from "react-redux/es/connect/connect";
 
 import SaveJenisRisiko from "./SaveJenisRisiko";
 import EditJenisRisiko from "./EditJenisRisiko";
-import EditParameter from "../Parameter/EditParameter";
+import EditParameter from "../ParameterFaktor/EditParameter";
 
 class TableJenisRisiko extends React.PureComponent {
     constructor(props) {
@@ -62,7 +62,7 @@ class TableJenisRisiko extends React.PureComponent {
                 <Button
                     type="primary"
                     onClick={() => this.handleSearch(selectedKeys, confirm, dataIndex)}
-                    icon={<SearchOutlined/>}
+                    icon={'<SearchOutlined/>'}
                     size="small"
                     style={{width:90, marginRight:8}}
                 >Search</Button>
@@ -224,7 +224,7 @@ class TableJenisRisiko extends React.PureComponent {
                         <div className="table-operations">
                             <Button className="ant-btn ant-btn-primary" onClick={this.clickAddButton}>Add</Button>
                         </div>
-                        <Table className="gx-table-responsive" columns={columns} dataSource={datatable} onChange={this.handleChange}/>
+                        <Table className="gx-table-responsive" columns={columns} dataSource={datatable} onChange={this.handleChange} rowKey="id"/>
                         <SweetAlert show={warning}
                                     warning
                                     showCancel

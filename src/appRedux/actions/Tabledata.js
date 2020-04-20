@@ -10,7 +10,11 @@ import {FETCH_ERROR,
     DELETE_ALL_RISKS,
     POST_ALL_RISKS,
     PUT_ALL_RISKS,
-    JENIS_NILAI_PARAM
+    JENIS_NILAI_PARAM,
+    STATUS_ALL_PARAMETER_FAKTOR_TABLE,
+    STATUS_ALL_PARAMETER_FAKTOR,
+    STATUS_PUT_PARAMETER_FAKTOR,
+    COUNT_ALL_PARAMETER_FAKTOR
 } from "../../constants/ActionTypes";
 import axios from 'util/Api'
 
@@ -25,6 +29,28 @@ export const getAllFaktorParameterTable = ({page, token}) => {
         }).then(({data}) => {
             if (data.data){
                 dispatch({type: GET_ALL_PARAMETER_FAKTOR_TABLE, payload: data.data.rows});
+                dispatch({type: STATUS_ALL_PARAMETER_FAKTOR_TABLE, payload: data.statusCode});
+            } else {
+                dispatch({type: FETCH_ERROR, payload: data.error});
+            }
+        }).catch(function (error) {
+            dispatch({type: FETCH_ERROR, payload: error.message});
+            console.log("Error****:", error.message);
+        });
+    }
+};
+
+export const countAllFaktorParameter = ({token}) => {
+    return (dispatch) => {
+        dispatch({type: FETCH_START});
+        axios.get('api/parameter-faktor-table',{
+            headers: {
+                Authorization: "Bearer "+token
+            }
+        }).then(({data}) => {
+            if (data.data){
+                dispatch({type: COUNT_ALL_PARAMETER_FAKTOR, payload: data.data.rows.length});
+                dispatch({type: STATUS_ALL_PARAMETER_FAKTOR, payload: data.statusCode});
             } else {
                 dispatch({type: FETCH_ERROR, payload: data.error});
             }
@@ -78,6 +104,7 @@ export const updateFaktorParameter = ({id, risk_id, penomoran, name, level, bobo
         }).then(({data}) => {
             if (data.data){
                 dispatch({type: PUT_PARAMETER_FAKTOR, payload: data.data});
+                dispatch({type: STATUS_PUT_PARAMETER_FAKTOR, payload: data.statusCode});
             } else {
                 dispatch({type: FETCH_ERROR, payload: data.error});
             }
@@ -127,6 +154,18 @@ export const postFaktorParameter = ({risk_id, penomoran, name, level, bobot, tok
     }
 };
 
+export const resetPostFaktorParameter = () => {
+    return (dispatch) => {
+        dispatch({type: STATUS_POST_PARAMETER_FAKTOR, payload: 'STATUS_POST_PARAMETER_FAKTOR'});
+    }
+}
+
+export const resetPutFaktorParameter = () => {
+    return (dispatch) => {
+        dispatch({type: STATUS_PUT_PARAMETER_FAKTOR, payload: 'STATUS_PUT_PARAMETER_FAKTOR'});
+    }
+}
+
 export const deleteFaktorParameter = ({id,token}) => {
     return (dispatch) => {
         dispatch({type: FETCH_START});
@@ -135,8 +174,8 @@ export const deleteFaktorParameter = ({id,token}) => {
                 Authorization: "Bearer "+token
             }
         }).then(({data}) => {
-            if (data.data){
-                dispatch({type: DELETE_PARAMETER_FAKTOR, payload: data.data});
+            if (data.statusCode === 200){
+                dispatch({type: DELETE_PARAMETER_FAKTOR, payload: data.statusCode});
             } else {
                 dispatch({type: FETCH_ERROR, payload: data.error});
             }

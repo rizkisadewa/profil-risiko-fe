@@ -2,7 +2,7 @@ import React from "react";
 import {Button, Input, Form, Select, InputNumber} from "antd";
 import connect from "react-redux/es/connect/connect";
 import IntlMessages from "util/IntlMessages";
-import {updateFaktorParameter, getAllRisks, jenisNilaiParam} from "../../../../appRedux/actions";
+import {updateFaktorParameter, getAllRisks, jenisNilaiParam, resetPutFaktorParameter} from "../../../../appRedux/actions";
 import SweetAlerts from "react-bootstrap-sweetalert";
 
 const FormItem = Form.Item;
@@ -13,16 +13,17 @@ const optionsLevel = [
     {label:"Level Kedua (2)", value:2}
 ];
 
-class EditFaktor extends React.PureComponent{
+class EditParameter extends React.PureComponent{
     constructor(props) {
         super(props);
-        this.handleProp=this.handleProp.bind(this);
+        // this.handleProp=this.handleProp.bind(this);
         this.state = {
             dataoptions : [],
             dataoptionslevel : optionsLevel,
             ewarning: false,
             basic: false,
-            datavalue:[]
+            datavalue:[],
+            statusput:''
         }
     }
 
@@ -31,15 +32,17 @@ class EditFaktor extends React.PureComponent{
     }
 
     componentWillReceiveProps(nextProps) {
-        this.handleProp(nextProps);
-    }
-    handleProp(props) {
+        // this.handleProp(nextProps);
         this.setState({
-            dataoptions : props.getallrisks
+            dataoptions : nextProps.getallrisks,
+            statusput : nextProps.statusputparameterfaktor
         });
-        return (props.getallrisks);
-    }
 
+        if (nextProps.statusputparameterfaktor === 200 || nextProps.statusputparameterfaktor === 201){
+            this.props.clickEditSuccessButton(nextProps.statusputparameterfaktor);
+            this.props.resetPutFaktorParameter();
+        }
+    }
 
     render() {
         const formItemLayout = {
@@ -54,7 +57,7 @@ class EditFaktor extends React.PureComponent{
         };
 
         const {dataoptions, dataoptionslevel, ewarning, datavalue, basic} = this.state;
-        const {fetchdata, token, putparameterfaktor} = this.props;
+        const {fetchdata, token} = this.props;
         const {getFieldDecorator} = this.props.form;
         return (
             <Form onSubmit={(e)=>{
@@ -214,7 +217,6 @@ class EditFaktor extends React.PureComponent{
                                      ewarning: false
                                  });
                                  this.props.updateFaktorParameter(datavalue);
-                                 this.props.clickEditSuccessButton();
                              }}
                              onCancel={() => {
                                  this.setState({
@@ -238,12 +240,12 @@ class EditFaktor extends React.PureComponent{
 
 }
 
-const WrapperdEditFaktor = Form.create()(EditFaktor);
+const WrapperdEditParameter = Form.create()(EditParameter);
 
 const mapStateToProps = ({auth,tabledata}) => {
     const {token} = auth;
-    const {getallrisks,jenisnilaiparam} = tabledata;
-    return {token, getallrisks, jenisnilaiparam}
+    const {getallrisks,jenisnilaiparam,statusputparameterfaktor} = tabledata;
+    return {token, getallrisks, jenisnilaiparam,statusputparameterfaktor}
 };
 
-export default connect(mapStateToProps, {updateFaktorParameter, getAllRisks, jenisNilaiParam})(WrapperdEditFaktor);
+export default connect(mapStateToProps, {updateFaktorParameter, getAllRisks, jenisNilaiParam, resetPutFaktorParameter})(WrapperdEditParameter);

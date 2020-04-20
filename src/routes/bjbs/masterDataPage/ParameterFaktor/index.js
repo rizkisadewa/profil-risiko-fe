@@ -3,17 +3,17 @@ import {Col, Row} from "antd";
 
 import IntlMessages from "util/IntlMessages";
 
-import TableFaktor from "./TableFaktor";
+import TableParameter from "./TableParameter";
 
-const Faktor = () => {
+const Parameter = () => {
     return (
         <div>
-            <h2 className="title gx-mb-4"><IntlMessages id="sidebar.masterdata.faktor"/></h2>
+            <h2 className="title gx-mb-4"><IntlMessages id="sidebar.masterdata.parameterfaktor"/></h2>
 
             <div className="gx-d-flex justify-content-center">
                 <Row className={"w-100"}>
                     <Col span={24}>
-                        <TableFaktor/>
+                        <TableParameter/>
                     </Col>
                 </Row>
             </div>
@@ -22,4 +22,4 @@ const Faktor = () => {
     );
 };
 
-export default Faktor;
+export default Parameter;
