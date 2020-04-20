@@ -64,7 +64,7 @@ export const userSignIn = ({username, password}) => {
         dispatch({type: FETCH_ERROR, payload: data.error});
       }
     }).catch(function (error) {
-      dispatch({type: FETCH_ERROR, payload: error.response.data.message});
+      dispatch({type: FETCH_ERROR, payload: error.message});
       console.log("Error****:", error.message);
     });
   }
