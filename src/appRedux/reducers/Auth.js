@@ -2,7 +2,8 @@ import {
   INIT_URL, 
   SIGNOUT_USER_SUCCESS, 
   USER_DATA, 
-  USER_TOKEN_SET
+  USER_TOKEN_SET,
+  FETCH_ERROR
 } from "../../constants/ActionTypes";
 
 const INIT_STATE = {
