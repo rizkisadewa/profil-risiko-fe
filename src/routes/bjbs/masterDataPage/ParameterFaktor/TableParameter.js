@@ -9,8 +9,8 @@ import SaveParameter from "./SaveParameter";
 import EditParameter from "./EditParameter";
 
 import {connect} from "react-redux";
-import {getAllFaktorParameterTable, deleteFaktorParameter, countAllFaktorParameter} from "./../../../../appRedux/actions/Tabledata";
-import {Redirect} from 'react-router-dom';
+import {getAllFaktorParameterTable, deleteFaktorParameter, countAllFaktorParameter} from "../../../../appRedux/actions/Parameterfaktor";
+// import {Redirect} from 'react-router-dom';
 
 class TableParameter extends React.Component{
     constructor(props) {
@@ -86,6 +86,7 @@ class TableParameter extends React.Component{
     }*/
 
     handleChange = (pagination, filters, sorter) => {
+        this.onRefresh();
         console.log('Various parameters', pagination, filters, sorter);
         this.setState({
             // filteredInfo: filters,
@@ -228,8 +229,7 @@ class TableParameter extends React.Component{
     render() {
         let {sortedInfo} = this.state;
         const {warning, addbutton, editbutton, eid, fetchdata, datatable, test, idvalue, paging, loading, lengthdata} = this.state;
-        const {getallparameterfaktortable, token} = this.props;
-        // console.log('ini parameters :: ', getallparameterfaktortable);
+        const {token} = this.props;
         sortedInfo = sortedInfo || {};
         const columns = [{
             title: 'Risk ID',
@@ -340,9 +340,9 @@ class TableParameter extends React.Component{
     }
 }
 
-const mapStateToProps = ({auth, tabledata}) => {
+const mapStateToProps = ({auth, parameterfaktor}) => {
     const {token} = auth;
-    const {getallparameterfaktortable,getparameterfaktor,statusallparameterfaktortable,countallparameterfaktor,statusallparameterfaktor, deleteparameterfaktor} = tabledata;
+    const {getallparameterfaktortable,getparameterfaktor,statusallparameterfaktortable,countallparameterfaktor,statusallparameterfaktor, deleteparameterfaktor} = parameterfaktor;
     return {getallparameterfaktortable,getparameterfaktor,token,statusallparameterfaktortable,countallparameterfaktor,statusallparameterfaktor,deleteparameterfaktor}
 };
 

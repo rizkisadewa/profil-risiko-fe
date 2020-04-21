@@ -3,7 +3,8 @@ import {routerReducer} from "react-router-redux";
 import Settings from "./Settings";
 import Auth from "./Auth";
 import Common from "./Common";
-import Tabledata from "./Tabledata";
+import Parameterfaktor from "./Parameterfaktor";
+import Jenisrisiko from "./Jenisrisiko";
 
 
 const reducers = combineReducers({
@@ -11,7 +12,8 @@ const reducers = combineReducers({
   settings: Settings,
   auth: Auth,
   commonData: Common,
-  tabledata: Tabledata,
+  parameterfaktor: Parameterfaktor,
+  jenisrisiko: Jenisrisiko,
 });
 
 export default reducers;

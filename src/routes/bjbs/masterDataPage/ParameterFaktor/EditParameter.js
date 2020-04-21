@@ -252,9 +252,10 @@ class EditParameter extends React.PureComponent{
 
 const WrapperdEditParameter = Form.create()(EditParameter);
 
-const mapStateToProps = ({auth,tabledata}) => {
+const mapStateToProps = ({auth,parameterfaktor,jenisriko}) => {
     const {token} = auth;
-    const {getallrisks,jenisnilaiparam,statusputparameterfaktor,getparameterfaktor} = tabledata;
+    const {jenisnilaiparam,statusputparameterfaktor,getparameterfaktor} = parameterfaktor;
+    const {getallrisks} = jenisriko;
     return {token, getallrisks, jenisnilaiparam,statusputparameterfaktor,getparameterfaktor}
 };
 

@@ -1,8 +1,8 @@
 import React from "react";
-import {Button, Modal, Input, Form} from "antd";
+import {Button, Modal, Input, Form, Spin} from "antd";
 
 import connect from "react-redux/es/connect/connect";
-import {updateRisk} from "../../../../appRedux/actions";
+import {updateRisk, resetPutRisk, getRisk} from "../../../../appRedux/actions";
 import IntlMessages from "util/IntlMessages";
 import SweetAlerts from "react-bootstrap-sweetalert";
 
@@ -15,8 +15,27 @@ class EditJenisRisiko extends React.PureComponent{
         super(props);
         this.state = {
             ewarning: false,
-            datavalue:[]
+            datavalue:[],
+            statusput:'',
+            propsvalue: [],
+            propsid : props.eid
         };
+    }
+
+    componentWillMount(){
+        //this.props.getRisk({id:this.props.eid, token:this.props.token});
+    }
+
+    componentWillReceiveProps(nextProps){
+        this.setState({
+            statusput : nextProps.statusputrisk,
+            propsvalue : nextProps.getrisk
+        });
+
+        if(nextProps.statusputrisk === 200 || nextProps.statusputrisk === 201){
+            this.props.clickEditSuccessButton(nextProps.statusputrisk);
+            this.props.resetPutRisk();
+        }
     }
 
     render() {
@@ -31,10 +50,9 @@ class EditJenisRisiko extends React.PureComponent{
             },
         };
 
-        const {ewarning, datavalue} = this.state;
+        const {ewarning, datavalue, propsvalue} = this.state;
         const {fetchdata, token} = this.props;
         const {getFieldDecorator} = this.props.form;
-
         return (
             <>
                 <Form onSubmit={(e)=>{
@@ -51,7 +69,8 @@ class EditJenisRisiko extends React.PureComponent{
                     {
                         fetchdata.map((prop, index) =>{
                             return(
-                                <div key={index}>
+                                <Spin spinning={prop.id ? false : true} tip="Loading...">
+                                    <div key={index}>
                                     <FormItem {...formItemLayout}>
                                         {getFieldDecorator('id', {
                                             initialValue:prop.id,
@@ -107,6 +126,7 @@ class EditJenisRisiko extends React.PureComponent{
                                         )}
                                     </FormItem>
                                 </div>
+                                </Spin>
                             );
                         })
                     }
@@ -128,7 +148,6 @@ class EditJenisRisiko extends React.PureComponent{
                                          ewarning: false
                                      });
                                      this.props.updateRisk(datavalue);
-                                     this.props.clickEditSuccessButton();
                                  }}
                                  onCancel={() => {
                                      this.setState({
@@ -146,11 +165,11 @@ class EditJenisRisiko extends React.PureComponent{
 
 const WrapperdEditJenisRisiko = Form.create()(EditJenisRisiko);
 
-const mapStateToProps = ({auth,tabledata}) => {
+const mapStateToProps = ({auth,jenisrisiko}) => {
     const {token} = auth;
-    const {getallrisks} = tabledata;
-    return {token, getallrisks}
+    const {statusputrisk,getrisk} = jenisrisiko;
+    return {token,statusputrisk, getrisk}
 };
 
-export default connect(mapStateToProps, {updateRisk})(WrapperdEditJenisRisiko);
+export default connect(mapStateToProps, {updateRisk, resetPutRisk, getRisk})(WrapperdEditJenisRisiko);
 

@@ -1,7 +1,7 @@
 import React from "react";
 import SweetAlert from "react-bootstrap-sweetalert";
 import {NotificationContainer, NotificationManager} from "react-notifications";
-import {Divider, Button, Card, Table, Input} from "antd";
+import {Divider, Button, Card, Table, Input, Spin} from "antd";
 import IntlMessages from "util/IntlMessages";
 import Highlighter from "react-highlight-words";
 import {SearchOutlined} from "@ant-design/icons";
@@ -10,23 +10,26 @@ import connect from "react-redux/es/connect/connect";
 
 import SaveJenisRisiko from "./SaveJenisRisiko";
 import EditJenisRisiko from "./EditJenisRisiko";
-import EditParameter from "../ParameterFaktor/EditParameter";
 
-class TableJenisRisiko extends React.PureComponent {
+class TableJenisRisiko extends React.Component {
     constructor(props) {
         super(props);
-        this.handleProp=this.handleProp.bind(this);
+        // this.handleProp=this.handleProp.bind(this);
         this.state = {
             //filteredInfo: null,
             sortedInfo: null,
             warning: false,
-            datatable: [],
             searchText: '',
             searchedColumn: '',
             addbutton : false,
             editbutton : false,
-            eid : "",fetchdata: [],
+            eid : "",
+            fetchdata: [],
+            datatable: [],
             idvalue : '',
+            statusjenisrisiko: '',
+            loading : false,
+            deletestatus:''
         };
     }
 
@@ -35,15 +38,46 @@ class TableJenisRisiko extends React.PureComponent {
     }
 
     componentWillReceiveProps(nextProps) {
-        this.handleProp(nextProps);
-    }
-    handleProp(props) {
-        this.props.getAllRisks({token:this.props.token});
+        // this.props.getAllRisks({token:this.props.token});
         this.setState({
-            datatable : props.getallrisks
+            datatable : nextProps.getallrisks,
+            statusjenisrisiko : nextProps.statusallrisks
         });
-        return props.getallrisks;
+
+        // return nextProps.getallrisks;
+        if (nextProps.statusallrisks === 200){
+            this.setState({
+               loading:false,
+               deletestatus:''
+            });
+        }
+
+        if (nextProps.deleteallrisks === 200) {
+            this.setState({
+                loading:false,
+                deletestatus: nextProps.deleteallrisks
+            });
+        }
     }
+
+    shouldComponentUpdate(nextProps, nextState){
+        if (nextState.deletestatus !== this.state.deletestatus){
+            this.onRefresh();
+            this.setState({
+                deletestatus : nextProps.deleteallrisks
+            });
+        }
+        return true;
+    }
+
+    handleChange = (pagination, filters, sorter) => {
+        this.onRefresh();
+        console.log('Various parameters', pagination, filters, sorter);
+        this.setState({
+            // filteredInfo: filters,
+            sortedInfo: sorter,
+        });
+    };
 
     getColumnSearchProps = dataIndex => ({
         filterDropdown : ({setSelectedKeys, selectedKeys, confirm, clearFilters}) => (
@@ -111,14 +145,7 @@ class TableJenisRisiko extends React.PureComponent {
         this.setState({
             warning: false
         })
-    };
-
-    handleChange = (pagination, filters, sorter) => {
-        console.log('Various parameters', pagination, filters, sorter);
-        this.setState({
-            // filteredInfo: filters,
-            sortedInfo: sorter,
-        });
+        this.onRefresh();
     };
 
     clickAddButton = () => {
@@ -131,31 +158,48 @@ class TableJenisRisiko extends React.PureComponent {
         this.setState({
             addbutton: false
         })
+        this.onRefresh();
     }
 
     clickCancelEditButton = () => {
         this.setState({
             editbutton: false
         })
+        this.onRefresh();
     }
 
-    clickEditSuccessButton = () => {
+    clickEditSuccessButton = (status) => {
         this.setState({
             editbutton: false,
         });
-        NotificationManager.success("Data has updated.", "Success !!");
+
+        if (status === 201 || status === 200) {
+            this.onRefresh();
+            NotificationManager.success("Data has updated.", "Success !!");
+        }
     }
 
-    clickAddSuccessButton = () => {
+    clickAddSuccessButton = (status) => {
         this.setState({
             addbutton: false,
         });
-        NotificationManager.success("Data has saved.", "Success !! ");
+
+        if (status === 201 || status === 200) {
+            this.onRefresh();
+            NotificationManager.success("Data has saved.", "Success !! ");
+        }
+    }
+
+    onRefresh = () => {
+        this.setState({
+            loading:true
+        });
+        this.props.getAllRisks({token:this.props.token});
     }
 
     render() {
         let {sortedInfo, filteredInfo} = this.state;
-        const {warning, datatable, addbutton, editbutton, eid, fetchdata, idvalue} = this.state;
+        const {warning, datatable, addbutton, editbutton, eid, fetchdata, idvalue, loading} = this.state;
         const {token} = this.props;
         sortedInfo = sortedInfo || {};
         filteredInfo = filteredInfo || {};
@@ -219,12 +263,15 @@ class TableJenisRisiko extends React.PureComponent {
                     addbutton ?
                         <SaveJenisRisiko clickCancelAddButton={this.clickCancelAddButton} clickAddSuccessButton={this.clickAddSuccessButton}/> :
                     editbutton ?
-                        <EditJenisRisiko clickCancelEditButton={this.clickCancelEditButton} clickEditSuccessButton={this.clickEditSuccessButton} fetchdata={fetchdata}/> :
+                        <EditJenisRisiko clickCancelEditButton={this.clickCancelEditButton} clickEditSuccessButton={this.clickEditSuccessButton} fetchdata={fetchdata} eid={eid}/> :
                     <>
                         <div className="table-operations">
                             <Button className="ant-btn ant-btn-primary" onClick={this.clickAddButton}>Add</Button>
+                            <Button className="ant-btn" onClick={this.onRefresh}>Refresh</Button>
                         </div>
-                        <Table className="gx-table-responsive" columns={columns} dataSource={datatable} onChange={this.handleChange} rowKey="id"/>
+                        <Spin tip="Loading..." spinning={loading}>
+                            <Table className="gx-table-responsive" columns={columns} dataSource={datatable} onChange={this.handleChange} rowKey="id"/>
+                        </Spin>
                         <SweetAlert show={warning}
                                     warning
                                     showCancel
@@ -234,8 +281,9 @@ class TableJenisRisiko extends React.PureComponent {
                                     title={<IntlMessages id="sweetAlerts.areYouSure"/>}
                                     onConfirm={() => {
                                         this.setState({
-                                            warning: false
-                                        });
+                                            warning: false,
+                                            deletestatus: ''
+                                        })
                                         this.props.deleteRisk({id:idvalue, token:token});
                                         NotificationManager.success("Data has deleted.", "Success !!");
                                     }}
@@ -252,10 +300,10 @@ class TableJenisRisiko extends React.PureComponent {
 }
 
 
-const mapStateToProps = ({auth,tabledata}) => {
+const mapStateToProps = ({auth,jenisrisiko}) => {
     const {token} = auth;
-    const {getallrisks} = tabledata;
-    return {token, getallrisks}
+    const {getallrisks,statusallrisks,deleteallrisks} = jenisrisiko;
+    return {token, getallrisks,statusallrisks,deleteallrisks}
 };
 
 export default connect(mapStateToProps, {getAllRisks,deleteRisk})(TableJenisRisiko);

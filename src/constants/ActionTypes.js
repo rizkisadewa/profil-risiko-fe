@@ -31,20 +31,27 @@ export const INIT_URL = 'INIT_URL';
 export const USER_DATA = 'USER_DATA';
 export const USER_TOKEN_SET = 'USER_TOKEN_SET';
 
-//Table const
+//Parameter const
 export const GET_ALL_PARAMETER_FAKTOR_TABLE = [];
 export const GET_PARAMETER_FAKTOR = [];
 export const PUT_PARAMETER_FAKTOR = [];
 export const POST_PARAMETER_FAKTOR = [];
+export const JENIS_NILAI_PARAM = [];
 export const DELETE_PARAMETER_FAKTOR = 'DELETE_PARAMETER_FAKTOR';
-export const GET_ALL_RISKS = [];
-export const POST_ALL_RISKS = [];
-export const DELETE_ALL_RISKS = [];
-export const PUT_ALL_RISKS = [];
 export const STATUS_POST_PARAMETER_FAKTOR = 'STATUS_POST_PARAMETER_FAKTOR';
 export const STATUS_PUT_PARAMETER_FAKTOR = 'STATUS_PUT_PARAMETER_FAKTOR';
-export const JENIS_NILAI_PARAM = [];
 export const STATUS_ALL_PARAMETER_FAKTOR_TABLE = 'STATUS_ALL_PARAMETER_FAKTOR_TABLE';
 export const STATUS_ALL_PARAMETER_FAKTOR = 'STATUS_ALL_PARAMETER_FAKTOR';
 export const COUNT_ALL_PARAMETER_FAKTOR = 'COUNT_ALL_PARAMETER_FAKTOR';
+
+//JenisRisiko const
+export const GET_ALL_RISKS = [];
+export const GET_RISK = [];
+export const POST_ALL_RISKS = [];
+export const PUT_ALL_RISKS = [];
+export const DELETE_ALL_RISKS = 'DELETE_ALL_RISK';
+export const STATUS_POST_RISK = 'STATUS_POST_RISK';
+export const STATUS_PUT_RISK = 'STATUS_PUT_RISK';
+export const STATUS_ALL_RISKS = 'STATUS_ALL_RISKS';
+
 

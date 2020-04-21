@@ -1,7 +1,7 @@
 import React from "react";
 import {Button, Input, Form} from "antd";
 import connect from "react-redux/es/connect/connect";
-import {addRisk} from "../../../../appRedux/actions";
+import {addRisk, resetPostRisk} from "../../../../appRedux/actions";
 
 const FormItem = Form.Item;
 const {TextArea} = Input;
@@ -10,6 +10,20 @@ const {TextArea} = Input;
 class SaveJenisRisiko extends React.PureComponent{
     constructor(props) {
         super(props);
+        this.state = {
+            statuspost: ''
+        }
+    }
+
+    componentWillReceiveProps(nextProps){
+        this.setState({
+            statuspost: nextProps.statuspostrisk
+        });
+
+        if (nextProps.statuspostrisk === 200 || nextProps.statuspostrisk === 201){
+            this.props.clickAddSuccessButton(nextProps.statuspostrisk);
+            this.props.resetPostRisk();
+        }
     }
 
     render() {
@@ -24,7 +38,7 @@ class SaveJenisRisiko extends React.PureComponent{
             },
         };
 
-        const {token, getallrisks} = this.props;
+        const {token} = this.props;
         const {getFieldDecorator} = this.props.form;
         return (
             <>
@@ -33,7 +47,6 @@ class SaveJenisRisiko extends React.PureComponent{
                     this.props.form.validateFields((err, values) => {
                         if (!err) {
                             this.props.addRisk(values);
-                            this.props.clickAddSuccessButton();
                         }
                     });
                 }}>
@@ -90,11 +103,11 @@ class SaveJenisRisiko extends React.PureComponent{
 
 const WrappedSaveRisk = Form.create()(SaveJenisRisiko);
 
-const mapStateToProps = ({auth, tabledata}) => {
+const mapStateToProps = ({auth, jenisrisiko}) => {
     const {token} = auth;
-    const {getallrisks} = tabledata;
-    return {token,getallrisks}
+    const {statuspostrisk} = jenisrisiko;
+    return {token,statuspostrisk}
 };
 
-export default connect(mapStateToProps, {addRisk})(WrappedSaveRisk);
+export default connect(mapStateToProps, {addRisk, resetPostRisk})(WrappedSaveRisk);
 

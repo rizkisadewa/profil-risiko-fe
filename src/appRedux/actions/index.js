@@ -1,4 +1,5 @@
 export * from './Setting';
 export * from './Auth';
 export * from './Common';
-export * from './Tabledata';
+export * from './Parameterfaktor';
+export * from './Jenisrisiko';

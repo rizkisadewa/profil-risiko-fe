@@ -5,10 +5,6 @@ import {
     POST_PARAMETER_FAKTOR,
     STATUS_POST_PARAMETER_FAKTOR,
     DELETE_PARAMETER_FAKTOR,
-    GET_ALL_RISKS,
-    POST_ALL_RISKS,
-    PUT_ALL_RISKS,
-    DELETE_ALL_RISKS,
     JENIS_NILAI_PARAM,
     STATUS_ALL_PARAMETER_FAKTOR_TABLE,
     STATUS_ALL_PARAMETER_FAKTOR,
@@ -22,10 +18,6 @@ const initialTable = {
     postparameterfaktor: POST_PARAMETER_FAKTOR,
     deleteparameterfaktor: DELETE_PARAMETER_FAKTOR,
     statuspostparameterfaktor: STATUS_POST_PARAMETER_FAKTOR,
-    getallrisks: GET_ALL_RISKS,
-    putallrisks: PUT_ALL_RISKS,
-    postallrisks: POST_ALL_RISKS,
-    deleteallrisks: DELETE_ALL_RISKS,
     jenisnilaiparam: JENIS_NILAI_PARAM,
     statusallparameterfaktortable: STATUS_ALL_PARAMETER_FAKTOR_TABLE,
     statusallparameterfaktor: STATUS_ALL_PARAMETER_FAKTOR,
@@ -33,7 +25,7 @@ const initialTable = {
     statusputparameterfaktor : STATUS_PUT_PARAMETER_FAKTOR
 };
 
-const tabledata = (state = initialTable, action) => {
+const parameterfaktor = (state = initialTable, action) => {
     switch (action.type) {
         case GET_ALL_PARAMETER_FAKTOR_TABLE: {
             return {
@@ -83,30 +75,6 @@ const tabledata = (state = initialTable, action) => {
                 deleteparameterfaktor: action.payload,
             };
         }
-        case GET_ALL_RISKS: {
-            return {
-                ...state,
-                getallrisks: action.payload,
-            };
-        }
-        case POST_ALL_RISKS: {
-            return {
-                ...state,
-                postallrisks: action.payload,
-            };
-        }
-        case PUT_ALL_RISKS: {
-            return {
-                ...state,
-                putallrisks: action.payload,
-            };
-        }
-        case DELETE_ALL_RISKS: {
-            return {
-                ...state,
-                deleteallrisks: action.payload,
-            };
-        }
         case STATUS_ALL_PARAMETER_FAKTOR_TABLE: {
             return {
                 ...state,
@@ -130,4 +98,4 @@ const tabledata = (state = initialTable, action) => {
     }
 }
 
-export default tabledata;
+export default parameterfaktor;
