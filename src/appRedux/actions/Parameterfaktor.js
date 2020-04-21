@@ -24,7 +24,7 @@ export const getAllFaktorParameterTable = ({page, token}) => {
             }
         }).then(({data}) => {
             if (data.data){
-                dispatch({type: GET_ALL_PARAMETER_FAKTOR_TABLE, payload: data.data.rows});
+                dispatch({type: GET_ALL_PARAMETER_FAKTOR_TABLE, payload: data.data});
                 dispatch({type: STATUS_ALL_PARAMETER_FAKTOR_TABLE, payload: data.statusCode});
             } else {
                 dispatch({type: FETCH_ERROR, payload: data.error});
@@ -45,7 +45,7 @@ export const countAllFaktorParameter = ({token}) => {
             }
         }).then(({data}) => {
             if (data.data){
-                dispatch({type: COUNT_ALL_PARAMETER_FAKTOR, payload: data.data.rows.length});
+                dispatch({type: COUNT_ALL_PARAMETER_FAKTOR, payload: data.data.length});
                 dispatch({type: STATUS_ALL_PARAMETER_FAKTOR, payload: data.statusCode});
             } else {
                 dispatch({type: FETCH_ERROR, payload: data.error});
