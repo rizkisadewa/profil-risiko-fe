@@ -1,8 +1,8 @@
 import React from "react";
-import {Button, Input, Form, Select, InputNumber} from "antd";
+import {Button, Input, Form, Select, InputNumber, Spin} from "antd";
 import connect from "react-redux/es/connect/connect";
 import IntlMessages from "util/IntlMessages";
-import {updateFaktorParameter, getAllRisks, jenisNilaiParam, resetPutFaktorParameter} from "../../../../appRedux/actions";
+import {updateFaktorParameter, getAllRisks, jenisNilaiParam, resetPutFaktorParameter, getFaktorParameter} from "../../../../appRedux/actions";
 import SweetAlerts from "react-bootstrap-sweetalert";
 
 const FormItem = Form.Item;
@@ -23,7 +23,9 @@ class EditParameter extends React.PureComponent{
             ewarning: false,
             basic: false,
             datavalue:[],
-            statusput:''
+            statusput:'',
+            propsvalue : [],
+            propsid : props.eid
         }
     }
 
@@ -31,11 +33,16 @@ class EditParameter extends React.PureComponent{
         this.props.getAllRisks({token:this.props.token});
     }
 
+    componentWillMount(){
+        this.props.getFaktorParameter({id:this.props.eid, token:this.props.token});
+    }
+
     componentWillReceiveProps(nextProps) {
         // this.handleProp(nextProps);
         this.setState({
             dataoptions : nextProps.getallrisks,
-            statusput : nextProps.statusputparameterfaktor
+            statusput : nextProps.statusputparameterfaktor,
+            propsvalue : nextProps.getparameterfaktor
         });
 
         if (nextProps.statusputparameterfaktor === 200 || nextProps.statusputparameterfaktor === 201){
@@ -56,7 +63,7 @@ class EditParameter extends React.PureComponent{
             },
         };
 
-        const {dataoptions, dataoptionslevel, ewarning, datavalue, basic} = this.state;
+        const {dataoptions, dataoptionslevel, ewarning, datavalue, basic, propsvalue} = this.state;
         const {fetchdata, token} = this.props;
         const {getFieldDecorator} = this.props.form;
         return (
@@ -74,21 +81,23 @@ class EditParameter extends React.PureComponent{
                 {
                     fetchdata.map((prop, index) =>{
                         return (
-                            <div key={index}>
+                            <Spin spinning={propsvalue.risk_id ? false : true} tip="Loading...">
+                                <div key={index}>
+
                                 <FormItem {...formItemLayout}>
-                                    {getFieldDecorator('id', {
-                                        initialValue:prop.id,
+                                    {getFieldDecorator('token', {
+                                        initialValue:token,
                                         rules: [{
-                                            required: true, message: 'Please input id field.',
+                                            required: true, message: 'Please input token field.',
                                         }],
                                     })(
-                                        <Input id="id" type="hidden" placeholder="Input Id"/>
+                                        <Input id="token" type="hidden" placeholder="Input Token"/>
                                     )}
                                 </FormItem>
 
                                 <FormItem {...formItemLayout} label="Risk">
                                     {getFieldDecorator('risk_id', {
-                                        initialValue:prop.risk_id,
+                                        initialValue:propsvalue.risk_id,
                                         rules: [{
                                             required: true, message: 'Please input risk field.',
                                         }],
@@ -114,7 +123,7 @@ class EditParameter extends React.PureComponent{
 
                                 <FormItem {...formItemLayout} label="Penomoran">
                                     {getFieldDecorator('penomoran', {
-                                        initialValue:prop.penomoran,
+                                        initialValue:propsvalue.penomoran,
                                         rules: [{
                                             required: true, message: 'Please input penomoran field.',
                                         }],
@@ -125,7 +134,7 @@ class EditParameter extends React.PureComponent{
 
                                 <FormItem {...formItemLayout} label="Parameter">
                                     {getFieldDecorator('name', {
-                                        initialValue:prop.name,
+                                        initialValue:propsvalue.name,
                                         rules: [{
                                             required: true, message: 'Please input parameter field.',
                                         }],
@@ -136,7 +145,7 @@ class EditParameter extends React.PureComponent{
 
                                 <FormItem {...formItemLayout} label="Level">
                                     {getFieldDecorator('level', {
-                                        initialValue:prop.level,
+                                        initialValue:propsvalue.level,
                                         rules: [{
                                             required: true, message: 'Please input level field.',
                                         }],
@@ -162,7 +171,7 @@ class EditParameter extends React.PureComponent{
 
                                 <FormItem {...formItemLayout} label="Bobot">
                                     {getFieldDecorator('bobot', {
-                                        initialValue:prop.bobot,
+                                        initialValue: propsvalue.risk_id ? prop.bobot : 0,
                                         rules: [{
                                             required: true, message: 'Please input bobot field.',
                                         },{type:"number", message: 'Input must be number type.'}],
@@ -186,17 +195,17 @@ class EditParameter extends React.PureComponent{
                                 </FormItem>
 
                                 <FormItem {...formItemLayout}>
-                                    {getFieldDecorator('token', {
-                                        initialValue:token,
+                                    {getFieldDecorator('id', {
+                                        initialValue:prop.id,
                                         rules: [{
-                                            required: true, message: 'Please input token field.',
+                                            required: true, message: 'Please input id field.',
                                         }],
                                     })(
-                                        <Input id="token" type="hidden" placeholder="Input Token"/>
+                                        <Input id="id" type="hidden" placeholder="Input Id"/>
                                     )}
                                 </FormItem>
-
                             </div>
+                            </Spin>
                         );
                     })
                 }
@@ -244,8 +253,8 @@ const WrapperdEditParameter = Form.create()(EditParameter);
 
 const mapStateToProps = ({auth,tabledata}) => {
     const {token} = auth;
-    const {getallrisks,jenisnilaiparam,statusputparameterfaktor} = tabledata;
-    return {token, getallrisks, jenisnilaiparam,statusputparameterfaktor}
+    const {getallrisks,jenisnilaiparam,statusputparameterfaktor,getparameterfaktor} = tabledata;
+    return {token, getallrisks, jenisnilaiparam,statusputparameterfaktor,getparameterfaktor}
 };
 
-export default connect(mapStateToProps, {updateFaktorParameter, getAllRisks, jenisNilaiParam, resetPutFaktorParameter})(WrapperdEditParameter);
+export default connect(mapStateToProps, {updateFaktorParameter, getAllRisks, jenisNilaiParam, resetPutFaktorParameter, getFaktorParameter})(WrapperdEditParameter);

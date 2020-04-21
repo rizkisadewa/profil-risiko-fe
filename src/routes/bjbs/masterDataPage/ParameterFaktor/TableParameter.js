@@ -1,7 +1,7 @@
 import React from "react";
 import SweetAlert from "react-bootstrap-sweetalert";
 import {NotificationContainer, NotificationManager} from "react-notifications";
-import {Divider, Button, Card, Table, Input, Pagination} from "antd";
+import {Divider, Button, Card, Table, Input, Pagination, Spin} from "antd";
 import IntlMessages from "util/IntlMessages";
 import Highlighter from "react-highlight-words";
 import {SearchOutlined} from "@ant-design/icons";
@@ -9,7 +9,7 @@ import SaveParameter from "./SaveParameter";
 import EditParameter from "./EditParameter";
 
 import {connect} from "react-redux";
-import {getAllFaktorParameterTable, getFaktorParameter, deleteFaktorParameter, countAllFaktorParameter} from "./../../../../appRedux/actions/Tabledata";
+import {getAllFaktorParameterTable, deleteFaktorParameter, countAllFaktorParameter} from "./../../../../appRedux/actions/Tabledata";
 import {Redirect} from 'react-router-dom';
 
 class TableParameter extends React.Component{
@@ -295,16 +295,18 @@ class TableParameter extends React.Component{
                     addbutton ?
                         <SaveParameter clickCancelAddButton={this.clickCancelAddButton} clickAddSuccessButton={this.clickAddSuccessButton}/> :
                     editbutton ?
-                        <EditParameter clickCancelEditButton={this.clickCancelEditButton} clickEditSuccessButton={this.clickEditSuccessButton} fetchdata={fetchdata}
+                        <EditParameter clickCancelEditButton={this.clickCancelEditButton} clickEditSuccessButton={this.clickEditSuccessButton} fetchdata={fetchdata} eid={eid}
                         /> :
                     <>
                         <div className="table-operations">
                             <Button className="ant-btn ant-btn-primary" onClick={this.clickAddButton}>Add</Button>
                             <Button className="ant-btn" onClick={this.onRefresh}>Refresh</Button>
                         </div>
-                        <Table className="gx-table-responsive" columns={columns} dataSource={datatable} onChange={this.handleChange} rowKey="id"
-                               pagination={false} loading={loading}
-                        />
+                        <Spin tip="Loading..." spinning={loading}>
+                            <Table className="gx-table-responsive" columns={columns} dataSource={datatable} onChange={this.handleChange} rowKey="id"
+                                   pagination={false}
+                            />
+                        </Spin>
                         <div className="table-operations" style={{ paddingTop : '1rem', float : 'right' }}>
                             {
                                 lengthdata === 0 ? '' :
