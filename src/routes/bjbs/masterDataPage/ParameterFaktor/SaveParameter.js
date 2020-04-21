@@ -6,6 +6,7 @@ import SweetAlerts from "react-bootstrap-sweetalert";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+const {TextArea} = Input;
 
 const optionsLevel = [
     {label:"Level Pertama (1)", value:"1"},
@@ -117,7 +118,7 @@ class SaveParameter extends React.PureComponent{
                                 required: true, message: 'Please input parameter field.',
                             }],
                         })(
-                            <Input id="name" placeholder="Input Parameter"/>
+                            <TextArea id="name" placeholder="Input Parameter"/>
                         )}
                     </FormItem>
 
