@@ -1,26 +1,29 @@
 import React from "react";
 import {Button, Input, Form, Select, InputNumber} from "antd";
+import connect from "react-redux/es/connect/connect";
+import {getAllJenisPenilaian, postJenisPenilaian, resetPostJenisPenilaian} from "../../../../appRedux/actions";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const {TextArea} = Input;
 
-const optionsPenilaian = [
-    {label:"Kuantitatif (Naik)", value:"1"},
-    {label:"Kuantitatif (Turun)", value:"2"},
-    {label:"Kualitatif", value:"3"}
-];
-
 class SavePenilaian extends React.PureComponent{
     constructor(props) {
         super(props);
         this.state = {
-            dataoptions : optionsPenilaian,
+            statuspost: ''
         }
     }
 
-    handleSubmit = (e) => {
-        e.preventDefault();
+    componentWillReceiveProps(nextProps){
+        this.setState({
+            statuspost : nextProps.statuspostjenispenilaian,
+        });
+
+        if (nextProps.statuspostjenispenilaian === 201 || nextProps.statuspostjenispenilaian === 200){
+            this.props.clickAddSuccessButton(nextProps.statuspostjenispenilaian);
+            this.props.resetPostJenisPenilaian();
+        }
     }
 
     render() {
@@ -36,34 +39,47 @@ class SavePenilaian extends React.PureComponent{
         };
 
         const {dataoptions} = this.state;
+        const {token} = this.props;
+        const {getFieldDecorator} = this.props.form;
         return (
             <>
-                <Form onSubmit={this.handleSubmit}>
-                    <FormItem {...formItemLayout} label="Nama">
-                        <Input id="nama" placeholder="Input Nama" required/>
+                <Form onSubmit={(e)=>{
+                    e.preventDefault();
+                    this.props.form.validateFields((err, values) => {
+                        if (!err) {
+                            this.props.postJenisPenilaian(values);
+                        }
+                    });
+                }}>
+                    <FormItem {...formItemLayout}>
+                        {getFieldDecorator('token', {
+                            initialValue:token,
+                            rules: [{
+                                required: true, message: 'Please input token field.',
+                            }],
+                        })(
+                            <Input id="token" type="hidden" placeholder="Input Token"/>
+                        )}
                     </FormItem>
 
-                    <FormItem {...formItemLayout} label="Jenis Penilaian">
-                        <Select id="jenispenilaian"
-                                showSearch
-                                placeholder="Select Jenis Penilaian"
-                                optionFilterProp="children"
-                                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                                required>
-                            {
-                                dataoptions.map((prop, index) => {
-                                    var value = prop.value;
-                                    var label = prop.label;
-                                    return (
-                                        <Option value={value}>{label}</Option>
-                                    )
-                                })
-                            }
-                        </Select>
+                    <FormItem {...formItemLayout} label="Name">
+                        {getFieldDecorator('name', {
+                            rules: [{
+                                required: true, message: 'Please input name field.',
+                            }],
+                        })(
+                            <Input id="name" placeholder="Input Name"/>
+                        )}
                     </FormItem>
 
-                    <FormItem {...formItemLayout} label="Keterangan">
-                        <TextArea id="keterangan" placeholder="Input Keterangan" required/>
+                    <FormItem {...formItemLayout} label="Description">
+                        {getFieldDecorator('description', {
+                            rules: [{
+                                required: true, message: 'Please input description field.',
+                            }],
+                        })(
+                            <TextArea id="description" placeholder="Input description"/>
+                        )}
                     </FormItem>
 
                     <FormItem style={{ float : "right", paddingRight : "1rem" }}>
@@ -77,4 +93,12 @@ class SavePenilaian extends React.PureComponent{
 
 }
 
-export default SavePenilaian;
+const WrapperSaveJenisPenilaian = Form.create()(SavePenilaian);
+
+const mapStateToProps = ({auth, jenispenilaian}) => {
+    const {token} = auth;
+    const {statuspostjenispenilaian} = jenispenilaian;
+    return {token, statuspostjenispenilaian};
+};
+
+export default connect(mapStateToProps, {getAllJenisPenilaian,postJenisPenilaian,resetPostJenisPenilaian})(WrapperSaveJenisPenilaian);

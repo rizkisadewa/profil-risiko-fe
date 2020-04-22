@@ -267,7 +267,8 @@ class TablePeringkatRisiko extends React.Component{
                             fetchdata : [{
                                 id:text.id,
                                 description:text.description,
-                                id_jenis_nilai:1,
+                                name:text.name,
+                                id_jenis_nilai:1
                             }]
                         })
                     }}>Edit</span>

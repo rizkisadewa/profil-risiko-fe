@@ -89,7 +89,7 @@ class EditPeringkatRisiko extends React.Component{
                                                     required: true, message: 'Please input id field.',
                                                 }],
                                             })(
-                                                <Input id="id" type="hidden" placeholder="Input Id" value={this.props.eid} required/>
+                                                <Input id="id" type="hidden" placeholder="Input Id"/>
                                             )}
                                         </FormItem>
 
@@ -122,7 +122,7 @@ class EditPeringkatRisiko extends React.Component{
                                                             var value = prop.value;
                                                             var label = prop.text;
                                                             return (
-                                                                <Option value={value}>{label}</Option>
+                                                                <Option value={value} key={index}>{label}</Option>
                                                             )
                                                         })
                                                     }
@@ -190,7 +190,7 @@ class EditPeringkatRisiko extends React.Component{
 
 }
 
-const WrapperdEditParameter = Form.create()(EditPeringkatRisiko);
+const WrapperdEditPeringkatRisiko = Form.create()(EditPeringkatRisiko);
 
 const mapStateToProps = ({auth, peringkatrisiko, masterparameter}) => {
     const {token} = auth;
@@ -200,4 +200,4 @@ const mapStateToProps = ({auth, peringkatrisiko, masterparameter}) => {
 
 };
 
-export default connect(mapStateToProps, {updatePeringkatRisiko,getAllPeringkatRisiko,resetPutPeringkatRisiko,getPeringkatRisiko,jenisNilaiParam})(WrapperdEditParameter);
+export default connect(mapStateToProps, {updatePeringkatRisiko,getAllPeringkatRisiko,resetPutPeringkatRisiko,getPeringkatRisiko,jenisNilaiParam})(WrapperdEditPeringkatRisiko);

@@ -138,7 +138,7 @@ class SaveParameter extends React.PureComponent{
                                         var value = prop.value;
                                         var label = prop.label;
                                         return (
-                                            <Option value={value}>{label}</Option>
+                                            <Option value={value} key={index}>{label}</Option>
                                         )
                                     })
                                 }

@@ -1,26 +1,40 @@
 import React from "react";
-import {Button, Input, Form, Select, InputNumber} from "antd";
+import {Button, Input, Form, Select, Spin} from "antd";
+import connect from "react-redux/es/connect/connect";
+import IntlMessages from "util/IntlMessages";
+import {updateJenisPenilaian, getAllJenisPenilaian, resetPutJenisPenilaian, getJenisPenilaian} from "../../../../appRedux/actions";
+import SweetAlerts from "react-bootstrap-sweetalert";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const {TextArea} = Input;
 
-const optionsPenilaian = [
-    {label:"Kuantitatif (Naik)", value:"1"},
-    {label:"Kuantitatif (Turun)", value:"2"},
-    {label:"Kualitatif", value:"3"}
-];
-
-class EditPenilaian extends React.PureComponent{
+class EditPenilaian extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            dataoptions : optionsPenilaian,
+            ewarning: false,
+            datavalue:[],
+            statusput:'',
+            propsvalue : [],
+            propsid : props.eid
         }
     }
 
-    handleSubmit = (e) => {
-        e.preventDefault();
+    componentWillMount(){
+        this.props.getJenisPenilaian({id:this.props.eid, token:this.props.token});
+    }
+
+    componentWillReceiveProps(nextProps){
+        this.setState({
+            statusput : nextProps.statusputjenispenilaian,
+            propsvalue : nextProps.getjenispenilaian
+        });
+
+        if (nextProps.statusputjenispenilaian === 200 || nextProps.statusputjenispenilaian === 201){
+            this.props.clickEditSuccessButton(nextProps.statusputjenispenilaian);
+            this.props.resetPutJenisPenilaian();
+        }
     }
 
     render() {
@@ -35,46 +49,102 @@ class EditPenilaian extends React.PureComponent{
             },
         };
 
-        const {dataoptions} = this.state;
+        const {ewarning, datavalue, propsvalue} = this.state;
+        const {fetchdata, token} = this.props;
+        const {getFieldDecorator} = this.props.form;
         return (
             <>
-                <Form onSubmit={this.handleSubmit}>
-                    <FormItem {...formItemLayout} label="Id">
-                        <Input id="id" placeholder="Input Id" value={this.props.eid} required/>
-                    </FormItem>
+                <Form onSubmit={(e)=>{
+                    e.preventDefault();
+                    this.props.form.validateFields((err, values) => {
+                        if (!err) {
+                            this.setState({
+                                ewarning: true,
+                                datavalue:values
+                            });
+                        }
+                    });
+                }}>
+                    {
+                        fetchdata.map((prop, index) =>{
+                            return (
+                                <Spin spinning={propsvalue.id ? false : true} tip="Loading...">
+                                    <div key={index}>
+                                        <FormItem {...formItemLayout}>
+                                            {getFieldDecorator('id', {
+                                                initialValue:propsvalue.id,
+                                                rules: [{
+                                                    required: true, message: 'Please input id field.',
+                                                }],
+                                            })(
+                                                <Input id="id" type="hidden" placeholder="Input Id"/>
+                                            )}
+                                        </FormItem>
 
-                    <FormItem {...formItemLayout} label="Nama">
-                        <Input id="nama" placeholder="Input Nama" defaultValue={this.props.enama} required/>
-                    </FormItem>
+                                        <FormItem {...formItemLayout} label="Name">
+                                            {getFieldDecorator('name', {
+                                                initialValue:propsvalue.name,
+                                                rules: [{
+                                                    required: true, message: 'Please input name field.',
+                                                }],
+                                            })(
+                                                <Input id="name" placeholder="Input Name"/>
+                                            )}
+                                        </FormItem>
 
-                    <FormItem {...formItemLayout} label="Jenis Penilaian">
-                        <Select id="jenispenilaian"
-                                defaultValue={this.props.epenilaian}
-                                showSearch
-                                placeholder="Select Jenis Penilaian"
-                                optionFilterProp="children"
-                                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                                required>
-                            {
-                                dataoptions.map((prop, index) => {
-                                    var value = prop.value;
-                                    var label = prop.label;
-                                    return (
-                                        <Option value={value}>{label}</Option>
-                                    )
-                                })
-                            }
-                        </Select>
-                    </FormItem>
+                                        <FormItem {...formItemLayout} label="Description">
+                                            {getFieldDecorator('description', {
+                                                initialValue:propsvalue.description,
+                                                rules: [{
+                                                    required: true, message: 'Please input jenis description field.',
+                                                }],
+                                            })(
+                                                <TextArea id="description" placeholder="Input description"/>
+                                            )}
+                                        </FormItem>
 
-                    <FormItem {...formItemLayout} label="Keterangan">
-                        <TextArea id="keterangan" placeholder="Input Keterangan" defaultValue={this.props.eket} required/>
-                    </FormItem>
+                                        <FormItem {...formItemLayout}>
+                                            {getFieldDecorator('token', {
+                                                initialValue:token,
+                                                rules: [{
+                                                    required: true, message: 'Please input token field.',
+                                                }],
+                                            })(
+                                                <Input id="token" type="hidden" placeholder="Input Token"/>
+                                            )}
+                                        </FormItem>
+                                    </div>
+                                </Spin>
+                            );
+                        })
+                    }
+
 
                     <FormItem style={{ float : "right", paddingRight : "1rem" }}>
                         <Button onClick={this.props.clickCancelEditButton}>Cancel</Button>
                         <Button type="primary" htmlType="submit">Save</Button>
                     </FormItem>
+                    <SweetAlerts show={ewarning}
+                                 warning
+                                 showCancel
+                                 confirmBtnText={'Yes, updated it!'}
+                                 confirmBtnBsStyle="danger"
+                                 cancelBtnBsStyle="default"
+                                 title={<IntlMessages id="sweetAlerts.areYouSure"/>}
+                                 onConfirm={()=>{
+                                     this.setState({
+                                         ewarning: false
+                                     });
+                                     this.props.updateJenisPenilaian(datavalue);
+                                 }}
+                                 onCancel={() => {
+                                     this.setState({
+                                         ewarning: false
+                                     })
+                                 }}
+                    >
+                        <IntlMessages id="sweetAlerts.youWillNotAble"/>
+                    </SweetAlerts>
                 </Form>
             </>
         );
@@ -82,4 +152,13 @@ class EditPenilaian extends React.PureComponent{
 
 }
 
-export default EditPenilaian;
+const WrapperdEditPenilaian = Form.create()(EditPenilaian);
+
+const mapStateToProps = ({auth, jenispenilaian}) => {
+    const {token} = auth;
+    const {statusputjenispenilaian,getjenispenilaian} = jenispenilaian;
+    return {token,statusputjenispenilaian,getjenispenilaian}
+
+};
+
+export default connect(mapStateToProps, {updateJenisPenilaian, getAllJenisPenilaian, resetPutJenisPenilaian, getJenisPenilaian})(WrapperdEditPenilaian);
