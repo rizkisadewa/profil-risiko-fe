@@ -23,7 +23,7 @@ class EditJenisRisiko extends React.PureComponent{
     }
 
     componentWillMount(){
-        //this.props.getRisk({id:this.props.eid, token:this.props.token});
+        this.props.getRisk({id:this.props.eid, token:this.props.token});
     }
 
     componentWillReceiveProps(nextProps){
@@ -69,11 +69,11 @@ class EditJenisRisiko extends React.PureComponent{
                     {
                         fetchdata.map((prop, index) =>{
                             return(
-                                <Spin spinning={prop.id ? false : true} tip="Loading...">
+                                <Spin spinning={propsvalue.id ? false : true} tip="Loading...">
                                     <div key={index}>
                                     <FormItem {...formItemLayout}>
                                         {getFieldDecorator('id', {
-                                            initialValue:prop.id,
+                                            initialValue:propsvalue.id,
                                             rules: [{
                                                 required: true, message: 'Please input id field.',
                                             }],
@@ -84,7 +84,7 @@ class EditJenisRisiko extends React.PureComponent{
 
                                     <FormItem {...formItemLayout} label="Nama">
                                         {getFieldDecorator('nama', {
-                                            initialValue:prop.nama,
+                                            initialValue:propsvalue.nama,
                                             rules: [{
                                                 required: true, message: 'Please input nama field.',
                                             }],
@@ -95,7 +95,7 @@ class EditJenisRisiko extends React.PureComponent{
 
                                     <FormItem {...formItemLayout} label="Keterangan">
                                         {getFieldDecorator('keterangan', {
-                                            initialValue:prop.keterangan,
+                                            initialValue:propsvalue.keterangan,
                                             rules: [{
                                                 required: true, message: 'Please input keterangan field.',
                                             }],
@@ -106,7 +106,7 @@ class EditJenisRisiko extends React.PureComponent{
 
                                     <FormItem {...formItemLayout} label="Jenis">
                                         {getFieldDecorator('jenis', {
-                                            initialValue:prop.jenis,
+                                            initialValue:propsvalue.jenis,
                                             rules: [{
                                                 required: true, message: 'Please input jenis field.',
                                             }],

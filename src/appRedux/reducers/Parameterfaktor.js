@@ -5,7 +5,6 @@ import {
     POST_PARAMETER_FAKTOR,
     STATUS_POST_PARAMETER_FAKTOR,
     DELETE_PARAMETER_FAKTOR,
-    JENIS_NILAI_PARAM,
     STATUS_ALL_PARAMETER_FAKTOR_TABLE,
     STATUS_ALL_PARAMETER_FAKTOR,
     COUNT_ALL_PARAMETER_FAKTOR,
@@ -18,7 +17,6 @@ const initialTable = {
     postparameterfaktor: POST_PARAMETER_FAKTOR,
     deleteparameterfaktor: DELETE_PARAMETER_FAKTOR,
     statuspostparameterfaktor: STATUS_POST_PARAMETER_FAKTOR,
-    jenisnilaiparam: JENIS_NILAI_PARAM,
     statusallparameterfaktortable: STATUS_ALL_PARAMETER_FAKTOR_TABLE,
     statusallparameterfaktor: STATUS_ALL_PARAMETER_FAKTOR,
     countallparameterfaktor: COUNT_ALL_PARAMETER_FAKTOR,
@@ -61,12 +59,6 @@ const parameterfaktor = (state = initialTable, action) => {
             return {
                 ...state,
                 statusputparameterfaktor: action.payload,
-            };
-        }
-        case JENIS_NILAI_PARAM: {
-            return {
-                ...state,
-                jenisnilaiparam: action.payload,
             };
         }
         case DELETE_PARAMETER_FAKTOR: {

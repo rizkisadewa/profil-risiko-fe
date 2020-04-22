@@ -1,7 +1,7 @@
 import React from "react";
 import {Button, Input, Form, Select, InputNumber} from "antd";
 import connect from "react-redux/es/connect/connect";
-import {getAllRisks, postFaktorParameter, resetPostFaktorParameter, jenisNilaiParam} from "../../../../appRedux/actions";
+import {getAllRisks, postFaktorParameter, resetPostFaktorParameter} from "../../../../appRedux/actions";
 import SweetAlerts from "react-bootstrap-sweetalert";
 
 const FormItem = Form.Item;
@@ -27,7 +27,6 @@ class SaveParameter extends React.PureComponent{
 
     componentDidMount(){
         this.props.getAllRisks({token:this.props.token});
-        // this.props.jenisNilaiParam({token:this.props.token});
     }
 
     componentWillReceiveProps(nextProps) {
@@ -196,9 +195,9 @@ const WrappedSaveParameter = Form.create()(SaveParameter);
 
 const mapStateToProps = ({auth, parameterfaktor, jenisrisiko}) => {
     const {token} = auth;
-    const {statuspostparameterfaktor,jenisnilaiparam} = parameterfaktor;
+    const {statuspostparameterfaktor} = parameterfaktor;
     const {getallrisks} = jenisrisiko;
-    return {statuspostparameterfaktor,token,getallrisks,jenisnilaiparam}
+    return {statuspostparameterfaktor,token,getallrisks}
 };
 
-export default connect(mapStateToProps, {postFaktorParameter,getAllRisks,resetPostFaktorParameter,jenisNilaiParam})(WrappedSaveParameter);
+export default connect(mapStateToProps, {postFaktorParameter,getAllRisks,resetPostFaktorParameter})(WrappedSaveParameter);

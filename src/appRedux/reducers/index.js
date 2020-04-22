@@ -5,6 +5,8 @@ import Auth from "./Auth";
 import Common from "./Common";
 import Parameterfaktor from "./Parameterfaktor";
 import Jenisrisiko from "./Jenisrisiko";
+import Peringkatrisiko from "./Peringkatrisiko";
+import Masterparameter from "./Masterparameter";
 
 
 const reducers = combineReducers({
@@ -14,6 +16,8 @@ const reducers = combineReducers({
   commonData: Common,
   parameterfaktor: Parameterfaktor,
   jenisrisiko: Jenisrisiko,
+  peringkatrisiko: Peringkatrisiko,
+  masterparameter: Masterparameter,
 });
 
 export default reducers;

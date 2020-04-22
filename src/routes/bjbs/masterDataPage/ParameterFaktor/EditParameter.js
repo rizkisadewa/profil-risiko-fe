@@ -2,7 +2,7 @@ import React from "react";
 import {Button, Input, Form, Select, InputNumber, Spin} from "antd";
 import connect from "react-redux/es/connect/connect";
 import IntlMessages from "util/IntlMessages";
-import {updateFaktorParameter, getAllRisks, jenisNilaiParam, resetPutFaktorParameter, getFaktorParameter} from "../../../../appRedux/actions";
+import {updateFaktorParameter, getAllRisks, resetPutFaktorParameter, getFaktorParameter} from "../../../../appRedux/actions";
 import SweetAlerts from "react-bootstrap-sweetalert";
 
 const FormItem = Form.Item;
@@ -14,7 +14,7 @@ const optionsLevel = [
     {label:"Level Kedua (2)", value:2}
 ];
 
-class EditParameter extends React.PureComponent{
+class EditParameter extends React.Component{
     constructor(props) {
         super(props);
         // this.handleProp=this.handleProp.bind(this);
@@ -250,13 +250,13 @@ class EditParameter extends React.PureComponent{
 
 }
 
-const WrapperdEditParameter = Form.create()(EditParameter);
+const WrapperdEditParameter = Form.create()(EditParameter)
 
 const mapStateToProps = ({auth,parameterfaktor,jenisrisiko}) => {
     const {token} = auth;
-    const {jenisnilaiparam,statusputparameterfaktor,getparameterfaktor} = parameterfaktor;
+    const {statusputparameterfaktor,getparameterfaktor} = parameterfaktor;
     const {getallrisks} = jenisrisiko;
-    return {token, getallrisks, jenisnilaiparam,statusputparameterfaktor,getparameterfaktor}
+    return {token, getallrisks,statusputparameterfaktor,getparameterfaktor}
 };
 
-export default connect(mapStateToProps, {updateFaktorParameter, getAllRisks, jenisNilaiParam, resetPutFaktorParameter, getFaktorParameter})(WrapperdEditParameter);
+export default connect(mapStateToProps, {updateFaktorParameter, getAllRisks, resetPutFaktorParameter, getFaktorParameter})(WrapperdEditParameter);
