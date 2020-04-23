@@ -1,12 +1,11 @@
 import React from "react";
-import {Button, Input, Form, Select, Spin} from "antd";
+import {Button, Input, Form, Spin} from "antd";
 import connect from "react-redux/es/connect/connect";
 import IntlMessages from "util/IntlMessages";
 import {updateJenisPenilaian, getAllJenisPenilaian, resetPutJenisPenilaian, getJenisPenilaian} from "../../../../appRedux/actions";
 import SweetAlerts from "react-bootstrap-sweetalert";
 
 const FormItem = Form.Item;
-const Option = Select.Option;
 const {TextArea} = Input;
 
 class EditPenilaian extends React.Component{
@@ -68,53 +67,53 @@ class EditPenilaian extends React.Component{
                     {
                         fetchdata.map((prop, index) =>{
                             return (
-                                <Spin spinning={propsvalue.id ? false : true} tip="Loading...">
-                                    <div key={index}>
-                                        <FormItem {...formItemLayout}>
-                                            {getFieldDecorator('id', {
-                                                initialValue:propsvalue.id,
-                                                rules: [{
-                                                    required: true, message: 'Please input id field.',
-                                                }],
-                                            })(
-                                                <Input id="id" type="hidden" placeholder="Input Id"/>
-                                            )}
-                                        </FormItem>
+                                <div key={index}>
+                                    <Spin spinning={propsvalue.id ? false : true} tip="Loading...">
+                                    <FormItem {...formItemLayout}>
+                                        {getFieldDecorator('id', {
+                                            initialValue:propsvalue.id,
+                                            rules: [{
+                                                required: true, message: 'Please input id field.',
+                                            }],
+                                        })(
+                                            <Input id="id" type="hidden" placeholder="Input Id"/>
+                                        )}
+                                    </FormItem>
 
-                                        <FormItem {...formItemLayout} label="Name">
-                                            {getFieldDecorator('name', {
-                                                initialValue:propsvalue.name,
-                                                rules: [{
-                                                    required: true, message: 'Please input name field.',
-                                                }],
-                                            })(
-                                                <Input id="name" placeholder="Input Name"/>
-                                            )}
-                                        </FormItem>
+                                    <FormItem {...formItemLayout} label="Name">
+                                        {getFieldDecorator('name', {
+                                            initialValue:propsvalue.name,
+                                            rules: [{
+                                                required: true, message: 'Please input name field.',
+                                            }],
+                                        })(
+                                            <Input id="name" placeholder="Input Name"/>
+                                        )}
+                                    </FormItem>
 
-                                        <FormItem {...formItemLayout} label="Description">
-                                            {getFieldDecorator('description', {
-                                                initialValue:propsvalue.description,
-                                                rules: [{
-                                                    required: true, message: 'Please input jenis description field.',
-                                                }],
-                                            })(
-                                                <TextArea id="description" placeholder="Input description"/>
-                                            )}
-                                        </FormItem>
+                                    <FormItem {...formItemLayout} label="Description">
+                                        {getFieldDecorator('description', {
+                                            initialValue:propsvalue.description,
+                                            rules: [{
+                                                required: true, message: 'Please input jenis description field.',
+                                            }],
+                                        })(
+                                            <TextArea id="description" placeholder="Input description"/>
+                                        )}
+                                    </FormItem>
 
-                                        <FormItem {...formItemLayout}>
-                                            {getFieldDecorator('token', {
-                                                initialValue:token,
-                                                rules: [{
-                                                    required: true, message: 'Please input token field.',
-                                                }],
-                                            })(
-                                                <Input id="token" type="hidden" placeholder="Input Token"/>
-                                            )}
-                                        </FormItem>
-                                    </div>
+                                    <FormItem {...formItemLayout}>
+                                        {getFieldDecorator('token', {
+                                            initialValue:token,
+                                            rules: [{
+                                                required: true, message: 'Please input token field.',
+                                            }],
+                                        })(
+                                            <Input id="token" type="hidden" placeholder="Input Token"/>
+                                        )}
+                                    </FormItem>
                                 </Spin>
+                                </div>
                             );
                         })
                     }

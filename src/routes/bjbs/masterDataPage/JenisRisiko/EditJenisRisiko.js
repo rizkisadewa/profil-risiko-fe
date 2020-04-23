@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Modal, Input, Form, Spin} from "antd";
+import {Button, Input, Form, Spin} from "antd";
 
 import connect from "react-redux/es/connect/connect";
 import {updateRisk, resetPutRisk, getRisk} from "../../../../appRedux/actions";
@@ -69,8 +69,8 @@ class EditJenisRisiko extends React.PureComponent{
                     {
                         fetchdata.map((prop, index) =>{
                             return(
-                                <Spin spinning={propsvalue.id ? false : true} tip="Loading...">
-                                    <div key={index}>
+                                <div key={index}>
+                                    <Spin spinning={propsvalue.id ? false : true} tip="Loading...">
                                     <FormItem {...formItemLayout}>
                                         {getFieldDecorator('id', {
                                             initialValue:propsvalue.id,
@@ -125,8 +125,8 @@ class EditJenisRisiko extends React.PureComponent{
                                             <Input id="token" type="hidden" placeholder="Input Token"/>
                                         )}
                                     </FormItem>
-                                </div>
                                 </Spin>
+                                </div>
                             );
                         })
                     }

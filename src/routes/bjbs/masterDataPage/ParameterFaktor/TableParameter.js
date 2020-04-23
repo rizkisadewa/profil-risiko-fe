@@ -1,16 +1,18 @@
 import React from "react";
 import SweetAlert from "react-bootstrap-sweetalert";
 import {NotificationContainer, NotificationManager} from "react-notifications";
-import {Divider, Button, Card, Table, Input, Pagination, Spin} from "antd";
+import {Divider, Button, Card, Table, Input, Pagination, Spin, Select, Form} from "antd";
 import IntlMessages from "util/IntlMessages";
 import Highlighter from "react-highlight-words";
-import {SearchOutlined} from "@ant-design/icons";
+import {SearchOutlined, CloseCircleOutlined} from "@ant-design/icons";
 import SaveParameter from "./SaveParameter";
 import EditParameter from "./EditParameter";
 
 import {connect} from "react-redux";
 import {getAllFaktorParameterTable, deleteFaktorParameter, countAllFaktorParameter} from "../../../../appRedux/actions/Parameterfaktor";
+import {getAllRisks} from "../../../../appRedux/actions/Jenisrisiko";
 // import {Redirect} from 'react-router-dom';
+const Option = Select.Option;
 
 class TableParameter extends React.Component{
     constructor(props) {
@@ -33,30 +35,55 @@ class TableParameter extends React.Component{
             statusallparameterfaktor:'',
             loading:false,
             lengthdata: 0,
-            deletestatus:''
+            deletestatus:'',
+            risk_id : 0,
+            dataoptions : [],
+            valueselect : null,
+            paramname : '',
+            parambobot : ''
         }
     }
 
     componentDidMount(){
-        this.props.getAllFaktorParameterTable({page:this.state.paging, token:this.props.token});
-        this.props.countAllFaktorParameter({token:this.props.token});
+        this.props.getAllRisks({token:this.props.token});
+        this.props.getAllFaktorParameterTable({page:this.state.paging, token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:this.state.parambobot});
+        this.props.countAllFaktorParameter({token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:this.state.parambobot});
     }
 
     componentWillReceiveProps(nextProps) {
         // this.handleProp(nextProps);
         this.setState({
-            datatable : nextProps.getallparameterfaktortable,
             statusallparameterfaktortable : nextProps.statusallparameterfaktortable,
             statusallparameterfaktor : nextProps.statusallparameterfaktor,
+            dataoptions : nextProps.getallrisks,
         });
 
         // console.log(nextProps.deleteparameterfaktor);
         if (nextProps.statusallparameterfaktortable === 200 && nextProps.statusallparameterfaktor === 200){
-            this.setState({
-                loading:false,
-                lengthdata:nextProps.countallparameterfaktor,
-                deletestatus : '',
-            });
+            if (nextProps.countallparameterfaktor){
+                if (nextProps.getallparameterfaktortable.rows) {
+                    this.setState({
+                        loading: false,
+                        lengthdata: nextProps.countallparameterfaktor,
+                        deletestatus: '',
+                        datatable: [],
+                    });
+                } else {
+                    this.setState({
+                        loading: false,
+                        lengthdata: nextProps.countallparameterfaktor,
+                        deletestatus: '',
+                        datatable: nextProps.getallparameterfaktortable,
+                    });
+                }
+            } else {
+                this.setState({
+                    loading:false,
+                    lengthdata:0,
+                    deletestatus : '',
+                    datatable : [],
+                });
+            }
         }
 
         if(nextProps.deleteparameterfaktor === 200){
@@ -69,7 +96,7 @@ class TableParameter extends React.Component{
 
     shouldComponentUpdate(nextProps, nextState) {
         if (nextState.deletestatus !== this.state.deletestatus){
-            this.onChangePagination(nextState.paging);
+            this.onRefresh();
             this.setState({
                 deletestatus : nextProps.deleteparameterfaktor,
             });
@@ -86,7 +113,6 @@ class TableParameter extends React.Component{
     }*/
 
     handleChange = (pagination, filters, sorter) => {
-        this.onRefresh();
         console.log('Various parameters', pagination, filters, sorter);
         this.setState({
             // filteredInfo: filters,
@@ -116,7 +142,7 @@ class TableParameter extends React.Component{
                     style={{width:90, marginRight:8}}
                 >Search</Button>
 
-                <Button onClick={() => this.handleReset(clearFilters)} size="small" style={{width:90}}>Reset</Button>
+                <Button onClick={() => this.handleReset(clearFilters, dataIndex)} size="small" style={{width:90}}>Reset</Button>
             </div>
         ),
         filterIcon : filtered => <SearchOutlined style={{color: filtered ? '#1890ff' : undefined}}/>,
@@ -147,13 +173,59 @@ class TableParameter extends React.Component{
             searchText: selectedKeys[0],
             searchedColumn: dataIndex,
         });
+
+        if (dataIndex === 'name'){
+            var paramnames = selectedKeys[0];
+            if (!paramnames){
+                paramnames = ''
+            }
+
+            this.setState({
+                paramname : paramnames,
+                loading : true
+            })
+            this.props.getAllFaktorParameterTable({page:1, token:this.props.token, risk_id:this.state.risk_id, name:paramnames, bobot:this.state.parambobot});
+            this.props.countAllFaktorParameter({token:this.props.token, risk_id:this.state.risk_id, name:paramnames, bobot:this.state.parambobot});
+        }
+
+        if (dataIndex === 'bobot'){
+            var parambobot = selectedKeys[0];
+            if (!parambobot){
+                parambobot = ''
+            }
+
+            this.setState({
+                parambobot : parambobot,
+                loading : true
+            })
+            this.props.getAllFaktorParameterTable({page:1, token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:parambobot});
+            this.props.countAllFaktorParameter({token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:parambobot});
+        }
     };
 
-    handleReset = clearFilters => {
+    handleReset = (clearFilters, dataIndex) => {
         clearFilters();
         this.setState({
             searchText: ''
         });
+
+        if (dataIndex === 'name'){
+            this.setState({
+                paramname : '',
+                loading : true
+            })
+            this.props.getAllFaktorParameterTable({page:1, token:this.props.token, risk_id:this.state.risk_id, name:'', bobot:this.state.parambobot});
+            this.props.countAllFaktorParameter({token:this.props.token, risk_id:this.state.risk_id, name:'', bobot:this.state.parambobot});
+        }
+
+        if (dataIndex === 'bobot'){
+            this.setState({
+                parambobot : '',
+                loading : true
+            })
+            this.props.getAllFaktorParameterTable({page:1, token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:''});
+            this.props.countAllFaktorParameter({token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:''});
+        }
     };
 
     onCancelDelete = () => {
@@ -171,16 +243,18 @@ class TableParameter extends React.Component{
 
     clickCancelAddButton = () => {
         this.setState({
-            addbutton: false
+            addbutton: false,
+            risk_id:0
         })
-        this.onChangePagination(this.state.paging);
+        this.onRefresh();
     }
 
     clickCancelEditButton = () => {
         this.setState({
-            editbutton: false
+            editbutton: false,
+            risk_id:0
         })
-        this.onChangePagination(this.state.paging);
+        this.onRefresh();
     }
 
     clickEditSuccessButton = (status) => {
@@ -188,10 +262,12 @@ class TableParameter extends React.Component{
         this.setState({
             editbutton: false,
             test: true,
+            parambobot:'',
+            paramname:''
         });
 
         if (status === 201 || status === 200) {
-            this.onChangePagination(this.state.paging);
+            this.onRefresh(status);
             NotificationManager.success("Data has updated.", "Success !!");
         }
     }
@@ -201,10 +277,12 @@ class TableParameter extends React.Component{
         this.setState({
             addbutton: false,
             test: true,
+            parambobot:'',
+            paramname:''
         });
 
         if (status === 201 || status === 200){
-            this.onChangePagination(this.state.paging);
+            this.onRefresh(status);
             NotificationManager.success("Data has saved.", "Success !!");
         }
     }
@@ -214,28 +292,31 @@ class TableParameter extends React.Component{
             paging: page,
             loading:true
         });
-        this.props.getAllFaktorParameterTable({page:page, token:this.props.token});
-        this.props.countAllFaktorParameter({token:this.props.token});
+        this.props.getAllFaktorParameterTable({page:page, token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:this.state.parambobot});
+        this.props.countAllFaktorParameter({token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:this.state.parambobot});
     }
 
-    onRefresh = () => {
+    onRefresh = (status) => {
         this.setState({
-            loading:true
+            loading:true,
+            paging:1,
+            valueselect:null,
+            risk_id:0
         });
-        this.props.getAllFaktorParameterTable({page:this.state.paging, token:this.props.token});
-        this.props.countAllFaktorParameter({token:this.props.token});
+        this.props.getAllFaktorParameterTable({page:1, token:this.props.token, risk_id:0, name:status? '' : this.state.paramname, bobot:status? '' : this.state.parambobot});
+        this.props.countAllFaktorParameter({token:this.props.token, risk_id:0, name:status? '' : this.state.paramname, bobot:status? '' : this.state.parambobot});
     }
 
     render() {
         let {sortedInfo} = this.state;
-        const {warning, addbutton, editbutton, eid, fetchdata, datatable, test, idvalue, paging, loading, lengthdata} = this.state;
+        const {warning, addbutton, editbutton, eid, fetchdata, datatable, idvalue, paging, loading, lengthdata, dataoptions, valueselect, parambobot, paramname} = this.state;
         const {token} = this.props;
         sortedInfo = sortedInfo || {};
         const columns = [{
             title: 'Risk ID',
             dataIndex: 'risk_id',
             key: 'risk_id',
-            ...this.getColumnSearchProps('risk_id'),
+            // ...this.getColumnSearchProps('risk_id'),
             sorter: (a, b) => a.risk_id - b.risk_id,
             sortOrder: sortedInfo.columnKey === 'risk_id' && sortedInfo.order,
         }, {
@@ -299,18 +380,63 @@ class TableParameter extends React.Component{
                         /> :
                     <>
                         <div className="table-operations">
-                            <Button className="ant-btn ant-btn-primary" onClick={this.clickAddButton}>Add</Button>
-                            <Button className="ant-btn" onClick={this.onRefresh}>Refresh</Button>
+                            <Form>
+
+                                <Button className="ant-btn ant-btn-primary" onClick={this.clickAddButton}>Add</Button>
+                                <Button className="ant-btn" onClick={this.onRefresh}>Refresh</Button>
+                                <Select id="risk_id"
+                                        value={valueselect}
+                                        onSelect={(value)=>{
+                                            this.setState({
+                                                loading:true,
+                                                risk_id:value,
+                                                valueselect:value
+                                            });
+                                            this.props.getAllFaktorParameterTable({page:1, token:token, risk_id:value, name:paramname, bobot:parambobot});
+                                            this.props.countAllFaktorParameter({token:token, risk_id:value, name:paramname, bobot:parambobot});
+                                        }}
+                                        clearIcon={<CloseCircleOutlined onClick={()=>{
+                                            this.setState({
+                                                loading:true,
+                                                risk_id:0,
+                                                valueselect:null
+                                            });
+                                            this.props.getAllFaktorParameterTable({page:1, token:token, risk_id:0, name:paramname, bobot:parambobot});
+                                            this.props.countAllFaktorParameter({token:token, risk_id:0, name:paramname, bobot:parambobot});
+                                        }}/>}
+                                        suffixIcon={<SearchOutlined style={{color:'#1890ff'}}/>}
+                                        allowClear
+                                        showSearch
+                                        placeholder="Search risk"
+                                        optionFilterProp="children"
+                                        style={valueselect === null ? { width: 300, float: 'right', color: '#BFBFBF'} : { width: 300, float: 'right'}}
+                                        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
+                                    <Option value={null} disabled>Search risk</Option>
+                                    {
+                                        dataoptions.map((prop, index) => {
+                                            var value = prop.id;
+                                            var label = prop.nama;
+                                            return (
+                                                <Option key={index} value={value}>{label}</Option>
+                                            )
+                                        })
+                                    }
+                                </Select>
+
+                            </Form>
                         </div>
                         <Spin tip="Loading..." spinning={loading}>
-                            <Table className="gx-table-responsive" columns={columns} dataSource={datatable} onChange={this.handleChange} rowKey="id"
+                            <Table className="gx-table-responsive" dataSource={datatable} columns={columns} onChange={this.handleChange} rowKey="id"
                                    pagination={false}
                             />
                         </Spin>
                         <div className="table-operations" style={{ paddingTop : '1rem', float : 'right' }}>
                             {
-                                lengthdata === 0 ? '' :
-                                <Pagination current={paging} total={lengthdata} onChange={this.onChangePagination}/>
+                                (lengthdata) ?
+                                    lengthdata > 0 ?
+                                        <Pagination current={paging} total={lengthdata ? lengthdata : 1} onChange={this.onChangePagination}/> : ''
+                                    : ''
+
                             }
                         </div>
                         <SweetAlert show={warning}
@@ -340,10 +466,11 @@ class TableParameter extends React.Component{
     }
 }
 
-const mapStateToProps = ({auth, parameterfaktor}) => {
+const mapStateToProps = ({auth, parameterfaktor, jenisrisiko}) => {
     const {token} = auth;
     const {getallparameterfaktortable,getparameterfaktor,statusallparameterfaktortable,countallparameterfaktor,statusallparameterfaktor, deleteparameterfaktor} = parameterfaktor;
-    return {getallparameterfaktortable,getparameterfaktor,token,statusallparameterfaktortable,countallparameterfaktor,statusallparameterfaktor,deleteparameterfaktor}
+    const {getallrisks} = jenisrisiko;
+    return {getallparameterfaktortable,getparameterfaktor,token,statusallparameterfaktortable,countallparameterfaktor,statusallparameterfaktor,deleteparameterfaktor, getallrisks}
 };
 
-export default connect(mapStateToProps, {getAllFaktorParameterTable, deleteFaktorParameter, countAllFaktorParameter})(TableParameter);
+export default connect(mapStateToProps, {getAllFaktorParameterTable, deleteFaktorParameter, countAllFaktorParameter, getAllRisks})(TableParameter);

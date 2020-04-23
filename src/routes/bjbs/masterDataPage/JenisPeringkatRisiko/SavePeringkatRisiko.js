@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Input, Form, Select, InputNumber} from "antd";
+import {Button, Input, Form, Select} from "antd";
 import connect from "react-redux/es/connect/connect";
 import {getAllPeringkatRisiko, postPeringkatRisiko, resetPostPeringkatRisiko, jenisNilaiParam} from "../../../../appRedux/actions";
 
@@ -101,7 +101,7 @@ class SavePeringkatRisiko extends React.Component{
                                         var value = prop.value;
                                         var label = prop.text;
                                         return (
-                                            <Option value={value}>{label}</Option>
+                                            <Option value={value} key={index}>{label}</Option>
                                         )
                                     })
                                 }

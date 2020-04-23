@@ -31,12 +31,14 @@ class TablePeringkatRisiko extends React.Component{
             loading: false,
             lengthdata:0,
             deletestatus:'',
+            description:'',
+            paramname:''
         }
     }
 
     componentDidMount(){
-        this.props.getAllPeringkatRisiko({page:this.state.paging, token:this.props.token});
-        this.props.countAllPeringkatRisiko({token:this.props.token});
+        this.props.getAllPeringkatRisiko({page:this.state.paging, token:this.props.token, description:this.state.description, name:this.state.paramname});
+        this.props.countAllPeringkatRisiko({token:this.props.token, description:this.state.description, name:this.state.paramname});
     }
 
     componentWillReceiveProps(nextProps){
@@ -63,7 +65,7 @@ class TablePeringkatRisiko extends React.Component{
     }
 
     shouldComponentUpdate(nextProps, nextState){
-        if (nextState.deletestatus != this.state.deletestatus){
+        if (nextState.deletestatus !== this.state.deletestatus){
             this.onChangePagination(nextState.paging);
             this.setState({
                 deletestatus : nextProps.deleteperingkatrisiko
@@ -197,16 +199,16 @@ class TablePeringkatRisiko extends React.Component{
             paging: page,
             loading:true
         });
-        this.props.getAllPeringkatRisiko({page:page, token:this.props.token});
-        this.props.countAllPeringkatRisiko({token:this.props.token});
+        this.props.getAllPeringkatRisiko({page:page, token:this.props.token, description:this.state.description, name:this.state.paramname});
+        this.props.countAllPeringkatRisiko({token:this.props.token, description:this.state.description, name:this.state.paramname});
     }
 
     onRefresh = () => {
         this.setState({
             loading:true
         });
-        this.props.getAllPeringkatRisiko({page:this.state.paging, token:this.props.token});
-        this.props.countAllPeringkatRisiko({token:this.props.token});
+        this.props.getAllPeringkatRisiko({page:this.state.paging, token:this.props.token, description:this.state.description, name:this.state.paramname});
+        this.props.countAllPeringkatRisiko({token:this.props.token, description:this.state.description, name:this.state.paramname});
     }
 
     render() {
@@ -226,7 +228,7 @@ class TablePeringkatRisiko extends React.Component{
             title: 'Jenis Penilaian',
             dataIndex: 'jenis_nilai',
             key: 'jenis_nilai',
-            ...this.getColumnSearchProps('jenis_nilai'),
+            // ...this.getColumnSearchProps('jenis_nilai'),
             sorter: (a, b) => a.jenis_nilai.localeCompare(b.jenis_nilai),
             sortOrder: sortedInfo.columnKey === 'jenis_nilai' && sortedInfo.order,
         }, {
@@ -243,13 +245,14 @@ class TablePeringkatRisiko extends React.Component{
             sorter: (a, b) => Date.parse(a.created_at) - Date.parse(b.created_at),
             sortOrder: sortedInfo.columnKey === 'created_at' && sortedInfo.order,
             render : (text, record) => {
+                var tgl = '';
                 if (text.includes('T')){
                     var spTgl = text.split("T");
                     var spTime = spTgl[1].split(".");
 
-                    var tgl = spTgl[0]+' '+spTime[0];
+                    tgl = spTgl[0]+' '+spTime[0];
                 } else {
-                    var tgl = text;
+                    tgl = text;
                 }
                 return(
                     <span>{tgl}</span>

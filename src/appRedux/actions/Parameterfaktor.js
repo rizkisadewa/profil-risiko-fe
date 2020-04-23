@@ -6,7 +6,6 @@ import {FETCH_ERROR,
     POST_PARAMETER_FAKTOR,
     DELETE_PARAMETER_FAKTOR,
     STATUS_POST_PARAMETER_FAKTOR,
-    JENIS_NILAI_PARAM,
     STATUS_ALL_PARAMETER_FAKTOR_TABLE,
     STATUS_ALL_PARAMETER_FAKTOR,
     STATUS_PUT_PARAMETER_FAKTOR,
@@ -14,11 +13,17 @@ import {FETCH_ERROR,
 } from "../../constants/ActionTypes";
 import axios from 'util/Api'
 
-export const getAllFaktorParameterTable = ({page, token}) => {
+export const getAllFaktorParameterTable = ({page, token, risk_id, name, bobot}) => {
     return (dispatch) => {
         dispatch({type: FETCH_START});
         //console.log('berhasil horee --> page :',page,' token :',token);
-        axios.get('api/parameter-faktor-table?page='+page,{
+        var parameters = '';
+        if (risk_id > 0){
+            parameters = 'page='+page+'&risk_id='+risk_id+'&name='+name+'&bobot='+bobot;
+        } else {
+            parameters = 'page='+page+'&name='+name+'&bobot='+bobot;
+        }
+        axios.get('api/parameter-faktor-table?'+parameters,{
             headers: {
                 Authorization: "Bearer "+token
             }
@@ -36,10 +41,17 @@ export const getAllFaktorParameterTable = ({page, token}) => {
     }
 };
 
-export const countAllFaktorParameter = ({token}) => {
+export const countAllFaktorParameter = ({token, risk_id, name, bobot}) => {
     return (dispatch) => {
         dispatch({type: FETCH_START});
-        axios.get('api/parameter-faktor-table',{
+        var parameters = '';
+        if (risk_id > 0){
+            parameters = '?risk_id='+risk_id+'&name='+name+'&bobot='+bobot;
+        } else {
+            parameters = '?name='+name+'&bobot='+bobot;
+        }
+
+        axios.get('api/parameter-faktor-table'+parameters,{
             headers: {
                 Authorization: "Bearer "+token
             }

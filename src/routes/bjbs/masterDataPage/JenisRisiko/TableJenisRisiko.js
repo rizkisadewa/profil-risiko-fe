@@ -198,11 +198,12 @@ class TableJenisRisiko extends React.Component {
     }
 
     render() {
-        let {sortedInfo, filteredInfo} = this.state;
+        // let {sortedInfo, filteredInfo} = this.state;
+        let {sortedInfo} = this.state;
         const {warning, datatable, addbutton, editbutton, eid, fetchdata, idvalue, loading} = this.state;
         const {token} = this.props;
         sortedInfo = sortedInfo || {};
-        filteredInfo = filteredInfo || {};
+        // filteredInfo = filteredInfo || {};
         const columns = [{
             title: 'Nama',
             dataIndex: 'nama',

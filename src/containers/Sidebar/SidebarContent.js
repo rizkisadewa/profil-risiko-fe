@@ -8,7 +8,7 @@ import SidebarLogo from "./SidebarLogo";
 
 import Auxiliary from "util/Auxiliary";
 import UserProfile from "./UserProfile";
-import AppsNavigation from "./AppsNavigation";
+// import AppsNavigation from "./AppsNavigation";
 import {
   NAV_STYLE_NO_HEADER_EXPANDED_SIDEBAR,
   NAV_STYLE_NO_HEADER_MINI_SIDEBAR,

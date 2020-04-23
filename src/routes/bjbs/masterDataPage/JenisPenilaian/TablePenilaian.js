@@ -10,7 +10,6 @@ import EditPenilaian from "./EditPenilaian";
 
 import {connect} from "react-redux";
 import {getAllJenisPenilaian, deleteJenisPenilaian, countAllJenisPenilaian} from "../../../../appRedux/actions/Jenispenilaian";
-import EditPeringkatRisiko from "../JenisPeringkatRisiko/EditPeringkatRisiko";
 
 class TablePenilaian extends React.Component{
     constructor(props) {
@@ -64,7 +63,7 @@ class TablePenilaian extends React.Component{
     }
 
     shouldComponentUpdate(nextProps, nextState){
-        if (nextState.deletestatus != this.state.deletestatus){
+        if (nextState.deletestatus !== this.state.deletestatus){
             this.onChangePagination(nextState.paging);
             this.setState({
                 deletestatus : nextProps.deletejenispenilaian
@@ -243,16 +242,17 @@ class TablePenilaian extends React.Component{
             sorter: (a, b) => Date.parse(a.created_at) - Date.parse(b.created_at),
             sortOrder: sortedInfo.columnKey === 'created_at' && sortedInfo.order,
             render : (text, record) => {
+                var tgl = '';
                 if (text === null){
-                    var tgl = '-';
+                    tgl = '-';
                 } else {
                     if (text.includes('T')){
                         var spTgl = text.split("T");
                         var spTime = spTgl[1].split(".");
 
-                        var tgl = spTgl[0]+' '+spTime[0];
+                        tgl = spTgl[0]+' '+spTime[0];
                     } else {
-                        var tgl = text;
+                        tgl = text;
                     }
                 }
 

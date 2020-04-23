@@ -82,8 +82,8 @@ class EditParameter extends React.Component{
                 {
                     fetchdata.map((prop, index) =>{
                         return (
-                            <Spin spinning={propsvalue.risk_id ? false : true} tip="Loading...">
-                                <div key={index}>
+                            <div key={index}>
+                                <Spin spinning={propsvalue.risk_id ? false : true} tip="Loading...">
 
                                 <FormItem {...formItemLayout}>
                                     {getFieldDecorator('token', {
@@ -205,8 +205,8 @@ class EditParameter extends React.Component{
                                         <Input id="id" type="hidden" placeholder="Input Id"/>
                                     )}
                                 </FormItem>
-                            </div>
                             </Spin>
+                            </div>
                         );
                     })
                 }

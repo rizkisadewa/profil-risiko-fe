@@ -1,10 +1,9 @@
 import React from "react";
-import {Button, Input, Form, Select, InputNumber} from "antd";
+import {Button, Input, Form} from "antd";
 import connect from "react-redux/es/connect/connect";
 import {getAllJenisPenilaian, postJenisPenilaian, resetPostJenisPenilaian} from "../../../../appRedux/actions";
 
 const FormItem = Form.Item;
-const Option = Select.Option;
 const {TextArea} = Input;
 
 class SavePenilaian extends React.PureComponent{
@@ -38,7 +37,6 @@ class SavePenilaian extends React.PureComponent{
             },
         };
 
-        const {dataoptions} = this.state;
         const {token} = this.props;
         const {getFieldDecorator} = this.props.form;
         return (
