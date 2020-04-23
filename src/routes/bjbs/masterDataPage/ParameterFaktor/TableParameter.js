@@ -262,12 +262,10 @@ class TableParameter extends React.Component{
         this.setState({
             editbutton: false,
             test: true,
-            parambobot:'',
-            paramname:''
         });
 
         if (status === 201 || status === 200) {
-            this.onRefresh(status);
+            this.onRefresh();
             NotificationManager.success("Data has updated.", "Success !!");
         }
     }
@@ -277,12 +275,10 @@ class TableParameter extends React.Component{
         this.setState({
             addbutton: false,
             test: true,
-            parambobot:'',
-            paramname:''
         });
 
         if (status === 201 || status === 200){
-            this.onRefresh(status);
+            this.onRefresh();
             NotificationManager.success("Data has saved.", "Success !!");
         }
     }
@@ -296,15 +292,15 @@ class TableParameter extends React.Component{
         this.props.countAllFaktorParameter({token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:this.state.parambobot});
     }
 
-    onRefresh = (status) => {
+    onRefresh = () => {
         this.setState({
             loading:true,
             paging:1,
             valueselect:null,
             risk_id:0
         });
-        this.props.getAllFaktorParameterTable({page:1, token:this.props.token, risk_id:0, name:status? '' : this.state.paramname, bobot:status? '' : this.state.parambobot});
-        this.props.countAllFaktorParameter({token:this.props.token, risk_id:0, name:status? '' : this.state.paramname, bobot:status? '' : this.state.parambobot});
+        this.props.getAllFaktorParameterTable({page:1, token:this.props.token, risk_id:0, name:this.state.paramname, bobot:this.state.parambobot});
+        this.props.countAllFaktorParameter({token:this.props.token, risk_id:0, name:this.state.paramname, bobot:this.state.parambobot});
     }
 
     render() {
