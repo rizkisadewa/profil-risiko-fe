@@ -40,7 +40,9 @@ class TableParameter extends React.Component{
             dataoptions : [],
             valueselect : null,
             paramname : '',
-            parambobot : ''
+            parambobot : '',
+            edname:'',
+            edbobot:''
         }
     }
 
@@ -128,7 +130,17 @@ class TableParameter extends React.Component{
                         this.searchInput = node;
                     }}
                     placeholder={`Search ${dataIndex}`}
-                    value={selectedKeys[0]}
+                    value={
+                        (this.state.edname !== '') ?
+                            (dataIndex === 'name') ?
+                                this.state.edname
+                                : (this.state.edbobot !== '') ?
+                                (dataIndex === 'bobot') ?
+                                    this.state.edbobot
+                                    : selectedKeys[0]
+                                : selectedKeys[0]
+                            : selectedKeys[0]
+                    }
                     onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
                     onPressEnter={() => this.handleSearch(selectedKeys, confirm, dataIndex)}
                     style={{width:188, marginBottom:8, display:'block'}}
@@ -145,7 +157,16 @@ class TableParameter extends React.Component{
                 <Button onClick={() => this.handleReset(clearFilters, dataIndex)} size="small" style={{width:90}}>Reset</Button>
             </div>
         ),
-        filterIcon : filtered => <SearchOutlined style={{color: filtered ? '#1890ff' : undefined}}/>,
+        filterIcon : filtered => <SearchOutlined style={{color: filtered ? '#1890ff' :
+                (this.state.edname !== '') ?
+                    (dataIndex === 'name') ?
+                        '#1890ff' :
+                    (this.state.edbobot !== '') ?
+                        (dataIndex === 'bobot') ?
+                            '#1890ff' :
+                        undefined :
+                    undefined :
+                undefined}}/>,
         onFilter : (value, record) =>
             record[dataIndex]
                 .toString()
@@ -164,13 +185,36 @@ class TableParameter extends React.Component{
                     autoEscape
                     textToHighlight={text.toString()}
                 />
-            ) : (text),
+            ) :
+                (this.state.edname !== '') ?
+                    (dataIndex === 'name') ?
+                        (
+                            <Highlighter
+                                highlightStyle={{backgroundColor: 'ffc069', padding:0}}
+                                searchWords={[this.state.edname]}
+                                autoEscape
+                                textToHighlight={text.toString()}
+                            />
+                        )
+                        : (this.state.edbobot !== '') ?
+                        (dataIndex === 'bobot') ?
+                            (
+                                <Highlighter
+                                    highlightStyle={{backgroundColor: 'ffc069', padding:0}}
+                                    searchWords={[this.state.edbobot]}
+                                    autoEscape
+                                    textToHighlight={text.toString()}
+                                />
+                            )
+                            : (text)
+                        : (text)
+                    : (text),
     });
 
     handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
         this.setState({
-            searchText: selectedKeys[0],
+            searchText: (selectedKeys[0])?selectedKeys[0]:'',
             searchedColumn: dataIndex,
         });
 
@@ -182,7 +226,8 @@ class TableParameter extends React.Component{
 
             this.setState({
                 paramname : paramnames,
-                loading : true
+                loading : true,
+                edname : paramnames
             })
             this.props.getAllFaktorParameterTable({page:1, token:this.props.token, risk_id:this.state.risk_id, name:paramnames, bobot:this.state.parambobot});
             this.props.countAllFaktorParameter({token:this.props.token, risk_id:this.state.risk_id, name:paramnames, bobot:this.state.parambobot});
@@ -196,7 +241,8 @@ class TableParameter extends React.Component{
 
             this.setState({
                 parambobot : parambobot,
-                loading : true
+                loading : true,
+                edbobot : parambobot
             })
             this.props.getAllFaktorParameterTable({page:1, token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:parambobot});
             this.props.countAllFaktorParameter({token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:parambobot});
@@ -212,7 +258,8 @@ class TableParameter extends React.Component{
         if (dataIndex === 'name'){
             this.setState({
                 paramname : '',
-                loading : true
+                loading : true,
+                edname : ''
             })
             this.props.getAllFaktorParameterTable({page:1, token:this.props.token, risk_id:this.state.risk_id, name:'', bobot:this.state.parambobot});
             this.props.countAllFaktorParameter({token:this.props.token, risk_id:this.state.risk_id, name:'', bobot:this.state.parambobot});
@@ -221,7 +268,8 @@ class TableParameter extends React.Component{
         if (dataIndex === 'bobot'){
             this.setState({
                 parambobot : '',
-                loading : true
+                loading : true,
+                edbobot : ''
             })
             this.props.getAllFaktorParameterTable({page:1, token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:''});
             this.props.countAllFaktorParameter({token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:''});

@@ -32,7 +32,9 @@ class TablePeringkatRisiko extends React.Component{
             lengthdata:0,
             deletestatus:'',
             description:'',
-            paramname:''
+            paramname:'',
+            eddesc:'',
+            edname:'',
         }
     }
 
@@ -43,17 +45,35 @@ class TablePeringkatRisiko extends React.Component{
 
     componentWillReceiveProps(nextProps){
         this.setState({
-            datatable : nextProps.getallperingkatrisiko,
             statusallperingkatrisikotable : nextProps.statusallperingkatrisikotable,
             statusallperingkatrisiko : nextProps.statusallperingkatrisiko
         });
 
         if (nextProps.statusallperingkatrisikotable === 200 && nextProps.statusallperingkatrisiko === 200){
-            this.setState({
-                loading:false,
-                lengthdata:nextProps.countperingkatrisiko,
-                deletestatus:''
-            });
+            if (nextProps.countperingkatrisiko){
+                if (nextProps.getallperingkatrisiko.rows){
+                    this.setState({
+                        loading:false,
+                        lengthdata:nextProps.countperingkatrisiko,
+                        deletestatus:'',
+                        datatable : [],
+                    });
+                } else {
+                    this.setState({
+                        loading:false,
+                        lengthdata:nextProps.countperingkatrisiko,
+                        deletestatus:'',
+                        datatable : nextProps.getallperingkatrisiko,
+                    });
+                }
+            } else {
+                this.setState({
+                    loading:false,
+                    lengthdata:0,
+                    deletestatus:'',
+                    datatable : [],
+                });
+            }
         }
 
         if (nextProps.deleteperingkatrisiko === 200){
@@ -66,7 +86,7 @@ class TablePeringkatRisiko extends React.Component{
 
     shouldComponentUpdate(nextProps, nextState){
         if (nextState.deletestatus !== this.state.deletestatus){
-            this.onChangePagination(nextState.paging);
+            this.onRefresh();
             this.setState({
                 deletestatus : nextProps.deleteperingkatrisiko
             })
@@ -75,7 +95,6 @@ class TablePeringkatRisiko extends React.Component{
     }
 
     handleChange = (pagination, filters, sorter) => {
-        this.onRefresh();
         console.log('Various parameters', pagination, filters, sorter);
         this.setState({
             // filteredInfo: filters,
@@ -91,7 +110,17 @@ class TablePeringkatRisiko extends React.Component{
                         this.searchInput = node;
                     }}
                     placeholder={`Search ${dataIndex}`}
-                    value={selectedKeys[0]}
+                    value    ={
+                        (this.state.edname !== '') ?
+                            (dataIndex === 'name') ?
+                                this.state.edname
+                                : (this.state.eddesc !== '') ?
+                                (dataIndex === 'description') ?
+                                    this.state.eddesc
+                                    : selectedKeys[0]
+                                : selectedKeys[0]
+                            : selectedKeys[0]
+                    }
                     onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
                     onPressEnter={() => this.handleSearch(selectedKeys, confirm, dataIndex)}
                     style={{width:188, marginBottom:8, display:'block'}}
@@ -105,10 +134,19 @@ class TablePeringkatRisiko extends React.Component{
                     style={{width:90, marginRight:8}}
                 >Search</Button>
 
-                <Button onClick={() => this.handleReset(clearFilters)} size="small" style={{width:90}}>Reset</Button>
+                <Button onClick={() => this.handleReset(clearFilters, dataIndex)} size="small" style={{width:90}}>Reset</Button>
             </div>
         ),
-        filterIcon : filtered => <SearchOutlined style={{color: filtered ? '#1890ff' : undefined}}/>,
+        filterIcon : filtered => <SearchOutlined style={{color: filtered ? '#1890ff' :
+                (this.state.edname !== '') ?
+                    (dataIndex === 'name') ?
+                        '#1890ff' :
+                    (this.state.eddesc !== '') ?
+                        (dataIndex === 'description') ?
+                            '#1890ff' :
+                        undefined :
+                    undefined :
+                undefined}}/>,
         onFilter : (value, record) =>
             record[dataIndex]
                 .toString()
@@ -127,22 +165,95 @@ class TablePeringkatRisiko extends React.Component{
                     autoEscape
                     textToHighlight={text.toString()}
                 />
-            ) : (text),
+            ) :
+                (this.state.edname !== '') ?
+                    (dataIndex === 'name') ?
+                        (
+                            <Highlighter
+                                highlightStyle={{backgroundColor: 'ffc069', padding:0}}
+                                searchWords={[this.state.edname]}
+                                autoEscape
+                                textToHighlight={text.toString()}
+                            />
+                        )
+                        : (this.state.eddesc !== '') ?
+                        (dataIndex === 'description') ?
+                            (
+                                <Highlighter
+                                    highlightStyle={{backgroundColor: 'ffc069', padding:0}}
+                                    searchWords={[this.state.eddesc]}
+                                    autoEscape
+                                    textToHighlight={text.toString()}
+                                />
+                            )
+                            : (text)
+                        : (text)
+                    : (text),
     });
 
     handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
         this.setState({
-            searchText: selectedKeys[0],
+            searchText: (selectedKeys[0]) ? selectedKeys[0] : '',
             searchedColumn: dataIndex,
         });
+
+        if (dataIndex === 'name'){
+            var parameters = selectedKeys[0];
+            if (!parameters){
+                parameters = '';
+            }
+
+            this.setState({
+                paramname:parameters,
+                loading:true,
+                edname: parameters
+            });
+            this.props.getAllPeringkatRisiko({page:1, token:this.props.token, description:this.state.description, name:parameters});
+            this.props.countAllPeringkatRisiko({token:this.props.token, description:this.state.description, name:parameters});
+        }
+
+        if (dataIndex === 'description'){
+            var paramdesc = selectedKeys[0];
+            if (!paramdesc){
+                paramdesc = '';
+            }
+
+            this.setState({
+                description:paramdesc,
+                loading:true,
+                eddesc:paramdesc
+            });
+            this.props.getAllPeringkatRisiko({page:1, token:this.props.token, description:paramdesc, name:this.state.paramname});
+            this.props.countAllPeringkatRisiko({token:this.props.token, description:paramdesc, name:this.state.paramname});
+        }
     };
 
-    handleReset = clearFilters => {
+    handleReset = (clearFilters, dataIndex) => {
         clearFilters();
         this.setState({
             searchText: ''
         });
+
+        if (dataIndex === 'name'){
+            this.setState({
+                paramname:'',
+                loading:true,
+                edname:''
+            });
+            this.props.getAllPeringkatRisiko({page:1, token:this.props.token, description:this.state.description, name:''});
+            this.props.countAllPeringkatRisiko({token:this.props.token, description:this.state.description, name:''});
+        }
+
+        if (dataIndex === 'description'){
+            this.setState({
+                description:'',
+                loading:true,
+                eddesc:''
+            });
+            this.props.getAllPeringkatRisiko({page:1, token:this.props.token, description:'', name:this.state.paramname});
+            this.props.countAllPeringkatRisiko({token:this.props.token, description:'', name:this.state.paramname});
+        }
     };
 
     onCancelDelete = () => {
@@ -162,14 +273,14 @@ class TablePeringkatRisiko extends React.Component{
         this.setState({
             addbutton: false
         })
-        this.onChangePagination(this.state.paging);
+        this.onRefresh();
     }
 
     clickCancelEditButton = () => {
         this.setState({
             editbutton: false
         })
-        this.onChangePagination(this.state.paging);
+        this.onRefresh();
     }
 
     clickEditSuccessButton = (status) => {
@@ -178,7 +289,7 @@ class TablePeringkatRisiko extends React.Component{
         });
 
         if (status === 201 || status === 200) {
-            this.onChangePagination(this.state.paging);
+            this.onRefresh();
             NotificationManager.success("Data has updated.", "Success !!");
         }
     }
@@ -189,7 +300,7 @@ class TablePeringkatRisiko extends React.Component{
         });
 
         if (status === 201 || status === 200){
-            this.onChangePagination(this.state.paging);
+            this.onRefresh();
             NotificationManager.success("Data has saved.", "Success !!");
         }
     }
@@ -205,9 +316,10 @@ class TablePeringkatRisiko extends React.Component{
 
     onRefresh = () => {
         this.setState({
-            loading:true
+            loading:true,
+            paging:1,
         });
-        this.props.getAllPeringkatRisiko({page:this.state.paging, token:this.props.token, description:this.state.description, name:this.state.paramname});
+        this.props.getAllPeringkatRisiko({page:1, token:this.props.token, description:this.state.description, name:this.state.paramname});
         this.props.countAllPeringkatRisiko({token:this.props.token, description:this.state.description, name:this.state.paramname});
     }
 
@@ -307,8 +419,11 @@ class TablePeringkatRisiko extends React.Component{
                         </Spin>
                         <div className="table-operations" style={{ paddingTop : '1rem', float : 'right' }}>
                             {
-                                lengthdata === 0 ? '' :
-                                    <Pagination current={paging} total={lengthdata} onChange={this.onChangePagination}/>
+                                (lengthdata) ?
+                                    lengthdata > 0 ?
+                                        <Pagination current={paging} total={lengthdata ? lengthdata : 1} onChange={this.onChangePagination}/> : ''
+                                    : ''
+
                             }
                         </div>
                         <SweetAlert show={warning}
