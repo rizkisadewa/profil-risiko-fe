@@ -41,15 +41,17 @@ class TableParameter extends React.Component{
             valueselect : null,
             paramname : '',
             parambobot : '',
+            paramriskname : '',
             edname:'',
-            edbobot:''
+            edbobot:'',
+            edriskname:''
         }
     }
 
     componentDidMount(){
         this.props.getAllRisks({token:this.props.token});
-        this.props.getAllFaktorParameterTable({page:this.state.paging, token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:this.state.parambobot});
-        this.props.countAllFaktorParameter({token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:this.state.parambobot});
+        this.props.getAllFaktorParameterTable({page:this.state.paging, token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:this.state.parambobot, risk_nama:this.state.paramriskname});
+        this.props.countAllFaktorParameter({token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:this.state.parambobot, risk_nama:this.state.paramriskname});
     }
 
     componentWillReceiveProps(nextProps) {
@@ -137,6 +139,10 @@ class TableParameter extends React.Component{
                                 : (this.state.edbobot !== '') ?
                                 (dataIndex === 'bobot') ?
                                     this.state.edbobot
+                                    :(this.state.edriskname !== '') ?
+                                    (dataIndex === 'risk_nama') ?
+                                        this.state.edriskname
+                                        : selectedKeys[0]
                                     : selectedKeys[0]
                                 : selectedKeys[0]
                             : selectedKeys[0]
@@ -164,6 +170,10 @@ class TableParameter extends React.Component{
                     (this.state.edbobot !== '') ?
                         (dataIndex === 'bobot') ?
                             '#1890ff' :
+                        (this.state.edriskname !== '') ?
+                            (dataIndex === 'risk_nama') ?
+                                '#1890ff' :
+                            undefined :
                         undefined :
                     undefined :
                 undefined}}/>,
@@ -206,6 +216,17 @@ class TableParameter extends React.Component{
                                     textToHighlight={text.toString()}
                                 />
                             )
+                            : (this.state.edriskname !== '') ?
+                            (dataIndex === 'risk_nama') ?
+                                (
+                                    <Highlighter
+                                        highlightStyle={{backgroundColor: 'ffc069', padding:0}}
+                                        searchWords={[this.state.edriskname]}
+                                        autoEscape
+                                        textToHighlight={text.toString()}
+                                    />
+                                )
+                                : (text)
                             : (text)
                         : (text)
                     : (text),
@@ -229,8 +250,8 @@ class TableParameter extends React.Component{
                 loading : true,
                 edname : paramnames
             })
-            this.props.getAllFaktorParameterTable({page:1, token:this.props.token, risk_id:this.state.risk_id, name:paramnames, bobot:this.state.parambobot});
-            this.props.countAllFaktorParameter({token:this.props.token, risk_id:this.state.risk_id, name:paramnames, bobot:this.state.parambobot});
+            this.props.getAllFaktorParameterTable({page:1, token:this.props.token, risk_id:this.state.risk_id, name:paramnames, bobot:this.state.parambobot, risk_nama:this.state.paramriskname});
+            this.props.countAllFaktorParameter({token:this.props.token, risk_id:this.state.risk_id, name:paramnames, bobot:this.state.parambobot, risk_nama:this.state.paramriskname});
         }
 
         if (dataIndex === 'bobot'){
@@ -244,8 +265,23 @@ class TableParameter extends React.Component{
                 loading : true,
                 edbobot : parambobot
             })
-            this.props.getAllFaktorParameterTable({page:1, token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:parambobot});
-            this.props.countAllFaktorParameter({token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:parambobot});
+            this.props.getAllFaktorParameterTable({page:1, token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:parambobot, risk_nama:this.state.paramriskname});
+            this.props.countAllFaktorParameter({token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:parambobot, risk_nama:this.state.paramriskname});
+        }
+
+        if (dataIndex === 'risk_nama'){
+            var paramriskname = selectedKeys[0];
+            if (!paramriskname){
+                paramriskname = ''
+            }
+
+            this.setState({
+                paramriskname : paramriskname,
+                loading : true,
+                edriskname : paramriskname
+            })
+            this.props.getAllFaktorParameterTable({page:1, token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:this.state.parambobot, risk_nama:paramriskname});
+            this.props.countAllFaktorParameter({token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:this.state.parambobot, risk_nama:paramriskname});
         }
     };
 
@@ -261,8 +297,8 @@ class TableParameter extends React.Component{
                 loading : true,
                 edname : ''
             })
-            this.props.getAllFaktorParameterTable({page:1, token:this.props.token, risk_id:this.state.risk_id, name:'', bobot:this.state.parambobot});
-            this.props.countAllFaktorParameter({token:this.props.token, risk_id:this.state.risk_id, name:'', bobot:this.state.parambobot});
+            this.props.getAllFaktorParameterTable({page:1, token:this.props.token, risk_id:this.state.risk_id, name:'', bobot:this.state.parambobot, risk_nama:this.state.paramriskname});
+            this.props.countAllFaktorParameter({token:this.props.token, risk_id:this.state.risk_id, name:'', bobot:this.state.parambobot, risk_nama:this.state.paramriskname});
         }
 
         if (dataIndex === 'bobot'){
@@ -271,8 +307,18 @@ class TableParameter extends React.Component{
                 loading : true,
                 edbobot : ''
             })
-            this.props.getAllFaktorParameterTable({page:1, token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:''});
-            this.props.countAllFaktorParameter({token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:''});
+            this.props.getAllFaktorParameterTable({page:1, token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:'', risk_nama:this.state.paramriskname});
+            this.props.countAllFaktorParameter({token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:'', risk_nama:this.state.paramriskname});
+        }
+
+        if (dataIndex === 'risk_nama'){
+            this.setState({
+                paramriskname : '',
+                loading : true,
+                edriskname : ''
+            })
+            this.props.getAllFaktorParameterTable({page:1, token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:this.state.parambobot, risk_nama:''});
+            this.props.countAllFaktorParameter({token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:this.state.parambobot, risk_nama:''});
         }
     };
 
@@ -336,8 +382,8 @@ class TableParameter extends React.Component{
             paging: page,
             loading:true
         });
-        this.props.getAllFaktorParameterTable({page:page, token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:this.state.parambobot});
-        this.props.countAllFaktorParameter({token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:this.state.parambobot});
+        this.props.getAllFaktorParameterTable({page:page, token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:this.state.parambobot, risk_nama:this.state.paramriskname});
+        this.props.countAllFaktorParameter({token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:this.state.parambobot, risk_nama:this.state.paramriskname});
     }
 
     onRefresh = () => {
@@ -347,22 +393,22 @@ class TableParameter extends React.Component{
             valueselect:null,
             risk_id:0
         });
-        this.props.getAllFaktorParameterTable({page:1, token:this.props.token, risk_id:0, name:this.state.paramname, bobot:this.state.parambobot});
-        this.props.countAllFaktorParameter({token:this.props.token, risk_id:0, name:this.state.paramname, bobot:this.state.parambobot});
+        this.props.getAllFaktorParameterTable({page:1, token:this.props.token, risk_id:0, name:this.state.paramname, bobot:this.state.parambobot, risk_nama:this.state.paramriskname});
+        this.props.countAllFaktorParameter({token:this.props.token, risk_id:0, name:this.state.paramname, bobot:this.state.parambobot, risk_nama:this.state.paramriskname});
     }
 
     render() {
         let {sortedInfo} = this.state;
-        const {warning, addbutton, editbutton, eid, fetchdata, datatable, idvalue, paging, loading, lengthdata, dataoptions, valueselect, parambobot, paramname} = this.state;
+        const {warning, addbutton, editbutton, eid, fetchdata, datatable, idvalue, paging, loading, lengthdata, dataoptions, valueselect, parambobot, paramname, paramriskname} = this.state;
         const {token} = this.props;
         sortedInfo = sortedInfo || {};
         const columns = [{
-            title: 'Risk ID',
-            dataIndex: 'risk_id',
-            key: 'risk_id',
-            // ...this.getColumnSearchProps('risk_id'),
-            sorter: (a, b) => a.risk_id - b.risk_id,
-            sortOrder: sortedInfo.columnKey === 'risk_id' && sortedInfo.order,
+            title: 'Risk Name',
+            dataIndex: 'risk_nama',
+            key: 'risk_nama',
+            ...this.getColumnSearchProps('risk_nama'),
+            sorter: (a, b) => a.risk_nama.localeCompare(b.risk_nama),
+            sortOrder: sortedInfo.columnKey === 'risk_nama' && sortedInfo.order,
         }, {
             title: 'Parameter',
             dataIndex: 'name',
@@ -436,8 +482,8 @@ class TableParameter extends React.Component{
                                                 risk_id:value,
                                                 valueselect:value
                                             });
-                                            this.props.getAllFaktorParameterTable({page:1, token:token, risk_id:value, name:paramname, bobot:parambobot});
-                                            this.props.countAllFaktorParameter({token:token, risk_id:value, name:paramname, bobot:parambobot});
+                                            this.props.getAllFaktorParameterTable({page:1, token:token, risk_id:value, name:paramname, bobot:parambobot, risk_nama:paramriskname});
+                                            this.props.countAllFaktorParameter({token:token, risk_id:value, name:paramname, bobot:parambobot, risk_nama:paramriskname});
                                         }}
                                         clearIcon={<CloseCircleOutlined onClick={()=>{
                                             this.setState({
@@ -445,8 +491,8 @@ class TableParameter extends React.Component{
                                                 risk_id:0,
                                                 valueselect:null
                                             });
-                                            this.props.getAllFaktorParameterTable({page:1, token:token, risk_id:0, name:paramname, bobot:parambobot});
-                                            this.props.countAllFaktorParameter({token:token, risk_id:0, name:paramname, bobot:parambobot});
+                                            this.props.getAllFaktorParameterTable({page:1, token:token, risk_id:0, name:paramname, bobot:parambobot, risk_nama:paramriskname});
+                                            this.props.countAllFaktorParameter({token:token, risk_id:0, name:paramname, bobot:parambobot, risk_nama:paramriskname});
                                         }}/>}
                                         suffixIcon={<SearchOutlined style={{color:'#1890ff'}}/>}
                                         allowClear

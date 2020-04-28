@@ -13,15 +13,15 @@ import {FETCH_ERROR,
 } from "../../constants/ActionTypes";
 import axios from 'util/Api'
 
-export const getAllFaktorParameterTable = ({page, token, risk_id, name, bobot}) => {
+export const getAllFaktorParameterTable = ({page, token, risk_id, name, bobot, risk_nama}) => {
     return (dispatch) => {
         dispatch({type: FETCH_START});
         //console.log('berhasil horee --> page :',page,' token :',token);
         var parameters = '';
         if (risk_id > 0){
-            parameters = 'page='+page+'&risk_id='+risk_id+'&name='+name+'&bobot='+bobot;
+            parameters = 'page='+page+'&risk_id='+risk_id+'&name='+name+'&bobot='+bobot+'&risk_nama='+risk_nama;
         } else {
-            parameters = 'page='+page+'&name='+name+'&bobot='+bobot;
+            parameters = 'page='+page+'&name='+name+'&bobot='+bobot+'&risk_nama='+risk_nama;
         }
         axios.get('api/parameter-faktor-table?'+parameters,{
             headers: {
@@ -41,14 +41,14 @@ export const getAllFaktorParameterTable = ({page, token, risk_id, name, bobot}) 
     }
 };
 
-export const countAllFaktorParameter = ({token, risk_id, name, bobot}) => {
+export const countAllFaktorParameter = ({token, risk_id, name, bobot, risk_nama}) => {
     return (dispatch) => {
         dispatch({type: FETCH_START});
         var parameters = '';
         if (risk_id > 0){
-            parameters = '?risk_id='+risk_id+'&name='+name+'&bobot='+bobot;
+            parameters = '?risk_id='+risk_id+'&name='+name+'&bobot='+bobot+'&risk_nama='+risk_nama;
         } else {
-            parameters = '?name='+name+'&bobot='+bobot;
+            parameters = '?name='+name+'&bobot='+bobot+'&risk_nama='+risk_nama;
         }
 
         axios.get('api/parameter-faktor-table'+parameters,{
