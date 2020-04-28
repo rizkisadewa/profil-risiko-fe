@@ -31,27 +31,49 @@ class TablePenilaian extends React.Component{
             loading: false,
             lengthdata:0,
             deletestatus:'',
+            paramdesc:'',
+            paramname:'',
+            eddesc:'',
+            edname:'',
         }
     }
 
     componentDidMount(){
-        this.props.getAllJenisPenilaian({page:this.state.paging, token:this.props.token});
-        this.props.countAllJenisPenilaian({token:this.props.token});
+        this.props.getAllJenisPenilaian({page:this.state.paging, token:this.props.token, name:this.state.paramname, description:this.state.paramdesc});
+        this.props.countAllJenisPenilaian({token:this.props.token, name:this.state.paramname, description:this.state.paramdesc});
     }
 
     componentWillReceiveProps(nextProps){
         this.setState({
-            datatable : nextProps.getalljenispenilaian,
             statusalljenispenilaiantable : nextProps.statusalljenispenilaiantable,
             statusalljenispenilaian : nextProps.statusalljenispenilaian
         });
 
         if (nextProps.statusalljenispenilaiantable === 200 && nextProps.statusalljenispenilaian === 200){
-            this.setState({
-                loading:false,
-                lengthdata:nextProps.countjenispenilaian,
-                deletestatus:''
-            });
+            if (nextProps.countjenispenilaian){
+                if (nextProps.getalljenispenilaian.rows){
+                    this.setState({
+                        loading:false,
+                        lengthdata:nextProps.countjenispenilaian,
+                        deletestatus:'',
+                        datatable : []
+                    });
+                } else {
+                    this.setState({
+                        loading:false,
+                        lengthdata:nextProps.countjenispenilaian,
+                        deletestatus:'',
+                        datatable : nextProps.getalljenispenilaian
+                    });
+                }
+            } else {
+                this.setState({
+                    loading:false,
+                    lengthdata:0,
+                    deletestatus:'',
+                    datatable : nextProps.getalljenispenilaian
+                });
+            }
         }
 
         if (nextProps.deletejenispenilaian === 200){
@@ -73,7 +95,6 @@ class TablePenilaian extends React.Component{
     }
 
     handleChange = (pagination, filters, sorter) => {
-        this.onRefresh();
         console.log('Various parameters', pagination, filters, sorter);
         this.setState({
             // filteredInfo: filters,
@@ -89,7 +110,25 @@ class TablePenilaian extends React.Component{
                         this.searchInput = node;
                     }}
                     placeholder={`Search ${dataIndex}`}
-                    value={selectedKeys[0]}
+                    value={
+                        (this.state.edname !== '') ?
+                            (dataIndex === 'name') ?
+                                this.state.edname
+                                : (this.state.eddesc !== '') ?
+                                (dataIndex === 'description') ?
+                                    this.state.eddesc
+                                    : selectedKeys[0]
+                                : selectedKeys[0]
+                            : (this.state.eddesc !== '') ?
+                            (dataIndex === 'description') ?
+                                this.state.eddesc
+                                : (this.state.edname !== '') ?
+                                (dataIndex === 'name') ?
+                                    this.state.edname
+                                    : selectedKeys[0]
+                                : selectedKeys[0]
+                            : selectedKeys[0]
+                    }
                     onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
                     onPressEnter={() => this.handleSearch(selectedKeys, confirm, dataIndex)}
                     style={{width:188, marginBottom:8, display:'block'}}
@@ -103,10 +142,28 @@ class TablePenilaian extends React.Component{
                     style={{width:90, marginRight:8}}
                 >Search</Button>
 
-                <Button onClick={() => this.handleReset(clearFilters)} size="small" style={{width:90}}>Reset</Button>
+                <Button onClick={() => this.handleReset(clearFilters, dataIndex)} size="small" style={{width:90}}>Reset</Button>
             </div>
         ),
-        filterIcon : filtered => <SearchOutlined style={{color: filtered ? '#1890ff' : undefined}}/>,
+        filterIcon : filtered => <SearchOutlined style={{color: filtered ? '#1890ff' :
+                (this.state.edname !== '') ?
+                    (dataIndex === 'name') ?
+                        '#1890ff' :
+                        (this.state.eddesc !== '') ?
+                            (dataIndex === 'description') ?
+                                '#1890ff' :
+                                undefined :
+                            undefined :
+                (this.state.eddesc !== '') ?
+                    (dataIndex === 'description') ?
+                        '#1890ff' :
+                        (this.state.edname !== '') ?
+                            (dataIndex === 'name') ?
+                                '#1890ff' :
+                                undefined :
+                            undefined :
+                        undefined
+        }}/>,
         onFilter : (value, record) =>
             record[dataIndex]
                 .toString()
@@ -125,7 +182,54 @@ class TablePenilaian extends React.Component{
                     autoEscape
                     textToHighlight={text.toString()}
                 />
-            ) : (text),
+            ) :
+                (this.state.edname !== '') ?
+                    (dataIndex === 'name') ?
+                        (
+                            <Highlighter
+                                highlightStyle={{backgroundColor: 'ffc069', padding:0}}
+                                searchWords={[this.state.edname]}
+                                autoEscape
+                                textToHighlight={text.toString()}
+                            />
+                        )
+                        : (this.state.eddesc !== '') ?
+                        (dataIndex === 'description') ?
+                            (
+                                <Highlighter
+                                    highlightStyle={{backgroundColor: 'ffc069', padding:0}}
+                                    searchWords={[this.state.eddesc]}
+                                    autoEscape
+                                    textToHighlight={text.toString()}
+                                />
+                            )
+                            : (text)
+                        : (text)
+                    :
+                    (this.state.eddesc !== '') ?
+                        (dataIndex === 'description') ?
+                            (
+                                <Highlighter
+                                    highlightStyle={{backgroundColor: 'ffc069', padding:0}}
+                                    searchWords={[this.state.eddesc]}
+                                    autoEscape
+                                    textToHighlight={text.toString()}
+                                />
+                            )
+                            :
+                        (this.state.edname !== '') ?
+                            (dataIndex === 'name') ?
+                                (
+                                    <Highlighter
+                                        highlightStyle={{backgroundColor: 'ffc069', padding:0}}
+                                        searchWords={[this.state.edname]}
+                                        autoEscape
+                                        textToHighlight={text.toString()}
+                                    />
+                                )
+                                :  (text)
+                            : (text)
+                        : (text),
     });
 
     handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -134,13 +238,63 @@ class TablePenilaian extends React.Component{
             searchText: selectedKeys[0],
             searchedColumn: dataIndex,
         });
+
+        if (dataIndex === 'name') {
+            var paramname = selectedKeys[0];
+            if (!paramname) {
+                paramname = '';
+            }
+
+            this.setState({
+                paramname: paramname,
+                loading: true,
+                edname: paramname
+            });
+            this.props.getAllJenisPenilaian({page:1, token:this.props.token, name:paramname, description:this.state.paramdesc});
+            this.props.countAllJenisPenilaian({token:this.props.token, name:paramname, description:this.state.paramdesc});
+        }
+
+        if (dataIndex === 'description') {
+            var paramdesc = selectedKeys[0];
+            if (!paramdesc) {
+                paramdesc = '';
+            }
+
+            this.setState({
+                paramdesc: paramdesc,
+                loading: true,
+                eddesc: paramdesc
+            });
+            this.props.getAllJenisPenilaian({page:1, token:this.props.token, name:this.state.paramname, description:paramdesc});
+            this.props.countAllJenisPenilaian({token:this.props.token, name:this.state.paramname, description:paramdesc});
+        }
     };
 
-    handleReset = clearFilters => {
+    handleReset = (clearFilters, dataIndex) => {
         clearFilters();
         this.setState({
             searchText: ''
         });
+
+        if (dataIndex === 'name') {
+            this.setState({
+                paramname: '',
+                loading: true,
+                edname: ''
+            });
+            this.props.getAllJenisPenilaian({page:1, token:this.props.token, name:'', description:this.state.paramdesc});
+            this.props.countAllJenisPenilaian({token:this.props.token, name:'', description:this.state.paramdesc});
+        }
+
+        if (dataIndex === 'description') {
+            this.setState({
+                paramdesc: '',
+                loading: true,
+                eddesc: ''
+            });
+            this.props.getAllJenisPenilaian({page:1, token:this.props.token, name:this.state.paramname, description:''});
+            this.props.countAllJenisPenilaian({token:this.props.token, name:this.state.paramname, description:''});
+        }
     };
 
     onCancelDelete = () => {
@@ -160,14 +314,14 @@ class TablePenilaian extends React.Component{
         this.setState({
             addbutton: false
         })
-        this.onChangePagination(this.state.paging);
+        this.onRefresh();
     }
 
     clickCancelEditButton = () => {
         this.setState({
             editbutton: false
         })
-        this.onChangePagination(this.state.paging);
+        this.onRefresh();
     }
 
     clickEditSuccessButton = (status) => {
@@ -176,7 +330,7 @@ class TablePenilaian extends React.Component{
         });
 
         if (status === 201 || status === 200) {
-            this.onChangePagination(this.state.paging);
+            this.onRefresh();
             NotificationManager.success("Data has updated.", "Success !!");
         }
     }
@@ -187,7 +341,7 @@ class TablePenilaian extends React.Component{
         });
 
         if (status === 201 || status === 200){
-            this.onChangePagination(this.state.paging);
+            this.onRefresh();
             NotificationManager.success("Data has saved.", "Success !!");
         }
     }
@@ -197,16 +351,17 @@ class TablePenilaian extends React.Component{
             paging: page,
             loading:true
         });
-        this.props.getAllJenisPenilaian({page:page, token:this.props.token});
-        this.props.countAllJenisPenilaian({token:this.props.token});
+        this.props.getAllJenisPenilaian({page:page, token:this.props.token, name:this.state.paramname, description:this.state.paramdesc});
+        this.props.countAllJenisPenilaian({token:this.props.token, name:this.state.paramname, description:this.state.paramdesc});
     }
 
     onRefresh = () => {
         this.setState({
-            loading:true
+            loading:true,
+            paging:1
         });
-        this.props.getAllJenisPenilaian({page:this.state.paging, token:this.props.token});
-        this.props.countAllJenisPenilaian({token:this.props.token});
+        this.props.getAllJenisPenilaian({page:1, token:this.props.token, name:this.state.paramname, description:this.state.paramdesc});
+        this.props.countAllJenisPenilaian({token:this.props.token, name:this.state.paramname, description:this.state.paramdesc});
     }
 
     render() {
@@ -214,14 +369,14 @@ class TablePenilaian extends React.Component{
         const {datatable, warning, addbutton, editbutton, eid, fetchdata, idvalue, paging, loading, lengthdata} = this.state;
         const {token} = this.props;
         sortedInfo = sortedInfo || {};
-        const columns = [ {
+        const columns = [/* {
             title: 'Id',
             dataIndex: 'id',
             key: 'id',
             ...this.getColumnSearchProps('id'),
             sorter: (a, b) => a.id - b.id,
             sortOrder: sortedInfo.columnKey === 'id' && sortedInfo.order,
-        }, {
+        },*/ {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
@@ -308,8 +463,10 @@ class TablePenilaian extends React.Component{
                         </Spin>
                         <div className="table-operations" style={{ paddingTop : '1rem', float : 'right' }}>
                             {
-                                lengthdata === 0 ? '' :
-                                    <Pagination current={paging} total={lengthdata} onChange={this.onChangePagination}/>
+                                (lengthdata) ?
+                                    lengthdata > 0 ?
+                                        <Pagination current={paging} total={lengthdata} onChange={this.onChangePagination}/> : ''
+                                    : ''
                             }
                         </div>
                         <SweetAlert show={warning}

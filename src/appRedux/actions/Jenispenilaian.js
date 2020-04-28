@@ -14,10 +14,10 @@ import {
 } from "../../constants/ActionTypes";
 import axios from 'util/Api'
 
-export const getAllJenisPenilaian = ({page, token}) => {
+export const getAllJenisPenilaian = ({page, token, name, description}) => {
     return (dispatch) => {
         dispatch({type: FETCH_START});
-        axios.get('api/master-jenis-nilai?page='+page,{
+        axios.get('api/master-jenis-nilai?page='+page+'&name='+name+'&description='+description,{
             headers: {
                 Authorization: "Bearer "+token
             }
@@ -35,10 +35,10 @@ export const getAllJenisPenilaian = ({page, token}) => {
     }
 };
 
-export const countAllJenisPenilaian = ({token}) => {
+export const countAllJenisPenilaian = ({token, name, description}) => {
     return (dispatch) => {
         dispatch({type: FETCH_START});
-        axios.get('api/master-jenis-nilai',{
+        axios.get('api/master-jenis-nilai?name='+name+'&description='+description,{
             headers: {
                 Authorization: "Bearer "+token
             }
