@@ -8,14 +8,16 @@ import {
     STATUS_ALL_RISKS,
     STATUS_POST_RISK,
     STATUS_PUT_RISK,
-    GET_RISK
+    GET_RISK,
+    STATUS_ALL_RISK,
+    COUNT_ALL_RISKS
 } from "../../constants/ActionTypes";
 import axios from 'util/Api'
 
-export const getAllRisks = ({token}) => {
+export const getAllRisks = ({token, page, jenis, nama, keterangan}) => {
     return (dispatch) => {
         dispatch({type: FETCH_START});
-        axios.get('api/risks',{
+        axios.get('api/risks?page='+page+'&jenis='+jenis+'&nama='+nama+'&keterangan='+keterangan,{
             headers: {
                 Authorization: "Bearer "+token
             }
@@ -24,7 +26,32 @@ export const getAllRisks = ({token}) => {
                 dispatch({type: GET_ALL_RISKS, payload: data.data});
                 dispatch({type: STATUS_ALL_RISKS, payload: data.statusCode});
             } else {
-                dispatch({type: FETCH_ERROR, payload: data.error});
+                // dispatch({type: FETCH_ERROR, payload: data.error});
+                dispatch({type: GET_ALL_RISKS, payload: []});
+                dispatch({type: STATUS_ALL_RISKS, payload: data.statusCode});
+            }
+        }).catch(function (error) {
+            dispatch({type: FETCH_ERROR, payload: error.message});
+            console.log("Error****:", error.message);
+        });
+    }
+};
+
+export const getCountRisks = ({token, jenis, nama, keterangan}) => {
+    return (dispatch) => {
+        dispatch({type: FETCH_START});
+        axios.get('api/risks?jenis='+jenis+'&nama='+nama+'&keterangan='+keterangan,{
+            headers: {
+                Authorization: "Bearer "+token
+            }
+        }).then(({data}) => {
+            if (data.data){
+                dispatch({type: COUNT_ALL_RISKS, payload: data.data.length});
+                dispatch({type: STATUS_ALL_RISK, payload: data.statusCode});
+            } else {
+                // dispatch({type: FETCH_ERROR, payload: data.error});
+                dispatch({type: COUNT_ALL_RISKS, payload: 0});
+                dispatch({type: STATUS_ALL_RISK, payload: data.statusCode});
             }
         }).catch(function (error) {
             dispatch({type: FETCH_ERROR, payload: error.message});

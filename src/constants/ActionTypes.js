@@ -53,6 +53,8 @@ export const DELETE_ALL_RISKS = 'DELETE_ALL_RISK';
 export const STATUS_POST_RISK = 'STATUS_POST_RISK';
 export const STATUS_PUT_RISK = 'STATUS_PUT_RISK';
 export const STATUS_ALL_RISKS = 'STATUS_ALL_RISKS';
+export const COUNT_ALL_RISKS = 'COUNT_ALL_RISKS';
+export const STATUS_ALL_RISK = 'STATUS_ALL_RISK';
 
 //PeringkatRisiko const
 export const GET_ALL_PERINGKAT_RISIKO = [];

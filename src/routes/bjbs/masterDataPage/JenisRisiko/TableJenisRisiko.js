@@ -1,11 +1,11 @@
 import React from "react";
 import SweetAlert from "react-bootstrap-sweetalert";
 import {NotificationContainer, NotificationManager} from "react-notifications";
-import {Divider, Button, Card, Table, Input, Spin} from "antd";
+import {Divider, Button, Card, Table, Input, Spin, Pagination} from "antd";
 import IntlMessages from "util/IntlMessages";
 import Highlighter from "react-highlight-words";
 import {SearchOutlined} from "@ant-design/icons";
-import {getAllRisks, deleteRisk} from "../../../../appRedux/actions";
+import {getAllRisks, deleteRisk, getCountRisks} from "../../../../appRedux/actions";
 import connect from "react-redux/es/connect/connect";
 
 import SaveJenisRisiko from "./SaveJenisRisiko";
@@ -17,6 +17,7 @@ class TableJenisRisiko extends React.Component {
         // this.handleProp=this.handleProp.bind(this);
         this.state = {
             //filteredInfo: null,
+            paging: 1,
             sortedInfo: null,
             warning: false,
             searchText: '',
@@ -27,29 +28,59 @@ class TableJenisRisiko extends React.Component {
             fetchdata: [],
             datatable: [],
             idvalue : '',
+            statusjenisrisikotable: '',
             statusjenisrisiko: '',
             loading : false,
-            deletestatus:''
+            lengthdata : 0,
+            deletestatus:'',
+            paramname : '',
+            paramket : '',
+            paramjenis : '',
+            edname:'',
+            edket:'',
+            edjenis:''
+
         };
     }
 
     componentDidMount(){
-        this.props.getAllRisks({token:this.props.token});
+        this.props.getAllRisks({token:this.props.token, page:this.state.paging, jenis:this.state.paramjenis, nama:this.state.paramname, keterangan:this.state.paramket});
+        this.props.getCountRisks({token:this.props.token, jenis:this.state.paramjenis, nama:this.state.paramname, keterangan:this.state.paramket});
     }
 
     componentWillReceiveProps(nextProps) {
         // this.props.getAllRisks({token:this.props.token});
         this.setState({
-            datatable : nextProps.getallrisks,
-            statusjenisrisiko : nextProps.statusallrisks
+            statusjenisrisikotable : nextProps.statusallrisks,
+            statusjenisrisiko : nextProps.statusallrisk
         });
 
         // return nextProps.getallrisks;
-        if (nextProps.statusallrisks === 200){
-            this.setState({
-               loading:false,
-               deletestatus:''
-            });
+        if (nextProps.statusallrisks === 200 && nextProps.statusallrisk === 200){
+            if (nextProps.countallrisks){
+                if (nextProps.getallrisks){
+                    this.setState({
+                        loading:false,
+                        lengthdata: nextProps.countallrisks,
+                        deletestatus:'',
+                        datatable : nextProps.getallrisks,
+                    });
+                } else {
+                    this.setState({
+                        loading:false,
+                        lengthdata: nextProps.countallrisks,
+                        deletestatus:'',
+                        datatable : [],
+                    });
+                }
+            } else {
+                this.setState({
+                    loading:false,
+                    lengthdata: 0,
+                    deletestatus:'',
+                    datatable : [],
+                });
+            }
         }
 
         if (nextProps.deleteallrisks === 200) {
@@ -71,7 +102,6 @@ class TableJenisRisiko extends React.Component {
     }
 
     handleChange = (pagination, filters, sorter) => {
-        this.onRefresh();
         console.log('Various parameters', pagination, filters, sorter);
         this.setState({
             // filteredInfo: filters,
@@ -87,7 +117,21 @@ class TableJenisRisiko extends React.Component {
                         this.searchInput = node;
                     }}
                     placeholder={`Search ${dataIndex}`}
-                    value={selectedKeys[0]}
+                    value={
+                        (this.state.edname !== '') ?
+                            (dataIndex === 'nama') ?
+                                this.state.edname
+                                : (this.state.edket !== '') ?
+                                (dataIndex === 'keterangan') ?
+                                    this.state.edket
+                                    : (this.state.edjenis !== '') ?
+                                    (dataIndex === 'jenis') ?
+                                        this.state.edjenis
+                                        : selectedKeys[0]
+                                    : selectedKeys[0]
+                                : selectedKeys[0]
+                            : selectedKeys[0]
+                    }
                     onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
                     onPressEnter={() => this.handleSearch(selectedKeys, confirm, dataIndex)}
                     style={{width:188, marginBottom:8, display:'block'}}
@@ -101,10 +145,24 @@ class TableJenisRisiko extends React.Component {
                     style={{width:90, marginRight:8}}
                 >Search</Button>
 
-                <Button onClick={() => this.handleReset(clearFilters)} size="small" style={{width:90}}>Reset</Button>
+                <Button onClick={() => this.handleReset(clearFilters, dataIndex)} size="small" style={{width:90}}>Reset</Button>
             </div>
         ),
-        filterIcon : filtered => <SearchOutlined style={{color: filtered ? '#1890ff' : undefined}}/>,
+        filterIcon : filtered => <SearchOutlined style={{color: filtered ? '#1890ff' :
+                (this.state.edname !== '') ?
+                    (dataIndex === 'nama') ?
+                        '#1890ff' :
+                        (this.state.edket !== '') ?
+                            (dataIndex === 'keterangan') ?
+                                '#1890ff' :
+                                (this.state.edjenis !== '') ?
+                                    (dataIndex === 'jenis') ?
+                                        '#1890ff' :
+                                        undefined :
+                                undefined :
+                            undefined :
+                    undefined
+        }}/>,
         onFilter : (value, record) =>
             record[dataIndex]
                 .toString()
@@ -123,7 +181,41 @@ class TableJenisRisiko extends React.Component {
                     autoEscape
                     textToHighlight={text.toString()}
                 />
-            ) : (text),
+            ) :
+                (this.state.edname !== '') ?
+                    (dataIndex === 'nama') ?
+                        (
+                            <Highlighter
+                                highlightStyle={{backgroundColor: 'ffc069', padding:0}}
+                                searchWords={[this.state.edname]}
+                                autoEscape
+                                textToHighlight={text.toString()}
+                            />
+                        )
+                        : (this.state.edket !== '') ?
+                        (dataIndex === 'keterangan') ?
+                            (
+                                <Highlighter
+                                    highlightStyle={{backgroundColor: 'ffc069', padding:0}}
+                                    searchWords={[this.state.edket]}
+                                    autoEscape
+                                    textToHighlight={text.toString()}
+                                />
+                            )
+                            : (this.state.edjenis !== '') ?
+                            (dataIndex === 'jenis') ?
+                                (
+                                    <Highlighter
+                                        highlightStyle={{backgroundColor: 'ffc069', padding:0}}
+                                        searchWords={[this.state.edjenis]}
+                                        autoEscape
+                                        textToHighlight={text.toString()}
+                                    />
+                                )
+                                : (text)
+                            : (text)
+                        : (text)
+                    : (text),
     });
 
     handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -132,20 +224,95 @@ class TableJenisRisiko extends React.Component {
             searchText: selectedKeys[0],
             searchedColumn: dataIndex,
         });
+
+        if (dataIndex === 'nama'){
+            var paramname = selectedKeys[0];
+            if (!paramname){
+                paramname = '';
+            }
+
+            this.setState({
+                paramname:paramname,
+                loading:true,
+                edname: paramname
+            });
+            this.props.getAllRisks({token:this.props.token, page:this.state.paging, jenis:this.state.paramjenis, nama:paramname, keterangan:this.state.paramket});
+            this.props.getCountRisks({token:this.props.token, jenis:this.state.paramjenis, nama:paramname, keterangan:this.state.paramket});
+        }
+
+        if (dataIndex === 'keterangan'){
+            var paramket = selectedKeys[0];
+            if (!paramket){
+                paramket = '';
+            }
+
+            this.setState({
+                paramket:paramket,
+                loading:true,
+                edket: paramket
+            });
+            this.props.getAllRisks({token:this.props.token, page:this.state.paging, jenis:this.state.paramjenis, nama:this.state.paramname, keterangan:paramket});
+            this.props.getCountRisks({token:this.props.token, jenis:this.state.paramjenis, nama:this.state.paramname, keterangan:paramket});
+        }
+
+        if (dataIndex === 'jenis'){
+            var paramjenis = selectedKeys[0];
+            if (!paramjenis){
+                paramjenis = '';
+            }
+
+            this.setState({
+                paramjenis:paramjenis,
+                loading:true,
+                edjenis: paramjenis
+            });
+            this.props.getAllRisks({token:this.props.token, page:this.state.paging, jenis:paramjenis, nama:this.state.paramname, keterangan:this.state.paramket});
+            this.props.getCountRisks({token:this.props.token, jenis:paramjenis, nama:this.state.paramname, keterangan:this.state.paramket});
+        }
     };
 
-    handleReset = clearFilters => {
+    handleReset = (clearFilters, dataIndex) => {
         clearFilters();
         this.setState({
             searchText: ''
         });
+
+        if (dataIndex === 'nama'){
+            this.setState({
+                paramname:'',
+                loading:true,
+                edname: ''
+            });
+            this.props.getAllRisks({token:this.props.token, page:this.state.paging, jenis:this.state.paramjenis, nama:'', keterangan:this.state.paramket});
+            this.props.getCountRisks({token:this.props.token, jenis:this.state.paramjenis, nama:'', keterangan:this.state.paramket});
+        }
+
+        if (dataIndex === 'keterangan'){
+            this.setState({
+                paramket:'',
+                loading:true,
+                edket: ''
+            });
+            this.props.getAllRisks({token:this.props.token, page:this.state.paging, jenis:this.state.paramjenis, nama:this.state.paramname, keterangan:''});
+            this.props.getCountRisks({token:this.props.token, jenis:this.state.paramjenis, nama:this.state.paramname, keterangan:''});
+        }
+
+        if (dataIndex === 'jenis'){
+            this.setState({
+                paramjenis:'',
+                loading:true,
+                edjenis: ''
+            });
+            this.props.getAllRisks({token:this.props.token, page:this.state.paging, jenis:'', nama:this.state.paramname, keterangan:this.state.paramket});
+            this.props.getCountRisks({token:this.props.token, jenis:'', nama:this.state.paramname, keterangan:this.state.paramket});
+        }
     };
 
     onCancelDelete = () => {
         this.setState({
             warning: false
         })
-        this.onRefresh();
+        this.onChangePagination(this.state.paging);
     };
 
     clickAddButton = () => {
@@ -190,17 +357,28 @@ class TableJenisRisiko extends React.Component {
         }
     }
 
+    onChangePagination = page => {
+        this.setState({
+            loading:true,
+            paging:page
+        });
+        this.props.getAllRisks({token:this.props.token, page:page, jenis:this.state.paramjenis, nama:this.state.paramname, keterangan:this.state.paramket});
+        this.props.getCountRisks({token:this.props.token, jenis:this.state.paramjenis, nama:this.state.paramname, keterangan:this.state.paramket});
+    }
+
     onRefresh = () => {
         this.setState({
-            loading:true
+            loading:true,
+            paging:1
         });
-        this.props.getAllRisks({token:this.props.token});
+        this.props.getAllRisks({token:this.props.token, page:1, jenis:this.state.paramjenis, nama:this.state.paramname, keterangan:this.state.paramket});
+        this.props.getCountRisks({token:this.props.token, jenis:this.state.paramjenis, nama:this.state.paramname, keterangan:this.state.paramket});
     }
 
     render() {
         // let {sortedInfo, filteredInfo} = this.state;
         let {sortedInfo} = this.state;
-        const {warning, datatable, addbutton, editbutton, eid, fetchdata, idvalue, loading} = this.state;
+        const {warning, datatable, addbutton, editbutton, eid, fetchdata, idvalue, loading, paging, lengthdata} = this.state;
         const {token} = this.props;
         sortedInfo = sortedInfo || {};
         // filteredInfo = filteredInfo || {};
@@ -221,9 +399,17 @@ class TableJenisRisiko extends React.Component {
             title: 'Keterangan',
             dataIndex: 'keterangan',
             key: 'keterangan',
-            width : '500px',
+            ...this.getColumnSearchProps('keterangan'),
+            width : '300px',
             sorter: (a, b) => a.keterangan.localeCompare(b.keterangan),
             sortOrder: sortedInfo.columnKey === 'keterangan' && sortedInfo.order,
+        }, {
+            title: 'Jenis',
+            dataIndex: 'jenis',
+            key: 'jenis',
+            ...this.getColumnSearchProps('jenis'),
+            sorter: (a, b) => a.jenis.localeCompare(b.jenis),
+            sortOrder: sortedInfo.columnKey === 'jenis' && sortedInfo.order,
         }, {
             title: 'Created at',
             dataIndex: 'created_at',
@@ -285,8 +471,19 @@ class TableJenisRisiko extends React.Component {
                             <Button className="ant-btn" onClick={this.onRefresh}>Refresh</Button>
                         </div>
                         <Spin tip="Loading..." spinning={loading}>
-                            <Table className="gx-table-responsive" columns={columns} dataSource={datatable} onChange={this.handleChange} rowKey="id"/>
+                            <Table className="gx-table-responsive" columns={columns} dataSource={datatable} onChange={this.handleChange} rowKey="id"
+                                   pagination={false}
+                            />
                         </Spin>
+                        <div className="table-operations" style={{ paddingTop : '1rem', float : 'right' }}>
+                            {
+                                (lengthdata) ?
+                                    lengthdata > 0 ?
+                                        <Pagination current={paging} total={lengthdata ? lengthdata : 1} onChange={this.onChangePagination}/> : ''
+                                    : ''
+
+                            }
+                        </div>
                         <SweetAlert show={warning}
                                     warning
                                     showCancel
@@ -317,8 +514,8 @@ class TableJenisRisiko extends React.Component {
 
 const mapStateToProps = ({auth,jenisrisiko}) => {
     const {token} = auth;
-    const {getallrisks,statusallrisks,deleteallrisks} = jenisrisiko;
-    return {token, getallrisks,statusallrisks,deleteallrisks}
+    const {getallrisks,statusallrisks,deleteallrisks, statusallrisk, countallrisks} = jenisrisiko;
+    return {token, getallrisks,statusallrisks,deleteallrisks, statusallrisk, countallrisks}
 };
 
-export default connect(mapStateToProps, {getAllRisks,deleteRisk})(TableJenisRisiko);
+export default connect(mapStateToProps, {getAllRisks,deleteRisk, getCountRisks})(TableJenisRisiko);

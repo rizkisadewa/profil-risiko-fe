@@ -49,7 +49,7 @@ class TableParameter extends React.Component{
     }
 
     componentDidMount(){
-        this.props.getAllRisks({token:this.props.token});
+        this.props.getAllRisks({token:this.props.token, page:'', jenis:'', nama:'', keterangan:''});
         this.props.getAllFaktorParameterTable({page:this.state.paging, token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:this.state.parambobot, risk_nama:this.state.paramriskname});
         this.props.countAllFaktorParameter({token:this.props.token, risk_id:this.state.risk_id, name:this.state.paramname, bobot:this.state.parambobot, risk_nama:this.state.paramriskname});
     }

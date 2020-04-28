@@ -6,7 +6,9 @@ import {
     STATUS_ALL_RISKS,
     STATUS_POST_RISK,
     STATUS_PUT_RISK,
-    GET_RISK
+    GET_RISK,
+    COUNT_ALL_RISKS,
+    STATUS_ALL_RISK
 } from "../../constants/ActionTypes";
 
 const initialJenisRisiko = {
@@ -17,7 +19,9 @@ const initialJenisRisiko = {
     statusallrisks: STATUS_ALL_RISKS,
     statuspostrisk: STATUS_POST_RISK,
     statusputrisk: STATUS_PUT_RISK,
-    getrisk: GET_RISK
+    getrisk: GET_RISK,
+    countallrisks: COUNT_ALL_RISKS,
+    statusallrisk: STATUS_ALL_RISK,
 };
 
 const jenisrisiko = (state = initialJenisRisiko, action) => {
@@ -68,6 +72,18 @@ const jenisrisiko = (state = initialJenisRisiko, action) => {
             return {
                 ...state,
                 getrisk: action.payload,
+            };
+        }
+        case COUNT_ALL_RISKS: {
+            return {
+                ...state,
+                countallrisks: action.payload,
+            };
+        }
+        case STATUS_ALL_RISK: {
+            return {
+                ...state,
+                statusallrisk: action.payload,
             };
         }
         default:

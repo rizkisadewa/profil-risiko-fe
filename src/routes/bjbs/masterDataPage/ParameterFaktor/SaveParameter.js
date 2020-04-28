@@ -26,7 +26,7 @@ class SaveParameter extends React.PureComponent{
     }
 
     componentDidMount(){
-        this.props.getAllRisks({token:this.props.token});
+        this.props.getAllRisks({token:this.props.token, page:'', jenis:'', nama:'', keterangan:''});
     }
 
     componentWillReceiveProps(nextProps) {
