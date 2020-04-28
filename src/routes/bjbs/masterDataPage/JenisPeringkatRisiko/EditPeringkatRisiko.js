@@ -106,7 +106,7 @@ class EditPeringkatRisiko extends React.Component{
 
                                     <FormItem {...formItemLayout} label="Jenis Penilaian">
                                         {getFieldDecorator('id_jenis_nilai', {
-                                            initialValue:1,
+                                            initialValue:propsvalue.id_jenis_nilai,
                                             rules: [{
                                                 required: true, message: 'Please input jenis penilaian field.',
                                             }],

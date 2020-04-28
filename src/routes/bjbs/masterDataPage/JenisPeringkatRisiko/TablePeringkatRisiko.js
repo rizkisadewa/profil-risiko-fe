@@ -383,7 +383,7 @@ class TablePeringkatRisiko extends React.Component{
                                 id:text.id,
                                 description:text.description,
                                 name:text.name,
-                                id_jenis_nilai:1
+                                id_jenis_nilai:text.id_jenis_nilai
                             }]
                         })
                     }}>Edit</span>
