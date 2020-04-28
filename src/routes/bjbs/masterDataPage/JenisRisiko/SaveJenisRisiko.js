@@ -81,7 +81,7 @@ class SaveJenisRisiko extends React.PureComponent{
                         )}
                     </FormItem>
 
-                    <FormItem {...formItemLayout} label="Jenis">
+                    {/*<FormItem {...formItemLayout} label="Jenis">
                         {getFieldDecorator('jenis', {
                             rules: [{
                                 required: true, message: 'Please input jenis field.',
@@ -89,7 +89,7 @@ class SaveJenisRisiko extends React.PureComponent{
                         })(
                             <Input id="jenis" placeholder="Input Jenis"/>
                         )}
-                    </FormItem>
+                    </FormItem>*/}
 
                     <FormItem style={{ float : "right", paddingRight : "1rem" }}>
                         <Button onClick={this.props.clickCancelAddButton}>Cancel</Button>

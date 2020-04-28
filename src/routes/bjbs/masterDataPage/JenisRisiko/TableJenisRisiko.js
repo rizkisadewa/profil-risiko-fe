@@ -230,6 +230,20 @@ class TableJenisRisiko extends React.Component {
             key: 'created_at',
             sorter: (a, b) => Date.parse(a.created_at) - Date.parse(b.created_at),
             sortOrder: sortedInfo.columnKey === 'created_at' && sortedInfo.order,
+            render : (text, record) => {
+                var tgl = '';
+                if (text.includes('T')){
+                    var spTgl = text.split("T");
+                    var spTime = spTgl[1].split(".");
+
+                    tgl = spTgl[0]+' '+spTime[0];
+                } else {
+                    tgl = text;
+                }
+                return(
+                    <span>{tgl}</span>
+                );
+            }
         }, {
             title: 'Action',
             key: 'id',

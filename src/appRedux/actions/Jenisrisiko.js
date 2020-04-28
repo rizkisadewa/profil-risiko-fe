@@ -53,13 +53,12 @@ export const getRisk = ({id, token}) => {
     }
 };
 
-export const addRisk = ({nama, keterangan, jenis, token}) => {
+export const addRisk = ({nama, keterangan, token}) => {
     return (dispatch) => {
         dispatch({type: FETCH_START});
-        axios.post('api/risks',{
+        axios.post('api/risks/profil-risiko',{
             nama: nama,
             keterangan: keterangan,
-            jenis: jenis
         },{
             headers: {
                 Authorization: "Bearer "+token
