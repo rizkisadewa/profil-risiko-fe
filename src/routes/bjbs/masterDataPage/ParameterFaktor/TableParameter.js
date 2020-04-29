@@ -133,19 +133,13 @@ class TableParameter extends React.Component{
                     }}
                     placeholder={`Search ${dataIndex}`}
                     value={
-                        (this.state.edname !== '') ?
-                            (dataIndex === 'name') ?
-                                this.state.edname
-                                : (this.state.edbobot !== '') ?
-                                (dataIndex === 'bobot') ?
-                                    this.state.edbobot
-                                    :(this.state.edriskname !== '') ?
-                                    (dataIndex === 'risk_nama') ?
-                                        this.state.edriskname
-                                        : selectedKeys[0]
-                                    : selectedKeys[0]
-                                : selectedKeys[0]
-                            : selectedKeys[0]
+                        (this.state.edname !== '' && dataIndex === 'name') ?
+                            this.state.edname :
+                        (this.state.edbobot !== '' && dataIndex === 'bobot') ?
+                            this.state.edbobot :
+                        (this.state.edriskname !== '' && dataIndex === 'risk_nama') ?
+                            this.state.edriskname :
+                        selectedKeys[0]
                     }
                     onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
                     onPressEnter={() => this.handleSearch(selectedKeys, confirm, dataIndex)}
@@ -163,19 +157,14 @@ class TableParameter extends React.Component{
                 <Button onClick={() => this.handleReset(clearFilters, dataIndex)} size="small" style={{width:90}}>Reset</Button>
             </div>
         ),
-        filterIcon : filtered => <SearchOutlined style={{color: filtered ? '#1890ff' :
-                (this.state.edname !== '') ?
-                    (dataIndex === 'name') ?
-                        '#1890ff' :
-                    (this.state.edbobot !== '') ?
-                        (dataIndex === 'bobot') ?
-                            '#1890ff' :
-                        (this.state.edriskname !== '') ?
-                            (dataIndex === 'risk_nama') ?
-                                '#1890ff' :
-                            undefined :
-                        undefined :
-                    undefined :
+        filterIcon : filtered => <SearchOutlined style={{color:
+                (this.state.edname !== '' && dataIndex === 'name') ?
+                    '#1890ff' :
+                (this.state.edbobot !== '' && dataIndex === 'bobot') ?
+                    '#1890ff' :
+                (this.state.edriskname !== '' && dataIndex === 'risk_nama') ?
+                    '#1890ff' :
+                filtered ? '#1890ff' :
                 undefined}}/>,
         onFilter : (value, record) =>
             record[dataIndex]
@@ -188,48 +177,26 @@ class TableParameter extends React.Component{
             }
         },
         render : text =>
-            this.state.searchedColumn === dataIndex ? (
+            ((this.state.edname !== '' && dataIndex === 'name') || (this.state.edbobot !== '' && dataIndex === 'bobot') || (this.state.edriskname !== '' && dataIndex === 'risk_nama')) ? (
                 <Highlighter
                     highlightStyle={{backgroundColor: 'ffc069', padding:0}}
-                    searchWords={[this.state.searchText]}
+                    searchWords={[(this.state.edname !== '' && dataIndex === 'name') ? this.state.edname :
+                        (this.state.edbobot !== '' && dataIndex === 'bobot') ? this.state.edbobot :
+                            (this.state.edriskname !== '' && dataIndex === 'risk_nama') ? this.state.edriskname :
+                                this.state.searchText
+                    ]}
                     autoEscape
                     textToHighlight={text.toString()}
                 />
             ) :
-                (this.state.edname !== '') ?
-                    (dataIndex === 'name') ?
-                        (
-                            <Highlighter
-                                highlightStyle={{backgroundColor: 'ffc069', padding:0}}
-                                searchWords={[this.state.edname]}
-                                autoEscape
-                                textToHighlight={text.toString()}
-                            />
-                        )
-                        : (this.state.edbobot !== '') ?
-                        (dataIndex === 'bobot') ?
-                            (
-                                <Highlighter
-                                    highlightStyle={{backgroundColor: 'ffc069', padding:0}}
-                                    searchWords={[this.state.edbobot]}
-                                    autoEscape
-                                    textToHighlight={text.toString()}
-                                />
-                            )
-                            : (this.state.edriskname !== '') ?
-                            (dataIndex === 'risk_nama') ?
-                                (
-                                    <Highlighter
-                                        highlightStyle={{backgroundColor: 'ffc069', padding:0}}
-                                        searchWords={[this.state.edriskname]}
-                                        autoEscape
-                                        textToHighlight={text.toString()}
-                                    />
-                                )
-                                : (text)
-                            : (text)
-                        : (text)
-                    : (text),
+            this.state.searchedColumn === dataIndex ? (
+                    <Highlighter
+                        highlightStyle={{backgroundColor: 'ffc069', padding:0}}
+                        searchWords={[this.state.searchText]}
+                        autoEscape
+                        textToHighlight={text.toString()}
+                    />
+                ) : (text),
     });
 
     handleSearch = (selectedKeys, confirm, dataIndex) => {

@@ -118,19 +118,13 @@ class TableJenisRisiko extends React.Component {
                     }}
                     placeholder={`Search ${dataIndex}`}
                     value={
-                        (this.state.edname !== '') ?
-                            (dataIndex === 'nama') ?
-                                this.state.edname
-                                : (this.state.edket !== '') ?
-                                (dataIndex === 'keterangan') ?
-                                    this.state.edket
-                                    : (this.state.edjenis !== '') ?
-                                    (dataIndex === 'jenis') ?
-                                        this.state.edjenis
-                                        : selectedKeys[0]
-                                    : selectedKeys[0]
-                                : selectedKeys[0]
-                            : selectedKeys[0]
+                        (this.state.edname !== '' && dataIndex === 'nama') ?
+                            this.state.edname :
+                        (this.state.edket !== '' && dataIndex === 'keterangan') ?
+                            this.state.edket :
+                        (this.state.edjenis !== '' && dataIndex === 'jenis') ?
+                            this.state.edjenis :
+                        selectedKeys[0]
                     }
                     onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
                     onPressEnter={() => this.handleSearch(selectedKeys, confirm, dataIndex)}
@@ -148,20 +142,15 @@ class TableJenisRisiko extends React.Component {
                 <Button onClick={() => this.handleReset(clearFilters, dataIndex)} size="small" style={{width:90}}>Reset</Button>
             </div>
         ),
-        filterIcon : filtered => <SearchOutlined style={{color: filtered ? '#1890ff' :
-                (this.state.edname !== '') ?
-                    (dataIndex === 'nama') ?
-                        '#1890ff' :
-                        (this.state.edket !== '') ?
-                            (dataIndex === 'keterangan') ?
-                                '#1890ff' :
-                                (this.state.edjenis !== '') ?
-                                    (dataIndex === 'jenis') ?
-                                        '#1890ff' :
-                                        undefined :
-                                undefined :
-                            undefined :
-                    undefined
+        filterIcon : filtered => <SearchOutlined style={{color:
+                (this.state.edname !== '' && dataIndex === 'nama') ?
+                    '#1890ff' :
+                (this.state.edket !== '' && dataIndex === 'keterangan') ?
+                    '#1890ff' :
+                (this.state.edjenis !== '' && dataIndex === 'jenis') ?
+                    '#1890ff' :
+                filtered ? '#1890ff' :
+                undefined
         }}/>,
         onFilter : (value, record) =>
             record[dataIndex]
@@ -174,6 +163,18 @@ class TableJenisRisiko extends React.Component {
             }
         },
         render : text =>
+            ((this.state.edname !== '' && dataIndex === 'nama') || (this.state.edket !== '' && dataIndex === 'keterangan') || (this.state.edjenis !== '' && dataIndex === 'jenis')) ? (
+                <Highlighter
+                    highlightStyle={{backgroundColor: 'ffc069', padding:0}}
+                    searchWords={[(this.state.edname !== '' && dataIndex === 'nama') ? this.state.edname :
+                        (this.state.edket !== '' && dataIndex === 'keterangan') ? this.state.edket :
+                            (this.state.edjenis !== '' && dataIndex === 'jenis') ? this.state.edjenis :
+                                this.state.searchText
+                    ]}
+                    autoEscape
+                    textToHighlight={text.toString()}
+                />
+            ) :
             this.state.searchedColumn === dataIndex ? (
                 <Highlighter
                     highlightStyle={{backgroundColor: 'ffc069', padding:0}}
@@ -181,41 +182,7 @@ class TableJenisRisiko extends React.Component {
                     autoEscape
                     textToHighlight={text.toString()}
                 />
-            ) :
-                (this.state.edname !== '') ?
-                    (dataIndex === 'nama') ?
-                        (
-                            <Highlighter
-                                highlightStyle={{backgroundColor: 'ffc069', padding:0}}
-                                searchWords={[this.state.edname]}
-                                autoEscape
-                                textToHighlight={text.toString()}
-                            />
-                        )
-                        : (this.state.edket !== '') ?
-                        (dataIndex === 'keterangan') ?
-                            (
-                                <Highlighter
-                                    highlightStyle={{backgroundColor: 'ffc069', padding:0}}
-                                    searchWords={[this.state.edket]}
-                                    autoEscape
-                                    textToHighlight={text.toString()}
-                                />
-                            )
-                            : (this.state.edjenis !== '') ?
-                            (dataIndex === 'jenis') ?
-                                (
-                                    <Highlighter
-                                        highlightStyle={{backgroundColor: 'ffc069', padding:0}}
-                                        searchWords={[this.state.edjenis]}
-                                        autoEscape
-                                        textToHighlight={text.toString()}
-                                    />
-                                )
-                                : (text)
-                            : (text)
-                        : (text)
-                    : (text),
+            ) : (text),
     });
 
     handleSearch = (selectedKeys, confirm, dataIndex) => {

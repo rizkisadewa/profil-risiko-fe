@@ -111,23 +111,11 @@ class TablePenilaian extends React.Component{
                     }}
                     placeholder={`Search ${dataIndex}`}
                     value={
-                        (this.state.edname !== '') ?
-                            (dataIndex === 'name') ?
-                                this.state.edname
-                                : (this.state.eddesc !== '') ?
-                                (dataIndex === 'description') ?
-                                    this.state.eddesc
-                                    : selectedKeys[0]
-                                : selectedKeys[0]
-                            : (this.state.eddesc !== '') ?
-                            (dataIndex === 'description') ?
-                                this.state.eddesc
-                                : (this.state.edname !== '') ?
-                                (dataIndex === 'name') ?
-                                    this.state.edname
-                                    : selectedKeys[0]
-                                : selectedKeys[0]
-                            : selectedKeys[0]
+                        (this.state.edname !== '' && dataIndex === 'name') ?
+                                this.state.edname :
+                        (this.state.eddesc !== '' && dataIndex === 'description') ?
+                                this.state.eddesc :
+                        selectedKeys[0]
                     }
                     onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
                     onPressEnter={() => this.handleSearch(selectedKeys, confirm, dataIndex)}
@@ -145,24 +133,13 @@ class TablePenilaian extends React.Component{
                 <Button onClick={() => this.handleReset(clearFilters, dataIndex)} size="small" style={{width:90}}>Reset</Button>
             </div>
         ),
-        filterIcon : filtered => <SearchOutlined style={{color: filtered ? '#1890ff' :
-                (this.state.edname !== '') ?
-                    (dataIndex === 'name') ?
-                        '#1890ff' :
-                        (this.state.eddesc !== '') ?
-                            (dataIndex === 'description') ?
-                                '#1890ff' :
-                                undefined :
-                            undefined :
-                (this.state.eddesc !== '') ?
-                    (dataIndex === 'description') ?
-                        '#1890ff' :
-                        (this.state.edname !== '') ?
-                            (dataIndex === 'name') ?
-                                '#1890ff' :
-                                undefined :
-                            undefined :
-                        undefined
+        filterIcon : filtered => <SearchOutlined style={{color:
+                (this.state.edname !== '' && dataIndex === 'name') ?
+                    '#1890ff' :
+                (this.state.eddesc !== '' && dataIndex === 'description') ?
+                    '#1890ff' :
+                filtered ? '#1890ff' :
+                    undefined
         }}/>,
         onFilter : (value, record) =>
             record[dataIndex]
@@ -175,6 +152,16 @@ class TablePenilaian extends React.Component{
             }
         },
         render : text =>
+            ((this.state.edname !== '' && dataIndex === 'name') || (this.state.eddesc !== '' && dataIndex === 'description')) ? (
+                    <Highlighter
+                        highlightStyle={{backgroundColor: 'ffc069', padding:0}}
+                        searchWords={[(this.state.edname !== '' && dataIndex === 'name') ? this.state.edname :
+                            (this.state.eddesc !== '' && dataIndex === 'description') ? this.state.eddesc :
+                                this.state.searchText]}
+                        autoEscape
+                        textToHighlight={text.toString()}
+                    />
+            ) :
             this.state.searchedColumn === dataIndex ? (
                 <Highlighter
                     highlightStyle={{backgroundColor: 'ffc069', padding:0}}
@@ -182,54 +169,7 @@ class TablePenilaian extends React.Component{
                     autoEscape
                     textToHighlight={text.toString()}
                 />
-            ) :
-                (this.state.edname !== '') ?
-                    (dataIndex === 'name') ?
-                        (
-                            <Highlighter
-                                highlightStyle={{backgroundColor: 'ffc069', padding:0}}
-                                searchWords={[this.state.edname]}
-                                autoEscape
-                                textToHighlight={text.toString()}
-                            />
-                        )
-                        : (this.state.eddesc !== '') ?
-                        (dataIndex === 'description') ?
-                            (
-                                <Highlighter
-                                    highlightStyle={{backgroundColor: 'ffc069', padding:0}}
-                                    searchWords={[this.state.eddesc]}
-                                    autoEscape
-                                    textToHighlight={text.toString()}
-                                />
-                            )
-                            : (text)
-                        : (text)
-                    :
-                    (this.state.eddesc !== '') ?
-                        (dataIndex === 'description') ?
-                            (
-                                <Highlighter
-                                    highlightStyle={{backgroundColor: 'ffc069', padding:0}}
-                                    searchWords={[this.state.eddesc]}
-                                    autoEscape
-                                    textToHighlight={text.toString()}
-                                />
-                            )
-                            :
-                        (this.state.edname !== '') ?
-                            (dataIndex === 'name') ?
-                                (
-                                    <Highlighter
-                                        highlightStyle={{backgroundColor: 'ffc069', padding:0}}
-                                        searchWords={[this.state.edname]}
-                                        autoEscape
-                                        textToHighlight={text.toString()}
-                                    />
-                                )
-                                :  (text)
-                            : (text)
-                        : (text),
+            ) : (text),
     });
 
     handleSearch = (selectedKeys, confirm, dataIndex) => {

@@ -33,14 +33,16 @@ class TablePeringkatRisiko extends React.Component{
             deletestatus:'',
             description:'',
             paramname:'',
+            paramjenisnilai:'',
             eddesc:'',
             edname:'',
+            edjenisnilai:'',
         }
     }
 
     componentDidMount(){
-        this.props.getAllPeringkatRisiko({page:this.state.paging, token:this.props.token, description:this.state.description, name:this.state.paramname});
-        this.props.countAllPeringkatRisiko({token:this.props.token, description:this.state.description, name:this.state.paramname});
+        this.props.getAllPeringkatRisiko({page:this.state.paging, token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
+        this.props.countAllPeringkatRisiko({token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
     }
 
     componentWillReceiveProps(nextProps){
@@ -111,15 +113,13 @@ class TablePeringkatRisiko extends React.Component{
                     }}
                     placeholder={`Search ${dataIndex}`}
                     value    ={
-                        (this.state.edname !== '') ?
-                            (dataIndex === 'name') ?
-                                this.state.edname
-                                : (this.state.eddesc !== '') ?
-                                (dataIndex === 'description') ?
-                                    this.state.eddesc
-                                    : selectedKeys[0]
-                                : selectedKeys[0]
-                            : selectedKeys[0]
+                        (this.state.edname !== '' && dataIndex === 'name') ?
+                                this.state.edname :
+                        (this.state.eddesc !== '' && dataIndex === 'description') ?
+                            this.state.eddesc :
+                        (this.state.edjenisnilai !== '' && dataIndex === 'jenis_nilai') ?
+                            this.state.edjenisnilai :
+                        selectedKeys[0]
                     }
                     onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
                     onPressEnter={() => this.handleSearch(selectedKeys, confirm, dataIndex)}
@@ -137,16 +137,15 @@ class TablePeringkatRisiko extends React.Component{
                 <Button onClick={() => this.handleReset(clearFilters, dataIndex)} size="small" style={{width:90}}>Reset</Button>
             </div>
         ),
-        filterIcon : filtered => <SearchOutlined style={{color: filtered ? '#1890ff' :
-                (this.state.edname !== '') ?
-                    (dataIndex === 'name') ?
-                        '#1890ff' :
-                    (this.state.eddesc !== '') ?
-                        (dataIndex === 'description') ?
-                            '#1890ff' :
-                        undefined :
-                    undefined :
-                undefined}}/>,
+        filterIcon : filtered => <SearchOutlined style={{color:
+                (this.state.edname !== '' && dataIndex === 'name') ?
+                    '#1890ff' :
+                (this.state.eddesc !== '' && dataIndex === 'description') ?
+                    '#1890ff' :
+                (this.state.edjenisnilai !== '' && dataIndex === 'jenis_nilai') ?
+                    '#1890ff' :
+                filtered ? '#1890ff' :
+                undefined }}/>,
         onFilter : (value, record) =>
             record[dataIndex]
                 .toString()
@@ -158,6 +157,17 @@ class TablePeringkatRisiko extends React.Component{
             }
         },
         render : text =>
+            ((this.state.edname !== '' && dataIndex === 'name') || (this.state.eddesc !== '' && dataIndex === 'description') || (this.state.edjenisnilai !== '' && dataIndex === 'jenis_nilai')) ? (
+                <Highlighter
+                    highlightStyle={{backgroundColor: 'ffc069', padding:0}}
+                    searchWords={[(this.state.edname !== '' && dataIndex === 'name') ? this.state.edname :
+                        (this.state.eddesc !== '' && dataIndex === 'description') ? this.state.eddesc :
+                            (this.state.edjenisnilai !== '' && dataIndex === 'jenis_nilai') ? this.state.edjenisnilai :
+                                this.state.searchText]}
+                    autoEscape
+                    textToHighlight={text.toString()}
+                />
+            ) :
             this.state.searchedColumn === dataIndex ? (
                 <Highlighter
                     highlightStyle={{backgroundColor: 'ffc069', padding:0}}
@@ -165,30 +175,7 @@ class TablePeringkatRisiko extends React.Component{
                     autoEscape
                     textToHighlight={text.toString()}
                 />
-            ) :
-                (this.state.edname !== '') ?
-                    (dataIndex === 'name') ?
-                        (
-                            <Highlighter
-                                highlightStyle={{backgroundColor: 'ffc069', padding:0}}
-                                searchWords={[this.state.edname]}
-                                autoEscape
-                                textToHighlight={text.toString()}
-                            />
-                        )
-                        : (this.state.eddesc !== '') ?
-                        (dataIndex === 'description') ?
-                            (
-                                <Highlighter
-                                    highlightStyle={{backgroundColor: 'ffc069', padding:0}}
-                                    searchWords={[this.state.eddesc]}
-                                    autoEscape
-                                    textToHighlight={text.toString()}
-                                />
-                            )
-                            : (text)
-                        : (text)
-                    : (text),
+            ) : (text),
     });
 
     handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -209,8 +196,8 @@ class TablePeringkatRisiko extends React.Component{
                 loading:true,
                 edname: parameters
             });
-            this.props.getAllPeringkatRisiko({page:1, token:this.props.token, description:this.state.description, name:parameters});
-            this.props.countAllPeringkatRisiko({token:this.props.token, description:this.state.description, name:parameters});
+            this.props.getAllPeringkatRisiko({page:1, token:this.props.token, description:this.state.description, name:parameters, jenis_nilai:this.state.paramjenisnilai});
+            this.props.countAllPeringkatRisiko({token:this.props.token, description:this.state.description, name:parameters, jenis_nilai:this.state.paramjenisnilai});
         }
 
         if (dataIndex === 'description'){
@@ -224,8 +211,23 @@ class TablePeringkatRisiko extends React.Component{
                 loading:true,
                 eddesc:paramdesc
             });
-            this.props.getAllPeringkatRisiko({page:1, token:this.props.token, description:paramdesc, name:this.state.paramname});
-            this.props.countAllPeringkatRisiko({token:this.props.token, description:paramdesc, name:this.state.paramname});
+            this.props.getAllPeringkatRisiko({page:1, token:this.props.token, description:paramdesc, name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
+            this.props.countAllPeringkatRisiko({token:this.props.token, description:paramdesc, name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
+        }
+
+        if (dataIndex === 'jenis_nilai'){
+            var paramjenisnilai = selectedKeys[0];
+            if (!paramjenisnilai){
+                paramjenisnilai = '';
+            }
+
+            this.setState({
+                paramjenisnilai:paramjenisnilai,
+                loading:true,
+                edjenisnilai:paramjenisnilai
+            });
+            this.props.getAllPeringkatRisiko({page:1, token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:paramjenisnilai});
+            this.props.countAllPeringkatRisiko({token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:paramjenisnilai});
         }
     };
 
@@ -241,8 +243,8 @@ class TablePeringkatRisiko extends React.Component{
                 loading:true,
                 edname:''
             });
-            this.props.getAllPeringkatRisiko({page:1, token:this.props.token, description:this.state.description, name:''});
-            this.props.countAllPeringkatRisiko({token:this.props.token, description:this.state.description, name:''});
+            this.props.getAllPeringkatRisiko({page:1, token:this.props.token, description:this.state.description, name:'', jenis_nilai:this.state.paramjenisnilai});
+            this.props.countAllPeringkatRisiko({token:this.props.token, description:this.state.description, name:'', jenis_nilai:this.state.paramjenisnilai});
         }
 
         if (dataIndex === 'description'){
@@ -251,8 +253,18 @@ class TablePeringkatRisiko extends React.Component{
                 loading:true,
                 eddesc:''
             });
-            this.props.getAllPeringkatRisiko({page:1, token:this.props.token, description:'', name:this.state.paramname});
-            this.props.countAllPeringkatRisiko({token:this.props.token, description:'', name:this.state.paramname});
+            this.props.getAllPeringkatRisiko({page:1, token:this.props.token, description:'', name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
+            this.props.countAllPeringkatRisiko({token:this.props.token, description:'', name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
+        }
+
+        if (dataIndex === 'jenis_nilai'){
+            this.setState({
+                paramjenisnilai:'',
+                loading:true,
+                edjenisnilai:''
+            });
+            this.props.getAllPeringkatRisiko({page:1, token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:''});
+            this.props.countAllPeringkatRisiko({token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:''});
         }
     };
 
@@ -310,8 +322,8 @@ class TablePeringkatRisiko extends React.Component{
             paging: page,
             loading:true
         });
-        this.props.getAllPeringkatRisiko({page:page, token:this.props.token, description:this.state.description, name:this.state.paramname});
-        this.props.countAllPeringkatRisiko({token:this.props.token, description:this.state.description, name:this.state.paramname});
+        this.props.getAllPeringkatRisiko({page:page, token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
+        this.props.countAllPeringkatRisiko({token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
     }
 
     onRefresh = () => {
@@ -319,8 +331,8 @@ class TablePeringkatRisiko extends React.Component{
             loading:true,
             paging:1,
         });
-        this.props.getAllPeringkatRisiko({page:1, token:this.props.token, description:this.state.description, name:this.state.paramname});
-        this.props.countAllPeringkatRisiko({token:this.props.token, description:this.state.description, name:this.state.paramname});
+        this.props.getAllPeringkatRisiko({page:1, token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
+        this.props.countAllPeringkatRisiko({token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
     }
 
     render() {
@@ -340,7 +352,7 @@ class TablePeringkatRisiko extends React.Component{
             title: 'Jenis Penilaian',
             dataIndex: 'jenis_nilai',
             key: 'jenis_nilai',
-            // ...this.getColumnSearchProps('jenis_nilai'),
+            ...this.getColumnSearchProps('jenis_nilai'),
             sorter: (a, b) => a.jenis_nilai.localeCompare(b.jenis_nilai),
             sortOrder: sortedInfo.columnKey === 'jenis_nilai' && sortedInfo.order,
         }, {

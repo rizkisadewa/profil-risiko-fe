@@ -14,10 +14,10 @@ import {
 } from "../../constants/ActionTypes";
 import axios from 'util/Api'
 
-export const getAllPeringkatRisiko = ({page, token, description, name}) => {
+export const getAllPeringkatRisiko = ({page, token, description, name, jenis_nilai}) => {
     return (dispatch) => {
         dispatch({type: FETCH_START});
-        axios.get('api/peringkat-risiko?page='+page+'&description='+description+'&name='+name,{
+        axios.get('api/peringkat-risiko?page='+page+'&description='+description+'&name='+name+'&jenis_nilai='+jenis_nilai,{
             headers: {
                 Authorization: "Bearer "+token
             }
@@ -35,10 +35,10 @@ export const getAllPeringkatRisiko = ({page, token, description, name}) => {
     }
 };
 
-export const countAllPeringkatRisiko = ({token, description, name}) => {
+export const countAllPeringkatRisiko = ({token, description, name, jenis_nilai}) => {
     return (dispatch) => {
         dispatch({type: FETCH_START});
-        axios.get('api/peringkat-risiko?description='+description+'&name='+name,{
+        axios.get('api/peringkat-risiko?description='+description+'&name='+name+'&jenis_nilai='+jenis_nilai,{
             headers: {
                 Authorization: "Bearer "+token
             }
