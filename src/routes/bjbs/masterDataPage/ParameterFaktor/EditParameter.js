@@ -85,136 +85,138 @@ class EditParameter extends React.Component{
                             <div key={index}>
                                 <Spin spinning={propsvalue.risk_id ? false : true} tip="Loading...">
 
-                                <FormItem {...formItemLayout}>
-                                    {getFieldDecorator('token', {
-                                        initialValue:token,
-                                        rules: [{
-                                            required: true, message: 'Please input token field.',
-                                        }],
-                                    })(
-                                        <Input id="token" type="hidden" placeholder="Input Token"/>
-                                    )}
-                                </FormItem>
+                                    <FormItem {...formItemLayout}>
+                                        {getFieldDecorator('token', {
+                                            initialValue:token,
+                                            rules: [{
+                                                required: true, message: 'Please input token field.',
+                                            }],
+                                        })(
+                                            <Input id="token" type="hidden" placeholder="Input Token"/>
+                                        )}
+                                    </FormItem>
 
-                                <FormItem {...formItemLayout} label="Risk">
-                                    {getFieldDecorator('risk_id', {
-                                        initialValue:propsvalue.risk_id,
-                                        rules: [{
-                                            required: true, message: 'Please input risk field.',
-                                        }],
-                                    })(
-                                        <Select id="risk_id"
-                                                showSearch
-                                                placeholder="Select risk"
-                                                optionFilterProp="children"
-                                                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                                        >
-                                            {
-                                                dataoptions.map((prop, index) => {
-                                                    var value = prop.id;
-                                                    var label = prop.nama;
-                                                    return (
-                                                        <Option key={index} value={value}>{label}</Option>
-                                                    )
-                                                })
-                                            }
-                                        </Select>
-                                    )}
-                                </FormItem>
+                                    <FormItem {...formItemLayout} label="Risk">
+                                        {getFieldDecorator('risk_id', {
+                                            initialValue:propsvalue.risk_id,
+                                            rules: [{
+                                                required: true, message: 'Please input risk field.',
+                                            }],
+                                        })(
+                                            <Select id="risk_id"
+                                                    showSearch
+                                                    placeholder="Select risk"
+                                                    optionFilterProp="children"
+                                                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                                            >
+                                                {
+                                                    dataoptions.map((prop, index) => {
+                                                        var value = prop.id;
+                                                        var label = prop.nama;
+                                                        return (
+                                                            <Option key={index} value={value}>{label}</Option>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
+                                        )}
+                                    </FormItem>
 
-                                <FormItem {...formItemLayout} label="Penomoran">
-                                    {getFieldDecorator('penomoran', {
-                                        initialValue:propsvalue.penomoran,
-                                        rules: [{
-                                            required: true, message: 'Please input penomoran field.',
-                                        }],
-                                    })(
-                                        <Input id="penomoran" placeholder="Input Penomoran" maxLength={2}/>
-                                    )}
-                                </FormItem>
+                                    <FormItem {...formItemLayout} label="Penomoran">
+                                        {getFieldDecorator('penomoran', {
+                                            initialValue:propsvalue.penomoran,
+                                            rules: [{
+                                                required: true, message: 'Please input penomoran field.',
+                                            }],
+                                        })(
+                                            <Input id="penomoran" placeholder="Input Penomoran" maxLength={2}/>
+                                        )}
+                                    </FormItem>
 
-                                <FormItem {...formItemLayout} label="Parameter">
-                                    {getFieldDecorator('name', {
-                                        initialValue:propsvalue.name,
-                                        rules: [{
-                                            required: true, message: 'Please input parameter field.',
-                                        }],
-                                    })(
-                                        <TextArea id="name" placeholder="Input Parameter"/>
-                                    )}
-                                </FormItem>
+                                    <FormItem {...formItemLayout} label="Parameter">
+                                        {getFieldDecorator('name', {
+                                            initialValue:propsvalue.name,
+                                            rules: [{
+                                                required: true, message: 'Please input parameter field.',
+                                            }],
+                                        })(
+                                            <TextArea id="name" placeholder="Input Parameter"/>
+                                        )}
+                                    </FormItem>
 
-                                <FormItem {...formItemLayout} label="Level">
-                                    {getFieldDecorator('level', {
-                                        initialValue:propsvalue.level,
-                                        rules: [{
-                                            required: true, message: 'Please input level field.',
-                                        }],
-                                    })(
-                                        <Select id="level"
-                                                showSearch
-                                                placeholder="Select level"
-                                                optionFilterProp="children"
-                                                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                                        >
-                                            {
-                                                dataoptionslevel.map((prop, index) => {
-                                                    var value = prop.value;
-                                                    var label = prop.label;
-                                                    return (
-                                                        <Option key={index} value={value}>{label}</Option>
-                                                    )
-                                                })
-                                            }
-                                        </Select>
-                                    )}
-                                </FormItem>
+                                    <FormItem {...formItemLayout} label="Level">
+                                        {getFieldDecorator('level', {
+                                            initialValue:propsvalue.level,
+                                            rules: [{
+                                                required: true, message: 'Please input level field.',
+                                            }],
+                                        })(
+                                            <Select id="level"
+                                                    showSearch
+                                                    placeholder="Select level"
+                                                    optionFilterProp="children"
+                                                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                                            >
+                                                {
+                                                    dataoptionslevel.map((prop, index) => {
+                                                        var value = prop.value;
+                                                        var label = prop.label;
+                                                        return (
+                                                            <Option key={index} value={value}>{label}</Option>
+                                                        )
+                                                    })
+                                                }
+                                            </Select>
+                                        )}
+                                    </FormItem>
 
-                                <FormItem {...formItemLayout} label="Bobot">
-                                    {getFieldDecorator('bobot', {
-                                        initialValue: propsvalue.risk_id ? prop.bobot : 0,
-                                        rules: [{
-                                            required: true, message: 'Please input bobot field.',
-                                        },{type:"number", message: 'Input must be number type.'}],
-                                    })(
-                                        <InputNumber id="bobot" placeholder="Input Bobot"
-                                                     className="w-100"
-                                                     min={0}
-                                                     max={100}
-                                                     onKeyUp={(e, value)=> {
-                                                         var val = parseInt(e.target.value);
-                                                         if (val>100 || val<0){
-                                                             this.setState({
-                                                                 basic: true,
-                                                             })
-                                                         }
-                                                     }}
-                                                     formatter={value => `${value}%`}
-                                                     parser={value => value.replace('%', '')}
-                                        />
-                                    )}
-                                </FormItem>
+                                    <FormItem {...formItemLayout} label="Bobot">
+                                        {getFieldDecorator('bobot', {
+                                            initialValue: propsvalue.risk_id ? prop.bobot : 0,
+                                            rules: [{
+                                                required: true, message: 'Please input bobot field.',
+                                            },{type:"number", message: 'Input must be number type.'}],
+                                        })(
+                                            <InputNumber id="bobot" placeholder="Input Bobot"
+                                                         className="w-100"
+                                                         min={0}
+                                                         max={100}
+                                                         onKeyUp={(e, value)=> {
+                                                             var val = parseInt(e.target.value);
+                                                             if (val>100 || val<0){
+                                                                 this.setState({
+                                                                     basic: true,
+                                                                 })
+                                                             }
+                                                         }}
+                                                         formatter={value => `${value}%`}
+                                                         parser={value => value.replace('%', '')}
+                                            />
+                                        )}
+                                    </FormItem>
 
-                                <FormItem {...formItemLayout}>
-                                    {getFieldDecorator('id', {
-                                        initialValue:prop.id,
-                                        rules: [{
-                                            required: true, message: 'Please input id field.',
-                                        }],
-                                    })(
-                                        <Input id="id" type="hidden" placeholder="Input Id"/>
-                                    )}
-                                </FormItem>
-                            </Spin>
+                                    <FormItem {...formItemLayout}>
+                                        {getFieldDecorator('id', {
+                                            initialValue:prop.id,
+                                            rules: [{
+                                                required: true, message: 'Please input id field.',
+                                            }],
+                                        })(
+                                            <Input id="id" type="hidden" placeholder="Input Id"/>
+                                        )}
+                                    </FormItem>
+
+                                    <FormItem style={{ float : "right", paddingRight : "1rem" }}>
+                                        <Button onClick={this.props.clickCancelEditButton}>Cancel</Button>
+                                        <Button type="primary" htmlType="submit">Edit</Button>
+                                    </FormItem>
+
+                                </Spin>
                             </div>
                         );
                     })
                 }
 
-                <FormItem style={{ float : "right", paddingRight : "1rem" }}>
-                    <Button onClick={this.props.clickCancelEditButton}>Cancel</Button>
-                    <Button type="primary" htmlType="submit">Save</Button>
-                </FormItem>
                 <SweetAlerts show={ewarning}
                              warning
                              showCancel

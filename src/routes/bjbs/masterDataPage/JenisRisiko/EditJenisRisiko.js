@@ -71,70 +71,71 @@ class EditJenisRisiko extends React.PureComponent{
                             return(
                                 <div key={index}>
                                     <Spin spinning={propsvalue.id ? false : true} tip="Loading...">
-                                    <FormItem {...formItemLayout}>
-                                        {getFieldDecorator('id', {
-                                            initialValue:propsvalue.id,
-                                            rules: [{
-                                                required: true, message: 'Please input id field.',
-                                            }],
-                                        })(
-                                            <Input id="id" type="hidden" placeholder="Input Id"/>
-                                        )}
-                                    </FormItem>
+                                        <FormItem {...formItemLayout}>
+                                            {getFieldDecorator('id', {
+                                                initialValue:propsvalue.id,
+                                                rules: [{
+                                                    required: true, message: 'Please input id field.',
+                                                }],
+                                            })(
+                                                <Input id="id" type="hidden" placeholder="Input Id"/>
+                                            )}
+                                        </FormItem>
 
-                                    <FormItem {...formItemLayout} label="Nama">
-                                        {getFieldDecorator('nama', {
-                                            initialValue:propsvalue.nama,
-                                            rules: [{
-                                                required: true, message: 'Please input nama field.',
-                                            }],
-                                        })(
-                                            <Input id="nama" placeholder="Input Nama"/>
-                                        )}
-                                    </FormItem>
+                                        <FormItem {...formItemLayout} label="Nama">
+                                            {getFieldDecorator('nama', {
+                                                initialValue:propsvalue.nama,
+                                                rules: [{
+                                                    required: true, message: 'Please input nama field.',
+                                                }],
+                                            })(
+                                                <Input id="nama" placeholder="Input Nama"/>
+                                            )}
+                                        </FormItem>
 
-                                    <FormItem {...formItemLayout} label="Keterangan">
-                                        {getFieldDecorator('keterangan', {
-                                            initialValue:propsvalue.keterangan,
-                                            rules: [{
-                                                required: true, message: 'Please input keterangan field.',
-                                            }],
-                                        })(
-                                            <TextArea id="keterangan" placeholder="Input Keterangan"/>
-                                        )}
-                                    </FormItem>
+                                        <FormItem {...formItemLayout} label="Keterangan">
+                                            {getFieldDecorator('keterangan', {
+                                                initialValue:propsvalue.keterangan,
+                                                rules: [{
+                                                    required: true, message: 'Please input keterangan field.',
+                                                }],
+                                            })(
+                                                <TextArea id="keterangan" placeholder="Input Keterangan"/>
+                                            )}
+                                        </FormItem>
 
-                                    <FormItem {...formItemLayout} label="Jenis">
-                                        {getFieldDecorator('jenis', {
-                                            initialValue:propsvalue.jenis,
-                                            rules: [{
-                                                required: true, message: 'Please input jenis field.',
-                                            }],
-                                        })(
-                                            <Input id="jenis" placeholder="Input Jenis"/>
-                                        )}
-                                    </FormItem>
+                                        <FormItem {...formItemLayout} label="Jenis">
+                                            {getFieldDecorator('jenis', {
+                                                initialValue:propsvalue.jenis,
+                                                rules: [{
+                                                    required: true, message: 'Please input jenis field.',
+                                                }],
+                                            })(
+                                                <Input id="jenis" placeholder="Input Jenis"/>
+                                            )}
+                                        </FormItem>
 
-                                    <FormItem {...formItemLayout}>
-                                        {getFieldDecorator('token', {
-                                            initialValue:token,
-                                            rules: [{
-                                                required: true, message: 'Please input token field.',
-                                            }],
-                                        })(
-                                            <Input id="token" type="hidden" placeholder="Input Token"/>
-                                        )}
-                                    </FormItem>
-                                </Spin>
+                                        <FormItem {...formItemLayout}>
+                                            {getFieldDecorator('token', {
+                                                initialValue:token,
+                                                rules: [{
+                                                    required: true, message: 'Please input token field.',
+                                                }],
+                                            })(
+                                                <Input id="token" type="hidden" placeholder="Input Token"/>
+                                            )}
+                                        </FormItem>
+
+                                        <FormItem style={{ float : "right", paddingRight : "1rem" }}>
+                                            <Button onClick={this.props.clickCancelEditButton}>Cancel</Button>
+                                            <Button type="primary" htmlType="submit">Edit</Button>
+                                        </FormItem>
+
+                                    </Spin>
                                 </div>
                             );
                         })
                     }
-
-                    <FormItem style={{ float : "right", paddingRight : "1rem" }}>
-                        <Button onClick={this.props.clickCancelEditButton}>Cancel</Button>
-                        <Button type="primary" htmlType="submit">Edit</Button>
-                    </FormItem>
 
                     <SweetAlerts show={ewarning}
                                  warning

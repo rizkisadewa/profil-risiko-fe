@@ -82,86 +82,87 @@ class EditPeringkatRisiko extends React.Component{
                             return (
                                 <div key={index}>
                                     <Spin spinning={propsvalue.id ? false : true} tip="Loading...">
-                                    <FormItem {...formItemLayout}>
-                                        {getFieldDecorator('id', {
-                                            initialValue:propsvalue.id,
-                                            rules: [{
-                                                required: true, message: 'Please input id field.',
-                                            }],
-                                        })(
-                                            <Input id="id" type="hidden" placeholder="Input Id"/>
-                                        )}
-                                    </FormItem>
+                                        <FormItem {...formItemLayout}>
+                                            {getFieldDecorator('id', {
+                                                initialValue:propsvalue.id,
+                                                rules: [{
+                                                    required: true, message: 'Please input id field.',
+                                                }],
+                                            })(
+                                                <Input id="id" type="hidden" placeholder="Input Id"/>
+                                            )}
+                                        </FormItem>
 
-                                    <FormItem {...formItemLayout} label="Name">
-                                        {getFieldDecorator('name', {
-                                            initialValue:propsvalue.name,
-                                            rules: [{
-                                                required: true, message: 'Please input name field.',
-                                            }],
-                                        })(
-                                            <Input id="name" placeholder="Input Name"/>
-                                        )}
-                                    </FormItem>
+                                        <FormItem {...formItemLayout} label="Name">
+                                            {getFieldDecorator('name', {
+                                                initialValue:propsvalue.name,
+                                                rules: [{
+                                                    required: true, message: 'Please input name field.',
+                                                }],
+                                            })(
+                                                <Input id="name" placeholder="Input Name"/>
+                                            )}
+                                        </FormItem>
 
-                                    <FormItem {...formItemLayout} label="Jenis Penilaian">
-                                        {getFieldDecorator('id_jenis_nilai', {
-                                            initialValue:propsvalue.id_jenis_nilai,
-                                            rules: [{
-                                                required: true, message: 'Please input jenis penilaian field.',
-                                            }],
-                                        })(
-                                            <Select id="id_jenis_nilai"
-                                                    showSearch
-                                                    placeholder="Select jenis penilaian"
-                                                    optionFilterProp="children"
-                                                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                                                    >
-                                                {
-                                                    dataoptions.map((prop, index) => {
-                                                        var value = prop.value;
-                                                        var label = prop.text;
-                                                        return (
-                                                            <Option value={value} key={index}>{label}</Option>
-                                                        )
-                                                    })
-                                                }
-                                            </Select>
-                                        )}
-                                    </FormItem>
+                                        <FormItem {...formItemLayout} label="Jenis Penilaian">
+                                            {getFieldDecorator('id_jenis_nilai', {
+                                                initialValue:propsvalue.id_jenis_nilai,
+                                                rules: [{
+                                                    required: true, message: 'Please input jenis penilaian field.',
+                                                }],
+                                            })(
+                                                <Select id="id_jenis_nilai"
+                                                        showSearch
+                                                        placeholder="Select jenis penilaian"
+                                                        optionFilterProp="children"
+                                                        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                                                        >
+                                                    {
+                                                        dataoptions.map((prop, index) => {
+                                                            var value = prop.value;
+                                                            var label = prop.text;
+                                                            return (
+                                                                <Option value={value} key={index}>{label}</Option>
+                                                            )
+                                                        })
+                                                    }
+                                                </Select>
+                                            )}
+                                        </FormItem>
 
-                                    <FormItem {...formItemLayout} label="Description">
-                                        {getFieldDecorator('description', {
-                                            initialValue:propsvalue.description,
-                                            rules: [{
-                                                required: true, message: 'Please input jenis description field.',
-                                            }],
-                                        })(
-                                            <TextArea id="description" placeholder="Input description"/>
-                                        )}
-                                    </FormItem>
+                                        <FormItem {...formItemLayout} label="Description">
+                                            {getFieldDecorator('description', {
+                                                initialValue:propsvalue.description,
+                                                rules: [{
+                                                    required: true, message: 'Please input jenis description field.',
+                                                }],
+                                            })(
+                                                <TextArea id="description" placeholder="Input description"/>
+                                            )}
+                                        </FormItem>
 
-                                    <FormItem {...formItemLayout}>
-                                        {getFieldDecorator('token', {
-                                            initialValue:token,
-                                            rules: [{
-                                                required: true, message: 'Please input token field.',
-                                            }],
-                                        })(
-                                            <Input id="token" type="hidden" placeholder="Input Token"/>
-                                        )}
-                                    </FormItem>
-                                </Spin>
+                                        <FormItem {...formItemLayout}>
+                                            {getFieldDecorator('token', {
+                                                initialValue:token,
+                                                rules: [{
+                                                    required: true, message: 'Please input token field.',
+                                                }],
+                                            })(
+                                                <Input id="token" type="hidden" placeholder="Input Token"/>
+                                            )}
+                                        </FormItem>
+
+                                        <FormItem style={{ float : "right", paddingRight : "1rem" }}>
+                                            <Button onClick={this.props.clickCancelEditButton}>Cancel</Button>
+                                            <Button type="primary" htmlType="submit">Edit</Button>
+                                        </FormItem>
+
+                                    </Spin>
                                 </div>
                             );
                         })
                     }
 
-
-                    <FormItem style={{ float : "right", paddingRight : "1rem" }}>
-                        <Button onClick={this.props.clickCancelEditButton}>Cancel</Button>
-                        <Button type="primary" htmlType="submit">Save</Button>
-                    </FormItem>
                     <SweetAlerts show={ewarning}
                                  warning
                                  showCancel

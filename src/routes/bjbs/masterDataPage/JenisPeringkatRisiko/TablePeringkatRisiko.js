@@ -411,7 +411,7 @@ class TablePeringkatRisiko extends React.Component{
         }];
 
         return (
-            <Card title={addbutton ? "Add New Data" : editbutton ? "Edit Data : "+eid : "Read Table Jenis Peringkat Risiko"}>
+            <Card title={addbutton ? "Add New Data" : editbutton ? "Edit Data : ID["+eid+"]" : "Read Table Jenis Peringkat Risiko"}>
                 {
                     addbutton ?
                         <SavePeringkatRisiko clickCancelAddButton={this.clickCancelAddButton} clickAddSuccessButton={this.clickAddSuccessButton}/> :

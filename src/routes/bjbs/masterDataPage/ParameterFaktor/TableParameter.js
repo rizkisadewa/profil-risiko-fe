@@ -425,7 +425,7 @@ class TableParameter extends React.Component{
         }];
 
         return (
-            <Card title={addbutton ? "Add New Data" : editbutton ? "Edit Data : "+eid : "Read Table ParameterFaktor"}>
+            <Card title={addbutton ? "Add New Data" : editbutton ? "Edit Data : ID["+eid+"]" : "Read Table ParameterFaktor"}>
                 {
                     /*test ? <Redirect to={{
                             pathname: '/bjbs/masterdata/parameter'

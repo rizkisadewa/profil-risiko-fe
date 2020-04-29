@@ -383,7 +383,7 @@ class TablePenilaian extends React.Component{
         }];
 
         return (
-            <Card title={addbutton ? "Add New Data" : editbutton ? "Edit Data : "+eid : "Read Table Jenis Penilaian"}>
+            <Card title={addbutton ? "Add New Data" : editbutton ? "Edit Data : ID["+eid+"]" : "Read Table Jenis Penilaian"}>
                 {
                     addbutton ?
                         <SavePenilaian clickCancelAddButton={this.clickCancelAddButton} clickAddSuccessButton={this.clickAddSuccessButton}/> :
