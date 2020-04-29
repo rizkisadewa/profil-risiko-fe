@@ -400,15 +400,15 @@ class TablePenilaian extends React.Component{
                             <Table className="gx-table-responsive" columns={columns} dataSource={datatable} onChange={this.handleChange} rowKey="id"
                                    pagination={false}
                             />
+                            <div className="table-operations" style={{ paddingTop : '1rem', float : 'right' }}>
+                                {
+                                    (lengthdata) ?
+                                        lengthdata > 0 ?
+                                            <Pagination current={paging} total={lengthdata} onChange={this.onChangePagination}/> : ''
+                                        : ''
+                                }
+                            </div>
                         </Spin>
-                        <div className="table-operations" style={{ paddingTop : '1rem', float : 'right' }}>
-                            {
-                                (lengthdata) ?
-                                    lengthdata > 0 ?
-                                        <Pagination current={paging} total={lengthdata} onChange={this.onChangePagination}/> : ''
-                                    : ''
-                            }
-                        </div>
                         <SweetAlert show={warning}
                                     warning
                                     showCancel

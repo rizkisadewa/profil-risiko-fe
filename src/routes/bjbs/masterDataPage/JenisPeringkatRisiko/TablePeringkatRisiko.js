@@ -428,16 +428,16 @@ class TablePeringkatRisiko extends React.Component{
                             <Table className="gx-table-responsive" columns={columns} dataSource={datatable} onChange={this.handleChange} rowKey="id"
                                    pagination={false}
                             />
-                        </Spin>
-                        <div className="table-operations" style={{ paddingTop : '1rem', float : 'right' }}>
-                            {
-                                (lengthdata) ?
-                                    lengthdata > 0 ?
-                                        <Pagination current={paging} total={lengthdata ? lengthdata : 1} onChange={this.onChangePagination}/> : ''
-                                    : ''
+                            <div className="table-operations" style={{ paddingTop : '1rem', float : 'right' }}>
+                                {
+                                    (lengthdata) ?
+                                        lengthdata > 0 ?
+                                            <Pagination current={paging} total={lengthdata ? lengthdata : 1} onChange={this.onChangePagination}/> : ''
+                                        : ''
 
-                            }
-                        </div>
+                                }
+                            </div>
+                        </Spin>
                         <SweetAlert show={warning}
                                     warning
                                     showCancel
