@@ -2,7 +2,7 @@ import React from "react";
 import {Button, Input, Form, Select, Spin} from "antd";
 import connect from "react-redux/es/connect/connect";
 import IntlMessages from "util/IntlMessages";
-import {updatePeringkatRisiko, getAllPeringkatRisiko, resetPutPeringkatRisiko, getPeringkatRisiko, jenisNilaiParam} from "../../../../appRedux/actions";
+import {updatePeringkatRisiko, getAllPeringkatRisiko, resetPutPeringkatRisiko, getPeringkatRisiko, jenisNilaiParam} from "../../../../appRedux/actions/index";
 import SweetAlerts from "react-bootstrap-sweetalert";
 
 const FormItem = Form.Item;

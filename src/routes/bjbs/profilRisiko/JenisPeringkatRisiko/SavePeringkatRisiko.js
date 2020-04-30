@@ -1,7 +1,7 @@
 import React from "react";
 import {Button, Input, Form, Select} from "antd";
 import connect from "react-redux/es/connect/connect";
-import {getAllPeringkatRisiko, postPeringkatRisiko, resetPostPeringkatRisiko, jenisNilaiParam} from "../../../../appRedux/actions";
+import {getAllPeringkatRisiko, postPeringkatRisiko, resetPostPeringkatRisiko, jenisNilaiParam} from "../../../../appRedux/actions/index";
 
 const FormItem = Form.Item;
 const Option = Select.Option;

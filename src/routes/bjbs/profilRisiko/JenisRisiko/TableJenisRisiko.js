@@ -5,7 +5,7 @@ import {Divider, Button, Card, Table, Input, Spin, Pagination} from "antd";
 import IntlMessages from "util/IntlMessages";
 import Highlighter from "react-highlight-words";
 import {SearchOutlined} from "@ant-design/icons";
-import {getAllRisks, deleteRisk, getCountRisks} from "../../../../appRedux/actions";
+import {getAllRisks, deleteRisk, getCountRisks} from "../../../../appRedux/actions/index";
 import connect from "react-redux/es/connect/connect";
 
 import SaveJenisRisiko from "./SaveJenisRisiko";

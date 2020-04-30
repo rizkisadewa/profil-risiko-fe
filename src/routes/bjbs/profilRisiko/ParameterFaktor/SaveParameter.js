@@ -1,7 +1,7 @@
 import React from "react";
 import {Button, Input, Form, Select, InputNumber} from "antd";
 import connect from "react-redux/es/connect/connect";
-import {getAllRisks, postFaktorParameter, resetPostFaktorParameter} from "../../../../appRedux/actions";
+import {getAllRisks, postFaktorParameter, resetPostFaktorParameter} from "../../../../appRedux/actions/index";
 import SweetAlerts from "react-bootstrap-sweetalert";
 
 const FormItem = Form.Item;

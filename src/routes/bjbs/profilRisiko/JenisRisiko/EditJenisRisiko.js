@@ -2,7 +2,7 @@ import React from "react";
 import {Button, Input, Form, Spin} from "antd";
 
 import connect from "react-redux/es/connect/connect";
-import {updateRisk, resetPutRisk, getRisk} from "../../../../appRedux/actions";
+import {updateRisk, resetPutRisk, getRisk} from "../../../../appRedux/actions/index";
 import IntlMessages from "util/IntlMessages";
 import SweetAlerts from "react-bootstrap-sweetalert";
 

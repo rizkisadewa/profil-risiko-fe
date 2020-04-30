@@ -3,17 +3,17 @@ import {Col, Row} from "antd";
 
 import IntlMessages from "util/IntlMessages";
 
-import TableJenisRisiko from "./TableJenisRisiko";
+import TablePeringkatRisiko from "./TablePeringkatRisiko";
 
-const JenisRisiko = () => {
+const JenisPeringkatRisiko = () => {
     return (
         <div>
-            <h2 className="title gx-mb-4"><IntlMessages id="sidebar.masterdata.risiko"/></h2>
+            <h2 className="title gx-mb-4"><IntlMessages id="sidebar.profilrisiko.peringkatrisiko"/></h2>
 
             <div className="gx-d-flex justify-content-center">
                 <Row className={"w-100"}>
                     <Col span={24}>
-                        <TableJenisRisiko/>
+                        <TablePeringkatRisiko/>
                     </Col>
                 </Row>
             </div>
@@ -22,4 +22,4 @@ const JenisRisiko = () => {
     );
 };
 
-export default JenisRisiko;
+export default JenisPeringkatRisiko;

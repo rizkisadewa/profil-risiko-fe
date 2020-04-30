@@ -1,7 +1,7 @@
 import React from "react";
 import {Button, Input, Form} from "antd";
 import connect from "react-redux/es/connect/connect";
-import {addRisk, resetPostRisk} from "../../../../appRedux/actions";
+import {addRisk, resetPostRisk} from "../../../../appRedux/actions/index";
 
 const FormItem = Form.Item;
 const {TextArea} = Input;
