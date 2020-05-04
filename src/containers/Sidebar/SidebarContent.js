@@ -128,6 +128,12 @@ class SidebarContent extends Component {
                               <IntlMessages id="sidebar.masterdata.penilaian"/>
                           </Link>
                       </Menu.Item>
+                      <Menu.Item key="bjbs/masterdata/ratioindikator">
+                          <Link to="/bjbs/masterdata/ratioindikator">
+                              <i className="icon icon-map-popup-info"/>
+                              <IntlMessages id="sidebar.masterdata.ratioindikator"/>
+                          </Link>
+                      </Menu.Item>
                   </SubMenu>
 
                   <SubMenu key="keperluandata" className={this.getNavStyleSubMenuClass(navStyle)}

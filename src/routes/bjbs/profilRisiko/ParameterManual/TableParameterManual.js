@@ -252,6 +252,7 @@ class TableParameterManual extends  React.Component{
                                 />
                                 <Column
                                     title="Action"
+                                    key="action"
                                     render={(text, record) => (
                                         <span>
                                             <span className="gx-link" onClick={() => {

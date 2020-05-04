@@ -6,3 +6,4 @@ export * from './Jenisrisiko';
 export * from  './Peringkatrisiko';
 export * from './Masterparameter';
 export * from './Jenispenilaian';
+export * from './RatioIndikator';

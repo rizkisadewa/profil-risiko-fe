@@ -6,6 +6,7 @@ import asyncComponent from "util/asyncComponent";
 const MasterDataPage = ({match}) => (
     <Switch>
         <Route path={`${match.url}/jenispenilaian`} component={asyncComponent(() => import('./JenisPenilaian'))}/>
+        <Route path={`${match.url}/ratioindikator`} component={asyncComponent(() => import('./RatioIndikator'))}/>
     </Switch>
 );
 
