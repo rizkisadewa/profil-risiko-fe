@@ -62,11 +62,11 @@ class FilterTableParameterManual extends React.Component{
         return fullyearmonth;
     };
 
-    thisMonth = () => {
+    /*thisMonth = () => {
         var d = new Date();
         var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
         return months[d.getMonth()]+" "+d.getFullYear();
-    };
+    };*/
 
     onChangeMonth = (date, dateString) => {
         var monthyear = (date, dateString);
@@ -113,7 +113,6 @@ class FilterTableParameterManual extends React.Component{
     };
 
     render() {
-        console.log(this.thisMonth);
         const formItemLayout = {
             wrapperCol: {
                 xs: {span: 24},

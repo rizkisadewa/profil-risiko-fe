@@ -4,6 +4,7 @@ import SweetAlert from "react-bootstrap-sweetalert";
 import {NotificationContainer, NotificationManager} from "react-notifications";
 import IntlMessages from "util/IntlMessages";
 import SaveParameterManual from "./SaveParameterManual";
+import EditParameterManual from "./EditParameterManual";
 
 const { Column, ColumnGroup } = Table;
 
@@ -17,6 +18,9 @@ class TableParameterManual extends  React.Component{
             deletestatus:'',
             loading:false,
             addbutton: false,
+            editbutton: false,
+            eid: "",
+            fetchdata: []
         }
     }
 
@@ -26,62 +30,72 @@ class TableParameterManual extends  React.Component{
                 id:1,
                 risk:'Test',
                 parameter:'Test',
-                low:'Test',
-                lowtomoderate:'Test',
-                moderate:'Test',
-                moderatetohigh:'Test',
-                high:'Test',
-                bobot:'Test',
+                low:1,
+                lowtomoderate:2,
+                moderate:3,
+                moderatetohigh:4,
+                high:5,
+                bobot:3,
                 bulan:this.props.fetchdata[0].stringmonth,
-                tahun:this.props.fetchdata[0].isyear
+                tahun:this.props.fetchdata[0].isyear,
+                penomoran: 10,
+                level:2
             },{
                 id:2,
                 risk:'Test',
                 parameter:'Test',
-                low:'Test',
-                lowtomoderate:'Test',
-                moderate:'Test',
-                moderatetohigh:'Test',
-                high:'Test',
-                bobot:'Test',
+                low:6,
+                lowtomoderate:7,
+                moderate:8,
+                moderatetohigh:9,
+                high:10,
+                bobot:6,
                 bulan:this.props.fetchdata[0].stringmonth,
-                tahun:this.props.fetchdata[0].isyear
+                tahun:this.props.fetchdata[0].isyear,
+                penomoran: 30,
+                level:3
             },{
                 id:3,
                 risk:'Test',
                 parameter:'Test',
-                low:'Test',
-                lowtomoderate:'Test',
-                moderate:'Test',
-                moderatetohigh:'Test',
-                high:'Test',
-                bobot:'Test',
+                low:11,
+                lowtomoderate:12,
+                moderate:13,
+                moderatetohigh:14,
+                high:15,
+                bobot:9,
                 bulan:this.props.fetchdata[0].stringmonth,
-                tahun:this.props.fetchdata[0].isyear
+                tahun:this.props.fetchdata[0].isyear,
+                penomoran: 50,
+                level:4
             },{
                 id:4,
                 risk:'Test',
                 parameter:'Test',
-                low:'Test',
-                lowtomoderate:'Test',
-                moderate:'Test',
-                moderatetohigh:'Test',
-                high:'Test',
-                bobot:'Test',
+                low:16,
+                lowtomoderate:17,
+                moderate:18,
+                moderatetohigh:19,
+                high:20,
+                bobot:12,
                 bulan:this.props.fetchdata[0].stringmonth,
-                tahun:this.props.fetchdata[0].isyear
+                tahun:this.props.fetchdata[0].isyear,
+                penomoran: 70,
+                level:5
             },{
                 id:5,
                 risk:'Test',
                 parameter:'Test',
-                low:'Test',
-                lowtomoderate:'Test',
-                moderate:'Test',
-                moderatetohigh:'Test',
-                high:'Test',
-                bobot:'Test',
+                low:21,
+                lowtomoderate:22,
+                moderate:23,
+                moderatetohigh:24,
+                high:25,
+                bobot:15,
                 bulan:this.props.fetchdata[0].stringmonth,
-                tahun:this.props.fetchdata[0].isyear
+                tahun:this.props.fetchdata[0].isyear,
+                penomoran: 90,
+                level:2
             }]
         })
     }
@@ -133,14 +147,22 @@ class TableParameterManual extends  React.Component{
         this.onRefresh();
     };
 
+    clickCancelEditButton = () => {
+        this.setState({
+            editbutton: false,
+        })
+        this.onRefresh();
+    }
+
     render() {
-        const {datatable,warning, loading, addbutton} = this.state;
+        const {datatable,warning, loading, addbutton, editbutton, eid, fetchdata} = this.state;
         let {sortedInfo} = this.state;
         sortedInfo = sortedInfo || {};
         return (
-            <Card title={addbutton ? "Tambah Parameter & Indikator" : "Read Table Parameter Manual"}>
+            <Card title={addbutton ? "Tambah Parameter & Indikator" : editbutton ? "Edit Data : ID["+eid+"]"  : "Read Table Parameter Manual"}>
                 {
                     addbutton ? <SaveParameterManual clickCancelAddButton={this.clickCancelAddButton}/> :
+                    editbutton ? <EditParameterManual clickCancelEditButton={this.clickCancelEditButton} fetchdata={fetchdata} eid={eid} /> :
                         <>
                             <div className="table-operations">
                                 <Button className="ant-btn ant-btn-danger" onClick={this.onClickCancel}>Back Filter</Button>
@@ -230,11 +252,31 @@ class TableParameterManual extends  React.Component{
                                 />
                                 <Column
                                     title="Action"
-                                    dataIndex="id"
-                                    key="id"
                                     render={(text, record) => (
                                         <span>
-                                            <span className="gx-link">Edit</span>
+                                            <span className="gx-link" onClick={() => {
+                                                this.setState({
+                                                    eid : text.id,
+                                                    editbutton: true,
+                                                    fetchdata : [{
+                                                        id:text.id,
+                                                        risk:text.risk,
+                                                        parameter:text.parameter,
+                                                        low:text.low,
+                                                        lowtomoderate:text.lowtomoderate,
+                                                        moderate:text.moderate,
+                                                        moderatetohigh:text.moderatetohigh,
+                                                        high:text.high,
+                                                        bobot:text.bobot,
+                                                        bulan:text.bulan,
+                                                        tahun:text.tahun,
+                                                        penomoran:text.penomoran,
+                                                        level:text.level,
+                                                        indukparameter:145,
+                                                        risk_id:10
+                                                    }]
+                                                })
+                                            }}>Edit</span>
                                             <Divider type="vertical"/>
                                             <span className="gx-link" onClick={() => {
                                                 this.setState({

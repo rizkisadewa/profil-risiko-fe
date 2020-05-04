@@ -8,10 +8,10 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 
 const optionsLevel = [
-    {label:"Level Kedua (2)", value:"2"},
-    {label:"Level Ketiga (3)", value:"3"},
-    {label:"Level Keempat (4)", value:"4"},
-    {label:"Level Kelima (5)", value:"5"}
+    {label:"Level Kedua (2)", value:2},
+    {label:"Level Ketiga (3)", value:3},
+    {label:"Level Keempat (4)", value:4},
+    {label:"Level Kelima (5)", value:5}
 ];
 
 class SaveParameterManual extends React.Component{
@@ -291,3 +291,4 @@ const mapStateToProps = ({auth, jenisrisiko, peringkatrisiko}) => {
 };
 
 export default connect(mapStateToProps, {getAllRisks,getAllPeringkatRisiko})(WrappedSaveParameterManual);
+export {optionsLevel};
