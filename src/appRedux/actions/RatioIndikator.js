@@ -66,7 +66,7 @@ export const getAllRatioIndikator = ({token}) => {
             }
         }).then(({data}) => {
             if (data.data){
-                dispatch({type: GET_ALL_RATIO_INDIKATOR, payload: data.data.length});
+                dispatch({type: GET_ALL_RATIO_INDIKATOR, payload: data.data});
             } else {
                 dispatch({type: FETCH_ERROR, payload: data.error});
             }

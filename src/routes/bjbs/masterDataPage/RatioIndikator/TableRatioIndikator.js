@@ -10,6 +10,7 @@ import {connect} from "react-redux";
 import {getAllRatioIndikatortable, deleteRatioIndikator, countAllRatioIndikator} from "../../../../appRedux/actions/RatioIndikator";
 import SaveRatioIndikator from "./SaveRatioIndikator";
 import EditRatioIndikator from "./EditRatioIndikator";
+import {Link} from "react-router-dom";
 
 class TableRatioIndikator extends React.Component{
     constructor(props) {
@@ -275,7 +276,7 @@ class TableRatioIndikator extends React.Component{
     render() {
         let {sortedInfo} = this.state;
         const {datatable, warning, addbutton, editbutton, eid, fetchdata, idvalue, paging, loading, lengthdata} = this.state;
-        const {token} = this.props;
+        const {token, propstat} = this.props;
         sortedInfo = sortedInfo || {};
         const columns = [{
             title: 'Name',
@@ -364,6 +365,26 @@ class TableRatioIndikator extends React.Component{
                         /> :
                     <>
                         <div className="table-operations">
+                            {
+                                propstat ?
+                                    <Link className="ant-btn  ant-btn-danger" to={{pathname:'/bjbs/profilrisiko/parameterkuantitatif',
+                                        paramKuantitatifProps:{
+                                            pkparameter:propstat.rparameter,
+                                            pklow:propstat.rlow,
+                                            pklowtomoderate:propstat.rlowtomoderate,
+                                            pkmoderate:propstat.rmoderate,
+                                            pkmoderatetohigh:propstat.rmoderatetohigh,
+                                            pkhigh:propstat.rhigh,
+                                            pkbobot:propstat.rbobot,
+                                            pkpenomoran:propstat.rpenomoran,
+                                            pklevel:propstat.rlevel,
+                                            pkindukparameter:propstat.rindukparameter,
+                                            pkrisk_id:propstat.rrisk_id,
+                                            pkjenisnilai:propstat.rjenisnilai,
+                                            addtrue : true
+                                        }}
+                                    }>Back To Add Parameter Kuantitatif</Link> : ''
+                            }
                             <Button className="ant-btn ant-btn-primary" onClick={this.clickAddButton}>Add</Button>
                             <Button className="ant-btn" onClick={this.onRefresh}>Refresh</Button>
                         </div>
