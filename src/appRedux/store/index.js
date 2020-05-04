@@ -1,10 +1,12 @@
 import {applyMiddleware, compose, createStore} from "redux";
 import reducers from "../reducers/index";
 import {routerMiddleware} from "react-router-redux";
-import createHistory from "history/createBrowserHistory";
+// import createHistory from "history/createBrowserHistory";
+import {createBrowserHistory} from "history";
 import thunk from 'redux-thunk';
 
-const history = createHistory();
+// const history = createHistory();
+const history = createBrowserHistory();
 const routeMiddleware = routerMiddleware(history);
 
 const middlewares = [thunk, routeMiddleware];

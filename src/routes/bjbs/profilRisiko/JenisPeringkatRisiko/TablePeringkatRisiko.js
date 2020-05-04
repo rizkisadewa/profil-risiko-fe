@@ -5,13 +5,13 @@ import {Divider, Button, Card, Table, Input, Pagination, Spin} from "antd";
 import IntlMessages from "util/IntlMessages";
 import Highlighter from "react-highlight-words";
 import {SearchOutlined} from "@ant-design/icons";
-import SavePenilaian from "./SavePenilaian";
-import EditPenilaian from "./EditPenilaian";
+import SavePeringkatRisiko from "./SavePeringkatRisiko";
+import EditPeringkatRisiko from "./EditPeringkatRisiko";
 
 import {connect} from "react-redux";
-import {getAllJenisPenilaian, deleteJenisPenilaian, countAllJenisPenilaian} from "../../../../appRedux/actions/Jenispenilaian";
+import {getAllPeringkatRisiko, deletePeringkatRisiko, countAllPeringkatRisiko} from "../../../../appRedux/actions/Peringkatrisiko";
 
-class TablePenilaian extends React.Component{
+class TablePeringkatRisiko extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
@@ -26,44 +26,46 @@ class TablePenilaian extends React.Component{
             fetchdata: [],
             datatable: [],
             idvalue:'',
-            statusalljenispenilaiantable:'',
-            statusalljenispenilaian:'',
+            statusallperingkatrisikotable:'',
+            statusallperingkatrisiko:'',
             loading: false,
             lengthdata:0,
             deletestatus:'',
-            paramdesc:'',
+            description:'',
             paramname:'',
+            paramjenisnilai:'',
             eddesc:'',
             edname:'',
+            edjenisnilai:'',
         }
     }
 
     componentDidMount(){
-        this.props.getAllJenisPenilaian({page:this.state.paging, token:this.props.token, name:this.state.paramname, description:this.state.paramdesc});
-        this.props.countAllJenisPenilaian({token:this.props.token, name:this.state.paramname, description:this.state.paramdesc});
+        this.props.getAllPeringkatRisiko({page:this.state.paging, token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
+        this.props.countAllPeringkatRisiko({token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
     }
 
     componentWillReceiveProps(nextProps){
         this.setState({
-            statusalljenispenilaiantable : nextProps.statusalljenispenilaiantable,
-            statusalljenispenilaian : nextProps.statusalljenispenilaian
+            statusallperingkatrisikotable : nextProps.statusallperingkatrisikotable,
+            statusallperingkatrisiko : nextProps.statusallperingkatrisiko
         });
 
-        if (nextProps.statusalljenispenilaiantable === 200 && nextProps.statusalljenispenilaian === 200){
-            if (nextProps.countjenispenilaian){
-                if (nextProps.getalljenispenilaian.rows){
+        if (nextProps.statusallperingkatrisikotable === 200 && nextProps.statusallperingkatrisiko === 200){
+            if (nextProps.countperingkatrisiko){
+                if (nextProps.getallperingkatrisiko.rows){
                     this.setState({
                         loading:false,
-                        lengthdata:nextProps.countjenispenilaian,
+                        lengthdata:nextProps.countperingkatrisiko,
                         deletestatus:'',
-                        datatable : []
+                        datatable : [],
                     });
                 } else {
                     this.setState({
                         loading:false,
-                        lengthdata:nextProps.countjenispenilaian,
+                        lengthdata:nextProps.countperingkatrisiko,
                         deletestatus:'',
-                        datatable : nextProps.getalljenispenilaian
+                        datatable : nextProps.getallperingkatrisiko,
                     });
                 }
             } else {
@@ -71,24 +73,24 @@ class TablePenilaian extends React.Component{
                     loading:false,
                     lengthdata:0,
                     deletestatus:'',
-                    datatable : nextProps.getalljenispenilaian
+                    datatable : [],
                 });
             }
         }
 
-        if (nextProps.deletejenispenilaian === 200){
+        if (nextProps.deleteperingkatrisiko === 200){
             this.setState({
                 loading:false,
-                deletestatus: nextProps.deletejenispenilaian
+                deletestatus: nextProps.deleteperingkatrisiko
             });
         }
     }
 
     shouldComponentUpdate(nextProps, nextState){
         if (nextState.deletestatus !== this.state.deletestatus){
-            this.onChangePagination(nextState.paging);
+            this.onRefresh();
             this.setState({
-                deletestatus : nextProps.deletejenispenilaian
+                deletestatus : nextProps.deleteperingkatrisiko
             })
         }
         return true;
@@ -110,11 +112,13 @@ class TablePenilaian extends React.Component{
                         this.searchInput = node;
                     }}
                     placeholder={`Search ${dataIndex}`}
-                    value={
+                    value    ={
                         (this.state.edname !== '' && dataIndex === 'name') ?
                                 this.state.edname :
                         (this.state.eddesc !== '' && dataIndex === 'description') ?
-                                this.state.eddesc :
+                            this.state.eddesc :
+                        (this.state.edjenisnilai !== '' && dataIndex === 'jenis_nilai') ?
+                            this.state.edjenisnilai :
                         selectedKeys[0]
                     }
                     onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
@@ -138,9 +142,10 @@ class TablePenilaian extends React.Component{
                     '#1890ff' :
                 (this.state.eddesc !== '' && dataIndex === 'description') ?
                     '#1890ff' :
+                (this.state.edjenisnilai !== '' && dataIndex === 'jenis_nilai') ?
+                    '#1890ff' :
                 filtered ? '#1890ff' :
-                    undefined
-        }}/>,
+                undefined }}/>,
         onFilter : (value, record) =>
             record[dataIndex]
                 .toString()
@@ -152,15 +157,16 @@ class TablePenilaian extends React.Component{
             }
         },
         render : text =>
-            ((this.state.edname !== '' && dataIndex === 'name') || (this.state.eddesc !== '' && dataIndex === 'description')) ? (
-                    <Highlighter
-                        highlightStyle={{backgroundColor: 'ffc069', padding:0}}
-                        searchWords={[(this.state.edname !== '' && dataIndex === 'name') ? this.state.edname :
-                            (this.state.eddesc !== '' && dataIndex === 'description') ? this.state.eddesc :
+            ((this.state.edname !== '' && dataIndex === 'name') || (this.state.eddesc !== '' && dataIndex === 'description') || (this.state.edjenisnilai !== '' && dataIndex === 'jenis_nilai')) ? (
+                <Highlighter
+                    highlightStyle={{backgroundColor: 'ffc069', padding:0}}
+                    searchWords={[(this.state.edname !== '' && dataIndex === 'name') ? this.state.edname :
+                        (this.state.eddesc !== '' && dataIndex === 'description') ? this.state.eddesc :
+                            (this.state.edjenisnilai !== '' && dataIndex === 'jenis_nilai') ? this.state.edjenisnilai :
                                 this.state.searchText]}
-                        autoEscape
-                        textToHighlight={text.toString()}
-                    />
+                    autoEscape
+                    textToHighlight={text.toString()}
+                />
             ) :
             this.state.searchedColumn === dataIndex ? (
                 <Highlighter
@@ -175,38 +181,53 @@ class TablePenilaian extends React.Component{
     handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
         this.setState({
-            searchText: selectedKeys[0],
+            searchText: (selectedKeys[0]) ? selectedKeys[0] : '',
             searchedColumn: dataIndex,
         });
 
-        if (dataIndex === 'name') {
-            var paramname = selectedKeys[0];
-            if (!paramname) {
-                paramname = '';
+        if (dataIndex === 'name'){
+            var parameters = selectedKeys[0];
+            if (!parameters){
+                parameters = '';
             }
 
             this.setState({
-                paramname: paramname,
-                loading: true,
-                edname: paramname
+                paramname:parameters,
+                loading:true,
+                edname: parameters
             });
-            this.props.getAllJenisPenilaian({page:1, token:this.props.token, name:paramname, description:this.state.paramdesc});
-            this.props.countAllJenisPenilaian({token:this.props.token, name:paramname, description:this.state.paramdesc});
+            this.props.getAllPeringkatRisiko({page:1, token:this.props.token, description:this.state.description, name:parameters, jenis_nilai:this.state.paramjenisnilai});
+            this.props.countAllPeringkatRisiko({token:this.props.token, description:this.state.description, name:parameters, jenis_nilai:this.state.paramjenisnilai});
         }
 
-        if (dataIndex === 'description') {
+        if (dataIndex === 'description'){
             var paramdesc = selectedKeys[0];
-            if (!paramdesc) {
+            if (!paramdesc){
                 paramdesc = '';
             }
 
             this.setState({
-                paramdesc: paramdesc,
-                loading: true,
-                eddesc: paramdesc
+                description:paramdesc,
+                loading:true,
+                eddesc:paramdesc
             });
-            this.props.getAllJenisPenilaian({page:1, token:this.props.token, name:this.state.paramname, description:paramdesc});
-            this.props.countAllJenisPenilaian({token:this.props.token, name:this.state.paramname, description:paramdesc});
+            this.props.getAllPeringkatRisiko({page:1, token:this.props.token, description:paramdesc, name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
+            this.props.countAllPeringkatRisiko({token:this.props.token, description:paramdesc, name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
+        }
+
+        if (dataIndex === 'jenis_nilai'){
+            var paramjenisnilai = selectedKeys[0];
+            if (!paramjenisnilai){
+                paramjenisnilai = '';
+            }
+
+            this.setState({
+                paramjenisnilai:paramjenisnilai,
+                loading:true,
+                edjenisnilai:paramjenisnilai
+            });
+            this.props.getAllPeringkatRisiko({page:1, token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:paramjenisnilai});
+            this.props.countAllPeringkatRisiko({token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:paramjenisnilai});
         }
     };
 
@@ -216,24 +237,34 @@ class TablePenilaian extends React.Component{
             searchText: ''
         });
 
-        if (dataIndex === 'name') {
+        if (dataIndex === 'name'){
             this.setState({
-                paramname: '',
-                loading: true,
-                edname: ''
+                paramname:'',
+                loading:true,
+                edname:''
             });
-            this.props.getAllJenisPenilaian({page:1, token:this.props.token, name:'', description:this.state.paramdesc});
-            this.props.countAllJenisPenilaian({token:this.props.token, name:'', description:this.state.paramdesc});
+            this.props.getAllPeringkatRisiko({page:1, token:this.props.token, description:this.state.description, name:'', jenis_nilai:this.state.paramjenisnilai});
+            this.props.countAllPeringkatRisiko({token:this.props.token, description:this.state.description, name:'', jenis_nilai:this.state.paramjenisnilai});
         }
 
-        if (dataIndex === 'description') {
+        if (dataIndex === 'description'){
             this.setState({
-                paramdesc: '',
-                loading: true,
-                eddesc: ''
+                description:'',
+                loading:true,
+                eddesc:''
             });
-            this.props.getAllJenisPenilaian({page:1, token:this.props.token, name:this.state.paramname, description:''});
-            this.props.countAllJenisPenilaian({token:this.props.token, name:this.state.paramname, description:''});
+            this.props.getAllPeringkatRisiko({page:1, token:this.props.token, description:'', name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
+            this.props.countAllPeringkatRisiko({token:this.props.token, description:'', name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
+        }
+
+        if (dataIndex === 'jenis_nilai'){
+            this.setState({
+                paramjenisnilai:'',
+                loading:true,
+                edjenisnilai:''
+            });
+            this.props.getAllPeringkatRisiko({page:1, token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:''});
+            this.props.countAllPeringkatRisiko({token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:''});
         }
     };
 
@@ -291,17 +322,17 @@ class TablePenilaian extends React.Component{
             paging: page,
             loading:true
         });
-        this.props.getAllJenisPenilaian({page:page, token:this.props.token, name:this.state.paramname, description:this.state.paramdesc});
-        this.props.countAllJenisPenilaian({token:this.props.token, name:this.state.paramname, description:this.state.paramdesc});
+        this.props.getAllPeringkatRisiko({page:page, token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
+        this.props.countAllPeringkatRisiko({token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
     }
 
     onRefresh = () => {
         this.setState({
             loading:true,
-            paging:1
+            paging:1,
         });
-        this.props.getAllJenisPenilaian({page:1, token:this.props.token, name:this.state.paramname, description:this.state.paramdesc});
-        this.props.countAllJenisPenilaian({token:this.props.token, name:this.state.paramname, description:this.state.paramdesc});
+        this.props.getAllPeringkatRisiko({page:1, token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
+        this.props.countAllPeringkatRisiko({token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
     }
 
     render() {
@@ -309,20 +340,21 @@ class TablePenilaian extends React.Component{
         const {datatable, warning, addbutton, editbutton, eid, fetchdata, idvalue, paging, loading, lengthdata} = this.state;
         const {token} = this.props;
         sortedInfo = sortedInfo || {};
-        const columns = [/* {
-            title: 'Id',
-            dataIndex: 'id',
-            key: 'id',
-            ...this.getColumnSearchProps('id'),
-            sorter: (a, b) => a.id - b.id,
-            sortOrder: sortedInfo.columnKey === 'id' && sortedInfo.order,
-        },*/ {
+        const columns = [{
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
             ...this.getColumnSearchProps('name'),
+            width : '200px',
             sorter: (a, b) => a.name.localeCompare(b.name),
             sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order,
+        }, {
+            title: 'Jenis Penilaian',
+            dataIndex: 'jenis_nilai',
+            key: 'jenis_nilai',
+            ...this.getColumnSearchProps('jenis_nilai'),
+            sorter: (a, b) => a.jenis_nilai.localeCompare(b.jenis_nilai),
+            sortOrder: sortedInfo.columnKey === 'jenis_nilai' && sortedInfo.order,
         }, {
             title: 'Description',
             dataIndex: 'description',
@@ -338,26 +370,21 @@ class TablePenilaian extends React.Component{
             sortOrder: sortedInfo.columnKey === 'created_at' && sortedInfo.order,
             render : (text, record) => {
                 var tgl = '';
-                if (text === null){
-                    tgl = '-';
+                if (text.includes('T')){
+                    var spTgl = text.split("T");
+                    var spTime = spTgl[1].split(".");
+
+                    tgl = spTgl[0]+' '+spTime[0];
                 } else {
-                    if (text.includes('T')){
-                        var spTgl = text.split("T");
-                        var spTime = spTgl[1].split(".");
-
-                        tgl = spTgl[0]+' '+spTime[0];
-                    } else {
-                        tgl = text;
-                    }
+                    tgl = text;
                 }
-
                 return(
                     <span>{tgl}</span>
                 );
             }
         }, {
             title: 'Action',
-            key: 'action',
+            key: 'id',
             render: (text, record) => (
                 <span>
                     <span className="gx-link" onClick={()=>{
@@ -366,8 +393,9 @@ class TablePenilaian extends React.Component{
                             editbutton: true,
                             fetchdata : [{
                                 id:text.id,
-                                name:text.name,
                                 description:text.description,
+                                name:text.name,
+                                id_jenis_nilai:text.id_jenis_nilai
                             }]
                         })
                     }}>Edit</span>
@@ -383,13 +411,13 @@ class TablePenilaian extends React.Component{
         }];
 
         return (
-            <Card title={addbutton ? "Add New Data" : editbutton ? "Edit Data : ID["+eid+"]" : "Read Table Jenis Penilaian"}>
+            <Card title={addbutton ? "Add New Data" : editbutton ? "Edit Data : ID["+eid+"]" : "Read Table Jenis Peringkat Risiko"}>
                 {
                     addbutton ?
-                        <SavePenilaian clickCancelAddButton={this.clickCancelAddButton} clickAddSuccessButton={this.clickAddSuccessButton}/> :
+                        <SavePeringkatRisiko clickCancelAddButton={this.clickCancelAddButton} clickAddSuccessButton={this.clickAddSuccessButton}/> :
                     editbutton ?
-                        <EditPenilaian clickCancelEditButton={this.clickCancelEditButton}
-                                       clickEditSuccessButton={this.clickEditSuccessButton} fetchdata={fetchdata} eid={eid}
+                        <EditPeringkatRisiko clickCancelEditButton={this.clickCancelEditButton}
+                                             clickEditSuccessButton={this.clickEditSuccessButton} fetchdata={fetchdata} eid={eid}
                         /> :
                     <>
                         <div className="table-operations">
@@ -404,8 +432,9 @@ class TablePenilaian extends React.Component{
                                 {
                                     (lengthdata) ?
                                         lengthdata > 0 ?
-                                            <Pagination current={paging} total={lengthdata} onChange={this.onChangePagination}/> : ''
+                                            <Pagination current={paging} total={lengthdata ? lengthdata : 1} onChange={this.onChangePagination}/> : ''
                                         : ''
+
                                 }
                             </div>
                         </Spin>
@@ -421,7 +450,7 @@ class TablePenilaian extends React.Component{
                                             warning: false,
                                             deletestatus:''
                                         })
-                                        this.props.deleteJenisPenilaian({id:idvalue, token:token});
+                                        this.props.deletePeringkatRisiko({id:idvalue, token:token});
                                         NotificationManager.success("Data has deleted.", "Success !!");
                                     }}
                                     onCancel={this.onCancelDelete}
@@ -436,15 +465,15 @@ class TablePenilaian extends React.Component{
     }
 }
 
-const mapStateToProps = ({auth, jenispenilaian}) => {
+const mapStateToProps = ({auth, peringkatrisiko}) => {
     const {token} = auth;
-    const {getalljenispenilaian,
-        getjenispenilaian,
-        statusalljenispenilaiantable,
-        countjenispenilaian,
-        statusalljenispenilaian,
-        deletejenispenilaian} = jenispenilaian;
-    return {token,getalljenispenilaian,getjenispenilaian,statusalljenispenilaiantable,countjenispenilaian,statusalljenispenilaian,deletejenispenilaian};
+    const {getallperingkatrisiko,
+        getperingkatrisiko,
+        statusallperingkatrisikotable,
+        countperingkatrisiko,
+        statusallperingkatrisiko,
+        deleteperingkatrisiko} = peringkatrisiko;
+    return {token,getallperingkatrisiko,getperingkatrisiko,statusallperingkatrisikotable,countperingkatrisiko,statusallperingkatrisiko,deleteperingkatrisiko};
 };
 
-export default connect(mapStateToProps, {getAllJenisPenilaian, deleteJenisPenilaian, countAllJenisPenilaian})(TablePenilaian);
+export default connect(mapStateToProps, {getAllPeringkatRisiko, deletePeringkatRisiko, countAllPeringkatRisiko})(TablePeringkatRisiko);

@@ -1,38 +1,40 @@
 import React from "react";
 import {Button, Input, Form, Spin} from "antd";
+
 import connect from "react-redux/es/connect/connect";
+import {updateRisk, resetPutRisk, getRisk} from "../../../../appRedux/actions/index";
 import IntlMessages from "util/IntlMessages";
-import {updateJenisPenilaian, getAllJenisPenilaian, resetPutJenisPenilaian, getJenisPenilaian} from "../../../../appRedux/actions";
 import SweetAlerts from "react-bootstrap-sweetalert";
 
 const FormItem = Form.Item;
 const {TextArea} = Input;
 
-class EditPenilaian extends React.Component{
+
+class EditJenisRisiko extends React.PureComponent{
     constructor(props) {
         super(props);
         this.state = {
             ewarning: false,
             datavalue:[],
             statusput:'',
-            propsvalue : [],
+            propsvalue: [],
             propsid : props.eid
-        }
+        };
     }
 
     componentWillMount(){
-        this.props.getJenisPenilaian({id:this.props.eid, token:this.props.token});
+        this.props.getRisk({id:this.props.eid, token:this.props.token});
     }
 
     componentWillReceiveProps(nextProps){
         this.setState({
-            statusput : nextProps.statusputjenispenilaian,
-            propsvalue : nextProps.getjenispenilaian
+            statusput : nextProps.statusputrisk,
+            propsvalue : nextProps.getrisk
         });
 
-        if (nextProps.statusputjenispenilaian === 200 || nextProps.statusputjenispenilaian === 201){
-            this.props.clickEditSuccessButton(nextProps.statusputjenispenilaian);
-            this.props.resetPutJenisPenilaian();
+        if(nextProps.statusputrisk === 200 || nextProps.statusputrisk === 201){
+            this.props.clickEditSuccessButton(nextProps.statusputrisk);
+            this.props.resetPutRisk();
         }
     }
 
@@ -66,7 +68,7 @@ class EditPenilaian extends React.Component{
                 }}>
                     {
                         fetchdata.map((prop, index) =>{
-                            return (
+                            return(
                                 <div key={index}>
                                     <Spin spinning={propsvalue.id ? false : true} tip="Loading...">
                                         <FormItem {...formItemLayout}>
@@ -80,25 +82,36 @@ class EditPenilaian extends React.Component{
                                             )}
                                         </FormItem>
 
-                                        <FormItem {...formItemLayout} label="Name">
-                                            {getFieldDecorator('name', {
-                                                initialValue:propsvalue.name,
+                                        <FormItem {...formItemLayout} label="Nama">
+                                            {getFieldDecorator('nama', {
+                                                initialValue:propsvalue.nama,
                                                 rules: [{
-                                                    required: true, message: 'Please input name field.',
+                                                    required: true, message: 'Please input nama field.',
                                                 }],
                                             })(
-                                                <Input id="name" placeholder="Input Name"/>
+                                                <Input id="nama" placeholder="Input Nama"/>
                                             )}
                                         </FormItem>
 
-                                        <FormItem {...formItemLayout} label="Description">
-                                            {getFieldDecorator('description', {
-                                                initialValue:propsvalue.description,
+                                        <FormItem {...formItemLayout} label="Keterangan">
+                                            {getFieldDecorator('keterangan', {
+                                                initialValue:propsvalue.keterangan,
                                                 rules: [{
-                                                    required: true, message: 'Please input jenis description field.',
+                                                    required: true, message: 'Please input keterangan field.',
                                                 }],
                                             })(
-                                                <TextArea id="description" placeholder="Input description"/>
+                                                <TextArea id="keterangan" placeholder="Input Keterangan"/>
+                                            )}
+                                        </FormItem>
+
+                                        <FormItem {...formItemLayout} label="Jenis">
+                                            {getFieldDecorator('jenis', {
+                                                initialValue:propsvalue.jenis,
+                                                rules: [{
+                                                    required: true, message: 'Please input jenis field.',
+                                                }],
+                                            })(
+                                                <Input id="jenis" placeholder="Input Jenis"/>
                                             )}
                                         </FormItem>
 
@@ -135,7 +148,7 @@ class EditPenilaian extends React.Component{
                                      this.setState({
                                          ewarning: false
                                      });
-                                     this.props.updateJenisPenilaian(datavalue);
+                                     this.props.updateRisk(datavalue);
                                  }}
                                  onCancel={() => {
                                      this.setState({
@@ -149,16 +162,15 @@ class EditPenilaian extends React.Component{
             </>
         );
     }
-
 }
 
-const WrapperdEditPenilaian = Form.create()(EditPenilaian);
+const WrapperdEditJenisRisiko = Form.create()(EditJenisRisiko);
 
-const mapStateToProps = ({auth, jenispenilaian}) => {
+const mapStateToProps = ({auth,jenisrisiko}) => {
     const {token} = auth;
-    const {statusputjenispenilaian,getjenispenilaian} = jenispenilaian;
-    return {token,statusputjenispenilaian,getjenispenilaian}
-
+    const {statusputrisk,getrisk} = jenisrisiko;
+    return {token,statusputrisk, getrisk}
 };
 
-export default connect(mapStateToProps, {updateJenisPenilaian, getAllJenisPenilaian, resetPutJenisPenilaian, getJenisPenilaian})(WrapperdEditPenilaian);
+export default connect(mapStateToProps, {updateRisk, resetPutRisk, getRisk})(WrapperdEditJenisRisiko);
+

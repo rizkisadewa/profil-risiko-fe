@@ -1,17 +1,25 @@
 import React from "react";
-import {Button, Input, Form, Spin} from "antd";
+import {Button, Input, Form, Select, Spin} from "antd";
 import connect from "react-redux/es/connect/connect";
 import IntlMessages from "util/IntlMessages";
-import {updateJenisPenilaian, getAllJenisPenilaian, resetPutJenisPenilaian, getJenisPenilaian} from "../../../../appRedux/actions";
+import {updatePeringkatRisiko, getAllPeringkatRisiko, resetPutPeringkatRisiko, getPeringkatRisiko, jenisNilaiParam} from "../../../../appRedux/actions/index";
 import SweetAlerts from "react-bootstrap-sweetalert";
 
 const FormItem = Form.Item;
+const Option = Select.Option;
 const {TextArea} = Input;
 
-class EditPenilaian extends React.Component{
+const optionsPenilaian = [
+    {text:"Kuantitatif (Naik)", value:"1"},
+    {text:"Kuantitatif (Turun)", value:"2"},
+    {text:"Kualitatif", value:"3"}
+];
+
+class EditPeringkatRisiko extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
+            dataoptions : optionsPenilaian,
             ewarning: false,
             datavalue:[],
             statusput:'',
@@ -20,19 +28,24 @@ class EditPenilaian extends React.Component{
         }
     }
 
+    componentDidMount(){
+        this.props.jenisNilaiParam({token:this.props.token});
+    }
+
     componentWillMount(){
-        this.props.getJenisPenilaian({id:this.props.eid, token:this.props.token});
+        this.props.getPeringkatRisiko({id:this.props.eid, token:this.props.token});
     }
 
     componentWillReceiveProps(nextProps){
         this.setState({
-            statusput : nextProps.statusputjenispenilaian,
-            propsvalue : nextProps.getjenispenilaian
+            dataoptions : nextProps.jenisnilaiparam,
+            statusput : nextProps.statusputperingkatrisiko,
+            propsvalue : nextProps.getperingkatrisiko
         });
 
-        if (nextProps.statusputjenispenilaian === 200 || nextProps.statusputjenispenilaian === 201){
-            this.props.clickEditSuccessButton(nextProps.statusputjenispenilaian);
-            this.props.resetPutJenisPenilaian();
+        if (nextProps.statusputperingkatrisiko === 200 || nextProps.statusputperingkatrisiko === 201){
+            this.props.clickEditSuccessButton(nextProps.statusputperingkatrisiko);
+            this.props.resetPutPeringkatRisiko();
         }
     }
 
@@ -48,7 +61,7 @@ class EditPenilaian extends React.Component{
             },
         };
 
-        const {ewarning, datavalue, propsvalue} = this.state;
+        const {dataoptions, ewarning, datavalue, propsvalue} = this.state;
         const {fetchdata, token} = this.props;
         const {getFieldDecorator} = this.props.form;
         return (
@@ -88,6 +101,32 @@ class EditPenilaian extends React.Component{
                                                 }],
                                             })(
                                                 <Input id="name" placeholder="Input Name"/>
+                                            )}
+                                        </FormItem>
+
+                                        <FormItem {...formItemLayout} label="Jenis Penilaian">
+                                            {getFieldDecorator('id_jenis_nilai', {
+                                                initialValue:propsvalue.id_jenis_nilai,
+                                                rules: [{
+                                                    required: true, message: 'Please input jenis penilaian field.',
+                                                }],
+                                            })(
+                                                <Select id="id_jenis_nilai"
+                                                        showSearch
+                                                        placeholder="Select jenis penilaian"
+                                                        optionFilterProp="children"
+                                                        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                                                        >
+                                                    {
+                                                        dataoptions.map((prop, index) => {
+                                                            var value = prop.value;
+                                                            var label = prop.text;
+                                                            return (
+                                                                <Option value={value} key={index}>{label}</Option>
+                                                            )
+                                                        })
+                                                    }
+                                                </Select>
                                             )}
                                         </FormItem>
 
@@ -135,7 +174,7 @@ class EditPenilaian extends React.Component{
                                      this.setState({
                                          ewarning: false
                                      });
-                                     this.props.updateJenisPenilaian(datavalue);
+                                     this.props.updatePeringkatRisiko(datavalue);
                                  }}
                                  onCancel={() => {
                                      this.setState({
@@ -152,13 +191,14 @@ class EditPenilaian extends React.Component{
 
 }
 
-const WrapperdEditPenilaian = Form.create()(EditPenilaian);
+const WrapperdEditPeringkatRisiko = Form.create()(EditPeringkatRisiko);
 
-const mapStateToProps = ({auth, jenispenilaian}) => {
+const mapStateToProps = ({auth, peringkatrisiko, masterparameter}) => {
     const {token} = auth;
-    const {statusputjenispenilaian,getjenispenilaian} = jenispenilaian;
-    return {token,statusputjenispenilaian,getjenispenilaian}
+    const {statusputperingkatrisiko,getperingkatrisiko} = peringkatrisiko;
+    const {jenisnilaiparam} = masterparameter;
+    return {token,statusputperingkatrisiko,getperingkatrisiko,jenisnilaiparam}
 
 };
 
-export default connect(mapStateToProps, {updateJenisPenilaian, getAllJenisPenilaian, resetPutJenisPenilaian, getJenisPenilaian})(WrapperdEditPenilaian);
+export default connect(mapStateToProps, {updatePeringkatRisiko,getAllPeringkatRisiko,resetPutPeringkatRisiko,getPeringkatRisiko,jenisNilaiParam})(WrapperdEditPeringkatRisiko);

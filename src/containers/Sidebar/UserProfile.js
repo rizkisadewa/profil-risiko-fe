@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
-import {Avatar, Popover} from "antd";
+// import {Avatar, Popover} from "antd";
 import {userSignOut} from "appRedux/actions/Auth";
 import IntlMessages from "../../util/IntlMessages";
 
@@ -9,14 +9,14 @@ class UserProfile extends Component {
   render() {
     const {authUser} = this.props;
     console.log("authUser", authUser)
-    const userMenuOptions = (
-      <ul className="gx-user-popover">
-        <li>My Account</li>
-        <li>Connections</li>
-        <li onClick={() => this.props.userSignOut()}>Logout
-        </li>
-      </ul>
-    );
+    // const userMenuOptions = (
+    //   <ul className="gx-user-popover">
+    //     <li>My Account</li>
+    //     <li>Connections</li>
+    //     <li onClick={() => this.props.userSignOut()}>Logout
+    //     </li>
+    //   </ul>
+    // );
 
     return (
 

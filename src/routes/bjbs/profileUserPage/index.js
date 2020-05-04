@@ -4,11 +4,11 @@ import {Route, Switch} from "react-router-dom";
 import asyncComponent from "util/asyncComponent";
 
 const ProfilUserPage = ({match}) => (
-    <switch>
+    <Switch>
         <Route path={`${match.url}/kotakmasuk`} component={asyncComponent(() => import('./KotakMasuk'))}/>
         <Route path={`${match.url}/ubahpassword`} component={asyncComponent(() => import('./UbahPassword'))}/>
         <Route path={`${match.url}/ubahpin`} component={asyncComponent(() => import('./UbahPin'))}/>
-    </switch>
+    </Switch>
 );
 
 export default ProfilUserPage;

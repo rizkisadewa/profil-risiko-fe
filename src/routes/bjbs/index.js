@@ -2,6 +2,7 @@ import React from "react";
 import {Redirect, Route, Switch} from "react-router-dom";
 
 import DashboardPage from "./dashboardPage";
+import ProfilRisiko from "./profilRisiko";
 import MasterDataPage from "./masterDataPage";
 import KeperluanDataPage from "./keperluanDataPage";
 import LaporanPage from "./laporanPage";
@@ -15,6 +16,7 @@ const Bjbs = ({match}) => (
         <Redirect exact from={`${match.url}/`} to={`${match.url}/home`}/>
         <Route path={`${match.url}/home`} component={asyncComponent(() => import('./HomePage'))}/>
         <Route path={`${match.url}/dashboard`} component={DashboardPage}/>
+        <Route path={`${match.url}/profilrisiko`} component={ProfilRisiko}/>
         <Route path={`${match.url}/masterdata`} component={MasterDataPage}/>
         <Route path={`${match.url}/keperluandata`} component={KeperluanDataPage}/>
         <Route path={`${match.url}/laporan`} component={LaporanPage}/>

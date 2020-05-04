@@ -1,12 +1,13 @@
 import React from "react";
 import {Button, Input, Form} from "antd";
 import connect from "react-redux/es/connect/connect";
-import {getAllJenisPenilaian, postJenisPenilaian, resetPostJenisPenilaian} from "../../../../appRedux/actions";
+import {addRisk, resetPostRisk} from "../../../../appRedux/actions/index";
 
 const FormItem = Form.Item;
 const {TextArea} = Input;
 
-class SavePenilaian extends React.PureComponent{
+
+class SaveJenisRisiko extends React.PureComponent{
     constructor(props) {
         super(props);
         this.state = {
@@ -16,12 +17,12 @@ class SavePenilaian extends React.PureComponent{
 
     componentWillReceiveProps(nextProps){
         this.setState({
-            statuspost : nextProps.statuspostjenispenilaian,
+            statuspost: nextProps.statuspostrisk
         });
 
-        if (nextProps.statuspostjenispenilaian === 201 || nextProps.statuspostjenispenilaian === 200){
-            this.props.clickAddSuccessButton(nextProps.statuspostjenispenilaian);
-            this.props.resetPostJenisPenilaian();
+        if (nextProps.statuspostrisk === 200 || nextProps.statuspostrisk === 201){
+            this.props.clickAddSuccessButton(nextProps.statuspostrisk);
+            this.props.resetPostRisk();
         }
     }
 
@@ -45,7 +46,7 @@ class SavePenilaian extends React.PureComponent{
                     e.preventDefault();
                     this.props.form.validateFields((err, values) => {
                         if (!err) {
-                            this.props.postJenisPenilaian(values);
+                            this.props.addRisk(values);
                         }
                     });
                 }}>
@@ -60,25 +61,35 @@ class SavePenilaian extends React.PureComponent{
                         )}
                     </FormItem>
 
-                    <FormItem {...formItemLayout} label="Name">
-                        {getFieldDecorator('name', {
+                    <FormItem {...formItemLayout} label="Nama">
+                        {getFieldDecorator('nama', {
                             rules: [{
-                                required: true, message: 'Please input name field.',
+                                required: true, message: 'Please input nama field.',
                             }],
                         })(
-                            <Input id="name" placeholder="Input Name"/>
+                            <Input id="nama" placeholder="Input Nama"/>
                         )}
                     </FormItem>
 
-                    <FormItem {...formItemLayout} label="Description">
-                        {getFieldDecorator('description', {
+                    <FormItem {...formItemLayout} label="Keterangan">
+                        {getFieldDecorator('keterangan', {
                             rules: [{
-                                required: true, message: 'Please input description field.',
+                                required: true, message: 'Please input keterangan field.',
                             }],
                         })(
-                            <TextArea id="description" placeholder="Input description"/>
+                            <TextArea id="keterangan" placeholder="Input Keterangan"/>
                         )}
                     </FormItem>
+
+                    {/*<FormItem {...formItemLayout} label="Jenis">
+                        {getFieldDecorator('jenis', {
+                            rules: [{
+                                required: true, message: 'Please input jenis field.',
+                            }],
+                        })(
+                            <Input id="jenis" placeholder="Input Jenis"/>
+                        )}
+                    </FormItem>*/}
 
                     <FormItem style={{ float : "right", paddingRight : "1rem" }}>
                         <Button onClick={this.props.clickCancelAddButton}>Cancel</Button>
@@ -88,15 +99,15 @@ class SavePenilaian extends React.PureComponent{
             </>
         );
     }
-
 }
 
-const WrapperSaveJenisPenilaian = Form.create()(SavePenilaian);
+const WrappedSaveRisk = Form.create()(SaveJenisRisiko);
 
-const mapStateToProps = ({auth, jenispenilaian}) => {
+const mapStateToProps = ({auth, jenisrisiko}) => {
     const {token} = auth;
-    const {statuspostjenispenilaian} = jenispenilaian;
-    return {token, statuspostjenispenilaian};
+    const {statuspostrisk} = jenisrisiko;
+    return {token,statuspostrisk}
 };
 
-export default connect(mapStateToProps, {getAllJenisPenilaian,postJenisPenilaian,resetPostJenisPenilaian})(WrapperSaveJenisPenilaian);
+export default connect(mapStateToProps, {addRisk, resetPostRisk})(WrappedSaveRisk);
+

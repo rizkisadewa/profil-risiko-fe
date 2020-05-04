@@ -8,7 +8,7 @@ import SidebarLogo from "./SidebarLogo";
 
 import Auxiliary from "util/Auxiliary";
 import UserProfile from "./UserProfile";
-import AppsNavigation from "./AppsNavigation";
+// import AppsNavigation from "./AppsNavigation";
 import {
   NAV_STYLE_NO_HEADER_EXPANDED_SIDEBAR,
   NAV_STYLE_NO_HEADER_MINI_SIDEBAR,
@@ -78,37 +78,54 @@ class SidebarContent extends Component {
                       </Menu.Item>
                   </SubMenu>
 
+                  <SubMenu key="profilrisiko" className={this.getNavStyleSubMenuClass(navStyle)}
+                           title={<span> <i className="icon icon-auth-screen"/>
+                         <IntlMessages id="sidebar.profilrisiko"/></span>}>
+                      <Menu.Item key="bjbs/profilrisiko/jenisrisiko">
+                          <Link to="/bjbs/profilrisiko/jenisrisiko">
+                              <i className="icon icon-affix"/>
+                              <IntlMessages id="sidebar.profilrisiko.risiko"/>
+                          </Link>
+                      </Menu.Item>
+                      <Menu.Item key="bjbs/profilrisiko/parameter-faktor">
+                          <Link to="/bjbs/profilrisiko/parameter-faktor">
+                              <i className="icon icon-badge"/>
+                              <IntlMessages id="sidebar.profilrisiko.parameterfaktor"/>
+                          </Link>
+                      </Menu.Item>
+                      <Menu.Item key="bjbs/profilrisiko/jenisperingkatrisiko">
+                          <Link to="/bjbs/profilrisiko/jenisperingkatrisiko">
+                              <i className="icon icon-crm"/>
+                              <IntlMessages id="sidebar.profilrisiko.peringkatrisiko"/>
+                          </Link>
+                      </Menu.Item>
+                      <Menu.Item key="bjbs/profilrisiko/parametermanual">
+                          <Link to="/bjbs/profilrisiko/parametermanual">
+                              <i className="icon icon-select"/>
+                              <IntlMessages id="sidebar.profilrisiko.parametermanual"/>
+                          </Link>
+                      </Menu.Item>
+                      <Menu.Item key="bjbs/profilrisiko/parameterkuantitatif">
+                          <Link to="/bjbs/profilrisiko/parameterkuantitatif">
+                              <i className="icon icon-ckeditor"/>
+                              <IntlMessages id="sidebar.profilrisiko.parameterkuantitatif"/>
+                          </Link>
+                      </Menu.Item>
+                      <Menu.Item key="bjbs/profilrisiko/parameterkualitatif">
+                          <Link to="/bjbs/profilrisiko/parameterkualitatif">
+                              <i className="icon icon-diamond"/>
+                              <IntlMessages id="sidebar.profilrisiko.parameterkualitatif"/>
+                          </Link>
+                      </Menu.Item>
+                  </SubMenu>
+
                   <SubMenu key="masterdata" className={this.getNavStyleSubMenuClass(navStyle)}
                            title={<span> <i className="icon icon-inbox"/>
                          <IntlMessages id="sidebar.masterdata"/></span>}>
-                      <Menu.Item key="bjbs/masterdata/jenisrisiko">
-                          <Link to="/bjbs/masterdata/jenisrisiko">
-                              <i className="icon icon-affix"/>
-                              <IntlMessages id="sidebar.masterdata.risiko"/>
-                          </Link>
-                      </Menu.Item>
                       <Menu.Item key="bjbs/masterdata/jenispenilaian">
                           <Link to="/bjbs/masterdata/jenispenilaian">
                               <i className="icon icon-data-display"/>
                               <IntlMessages id="sidebar.masterdata.penilaian"/>
-                          </Link>
-                      </Menu.Item>
-                      <Menu.Item key="bjbs/masterdata/jenisperingkatrisiko">
-                          <Link to="/bjbs/masterdata/jenisperingkatrisiko">
-                              <i className="icon icon-crm"/>
-                              <IntlMessages id="sidebar.masterdata.peringkatrisiko"/>
-                          </Link>
-                      </Menu.Item>
-                      <Menu.Item key="bjbs/masterdata/faktor">
-                          <Link to="/bjbs/masterdata/faktor">
-                              <i className="icon icon-badge"/>
-                              <IntlMessages id="sidebar.masterdata.faktor"/>
-                          </Link>
-                      </Menu.Item>
-                      <Menu.Item key="bjbs/masterdata/parameter">
-                          <Link to="/bjbs/masterdata/parameter">
-                              <i className="icon icon-listing-dbrd"/>
-                              <IntlMessages id="sidebar.masterdata.parameter"/>
                           </Link>
                       </Menu.Item>
                   </SubMenu>
@@ -161,7 +178,7 @@ class SidebarContent extends Component {
                       </Menu.Item>
                       <Menu.Item key="bjbs/keperluandata/datamaturityprofile">
                           <Link to="/bjbs/keperluandata/datamaturityprofile">
-                              <i className="icon icon-auth-screen"/>
+                              <i className="icon icon-product-grid"/>
                               <IntlMessages id="sidebar.keperluandata.datamaturityprofile"/>
                           </Link>
                       </Menu.Item>
