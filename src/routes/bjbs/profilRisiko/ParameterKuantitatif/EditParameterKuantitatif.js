@@ -149,6 +149,7 @@ class EditParameterKuantitatif extends React.Component{
                                                                 paramrisk_id:value,
                                                             });
                                                         }}
+                                                        style={paramrisk_id === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
                                                         filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
                                                     <Option value="" disabled>Select risk</Option>
                                                     {
@@ -217,6 +218,7 @@ class EditParameterKuantitatif extends React.Component{
                                                                 paramlevel:value,
                                                             });
                                                         }}
+                                                        style={paramlevel === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
                                                         filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
                                                     <Option value="" disabled>Select level</Option>
                                                     {
@@ -248,6 +250,7 @@ class EditParameterKuantitatif extends React.Component{
                                                                 paramindukparameter:value,
                                                             });
                                                         }}
+                                                        style={paramindukparameter === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
                                                         filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
                                                     <Option value="" disabled>Select induk/parameter</Option>
                                                     {
@@ -309,6 +312,7 @@ class EditParameterKuantitatif extends React.Component{
                                                                 paramjenisnilai:value
                                                             });
                                                         }}
+                                                        style={paramjenisnilai === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
                                                         filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                                                 >
                                                     <Option value="" disabled>Select jenis penilaian</Option>
@@ -443,6 +447,7 @@ class EditParameterKuantitatif extends React.Component{
                                                                 paramindikatorpembilang:value
                                                             });
                                                         }}
+                                                        style={paramindikatorpembilang === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
                                                         filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                                                 >
                                                     <Option value="" disabled>Select indikator penyebut</Option>
@@ -495,6 +500,7 @@ class EditParameterKuantitatif extends React.Component{
                                                                 paramindikatorpenyebut:value
                                                             });
                                                         }}
+                                                        style={paramindikatorpenyebut === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
                                                         filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                                                 >
                                                     <Option value="" disabled>Select indikator penyebut</Option>

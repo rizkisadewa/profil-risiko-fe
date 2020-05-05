@@ -127,6 +127,7 @@ class SaveParameterKuantitatif extends React.Component{
                                             paramrisk_id:value,
                                         });
                                     }}
+                                    style={paramrisk_id === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
                                     filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
                                 <Option value="" disabled>Select risk</Option>
                                 {
@@ -195,6 +196,7 @@ class SaveParameterKuantitatif extends React.Component{
                                             paramlevel:value,
                                         });
                                     }}
+                                    style={paramlevel === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
                                     filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
                                 <Option value="" disabled>Select level</Option>
                                 {
@@ -226,6 +228,7 @@ class SaveParameterKuantitatif extends React.Component{
                                             paramindukparameter:value,
                                         });
                                     }}
+                                    style={paramindukparameter === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
                                     filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
                                 <Option value="" disabled>Select induk/parameter</Option>
                                 {
@@ -287,6 +290,7 @@ class SaveParameterKuantitatif extends React.Component{
                                             paramjenisnilai:value
                                         });
                                     }}
+                                    style={paramjenisnilai === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
                                     filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                             >
                                 <Option value="" disabled>Select jenis penilaian</Option>
@@ -421,6 +425,7 @@ class SaveParameterKuantitatif extends React.Component{
                                             paramindikatorpembilang:value
                                         });
                                     }}
+                                    style={paramindikatorpembilang === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
                                     filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                             >
                                 <Option value="" disabled>Select indikator pembilang</Option>
@@ -472,6 +477,7 @@ class SaveParameterKuantitatif extends React.Component{
                                             paramindikatorpenyebut:value
                                         });
                                     }}
+                                    style={paramindikatorpenyebut === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
                                     filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                             >
                                 <Option value="" disabled>Select indikator penyebut</Option>
@@ -508,7 +514,7 @@ class SaveParameterKuantitatif extends React.Component{
                     </FormItem>
 
                     <FormItem style={{ float : "right", paddingRight : "1rem" }}>
-                        <Button onClick={this.props.clickCancelAddButton}>Cancel</Button>
+                        <Link className="ant-btn" to={{pathname:'/bjbs/profilrisiko/parameterkuantitatif'}}>Cancel</Link>
                         <Button type="primary" htmlType="submit">Save</Button>
                     </FormItem>
 
