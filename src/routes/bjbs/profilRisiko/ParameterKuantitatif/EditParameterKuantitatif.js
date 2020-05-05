@@ -550,7 +550,9 @@ class EditParameterKuantitatif extends React.Component{
 
                                         <FormItem style={{ float : "right", paddingRight : "1rem" }}>
                                             {/*<Button onClick={this.props.clickCancelEditButton}>Cancel</Button>*/}
-                                            <Link className="ant-btn" to={{pathname:'/bjbs/profilrisiko/parameterkuantitatif'}}>Cancel</Link>
+                                            <Link className="ant-btn" to={{pathname:'/bjbs/profilrisiko/parameterkuantitatif', cancelProps:{
+                                                    propscancel:true
+                                                }}}>Cancel</Link>
                                             <Button type="primary" htmlType="submit">Edit</Button>
                                         </FormItem>
 

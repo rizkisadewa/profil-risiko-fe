@@ -104,6 +104,20 @@ class TableParameterKuantitatif extends  React.Component{
                 id_jenis_nilai : 2
             }]
         })
+
+        if (this.props.cancelprop) {
+            this.onRefresh();
+        }
+    }
+
+    componentDidMount(){
+        if(this.state.loading){
+            setTimeout(() => {
+                this.setState({
+                    loading:false
+                })
+            },300)
+        }
     }
 
     componentDidUpdate(){

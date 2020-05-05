@@ -12,7 +12,7 @@ const ParameterKuantitatif = (props) => {
             <div className="gx-d-flex justify-content-center">
                 <Row className={"w-100"}>
                     <Col span={24}>
-                        <TableParameterKuantitatif propstate={props.location.paramKuantitatifProps}/>
+                        <TableParameterKuantitatif propstate={props.location.paramKuantitatifProps} cancelprop={props.location.cancelProps}/>
                     </Col>
                 </Row>
             </div>
