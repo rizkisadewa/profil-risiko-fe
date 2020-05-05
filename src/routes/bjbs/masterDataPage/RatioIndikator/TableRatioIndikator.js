@@ -381,7 +381,11 @@ class TableRatioIndikator extends React.Component{
                                             pkindukparameter:propstat.rindukparameter,
                                             pkrisk_id:propstat.rrisk_id,
                                             pkjenisnilai:propstat.rjenisnilai,
-                                            addtrue : true
+                                            pkindikatorpenyebut:propstat.rindikatorpenyebut,
+                                            pkindikatorpembilang:propstat.rindikatorpembilang,
+                                            addtrue : propstat.raddtrue ? true : false,
+                                            edittrue : propstat.redittrue ? true : false,
+                                            pkid:propstat.rid ? propstat.rid : ''
                                         }}
                                     }>Back To Add Parameter Kuantitatif</Link> : ''
                             }

@@ -38,7 +38,9 @@ class SaveParameterKuantitatif extends React.Component{
             paramlevel:'',
             paramindukparameter:'',
             paramrisk_id:'',
-            paramjenisnilai:''
+            paramjenisnilai:'',
+            paramindikatorpembilang:'',
+            paramindikatorpenyebut:''
         }
     }
 
@@ -82,7 +84,9 @@ class SaveParameterKuantitatif extends React.Component{
             paramlevel,
             paramindukparameter,
             paramrisk_id,
-            paramjenisnilai
+            paramjenisnilai,
+            paramindikatorpenyebut,
+            paramindikatorpembilang,
         } = this.state;
         const {token, addPropstate} = this.props;
         const {getFieldDecorator} = this.props.form;
@@ -403,6 +407,7 @@ class SaveParameterKuantitatif extends React.Component{
                     <label style={{ textDecoration: 'underline', fontWeight: 'bold', textAlign: 'center'}}>Indikator Ratio/Ukuran</label><br/>
                     <FormItem {...formItemLayout} label="Indikator Pembilang">
                         {getFieldDecorator('indikatorpembilang', {
+                            initialValue: addPropstate ? addPropstate.pkindikatorpembilang : '',
                             rules: [{
                                 required: true, message: 'Please input indikator pembilang field.',
                             }],
@@ -411,8 +416,14 @@ class SaveParameterKuantitatif extends React.Component{
                                     showSearch
                                     placeholder="Select indikator pembilang"
                                     optionFilterProp="children"
+                                    onChange={(value)=>{
+                                        this.setState({
+                                            paramindikatorpembilang:value
+                                        });
+                                    }}
                                     filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                             >
+                                <Option value="" disabled>Select indikator pembilang</Option>
                                 {
                                     dataoptionsratioindikator.map((prop, index) => {
                                         var value = prop.id;
@@ -437,13 +448,17 @@ class SaveParameterKuantitatif extends React.Component{
                                 rlevel:addPropstate ? addPropstate.pklevel ? addPropstate.pklevel : paramlevel : paramlevel,
                                 rindukparameter:addPropstate ? addPropstate.pkindukparameter ? addPropstate.pkindukparameter : paramindukparameter : paramindukparameter,
                                 rrisk_id:addPropstate ? addPropstate.pkrisk_id ? addPropstate.pkrisk_id : paramrisk_id : paramrisk_id,
-                                rjenisnilai:addPropstate ? addPropstate.pkjenisnilai ? addPropstate.pkjenisnilai : paramjenisnilai : paramjenisnilai
+                                rjenisnilai:addPropstate ? addPropstate.pkjenisnilai ? addPropstate.pkjenisnilai : paramjenisnilai : paramjenisnilai,
+                                rindikatorpenyebut:addPropstate ? addPropstate.pkindikatorpenyebut ? addPropstate.pkindikatorpenyebut : paramindikatorpenyebut : paramindikatorpenyebut,
+                                rindikatorpembilang:addPropstate ? addPropstate.pkindikatorpembilang ? addPropstate.pkindikatorpembilang : paramindikatorpembilang : paramindikatorpembilang,
+                                raddtrue : true,
                             }}
                         }>Tambah Parameter</Link>
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="Indikator Penyebut">
                         {getFieldDecorator('indikatorpenyebut', {
+                            initialValue: addPropstate ? addPropstate.pkindikatorpenyebut : '',
                             rules: [{
                                 required: true, message: 'Please input indikator penyebut field.',
                             }],
@@ -452,8 +467,14 @@ class SaveParameterKuantitatif extends React.Component{
                                     showSearch
                                     placeholder="Select indikator penyebut"
                                     optionFilterProp="children"
+                                    onChange={(value)=>{
+                                        this.setState({
+                                            paramindikatorpenyebut:value
+                                        });
+                                    }}
                                     filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                             >
+                                <Option value="" disabled>Select indikator penyebut</Option>
                                 {
                                     dataoptionsratioindikator.map((prop, index) => {
                                         var value = prop.id;
@@ -478,7 +499,10 @@ class SaveParameterKuantitatif extends React.Component{
                                 rlevel:addPropstate ? addPropstate.pklevel ? addPropstate.pklevel : paramlevel : paramlevel,
                                 rindukparameter:addPropstate ? addPropstate.pkindukparameter ? addPropstate.pkindukparameter : paramindukparameter : paramindukparameter,
                                 rrisk_id:addPropstate ? addPropstate.pkrisk_id ? addPropstate.pkrisk_id : paramrisk_id : paramrisk_id,
-                                rjenisnilai:addPropstate ? addPropstate.pkjenisnilai ? addPropstate.pkjenisnilai : paramjenisnilai : paramjenisnilai
+                                rjenisnilai:addPropstate ? addPropstate.pkjenisnilai ? addPropstate.pkjenisnilai : paramjenisnilai : paramjenisnilai,
+                                rindikatorpenyebut:addPropstate ? addPropstate.pkindikatorpenyebut ? addPropstate.pkindikatorpenyebut : paramindikatorpenyebut : paramindikatorpenyebut,
+                                rindikatorpembilang:addPropstate ? addPropstate.pkindikatorpembilang ? addPropstate.pkindikatorpembilang : paramindikatorpembilang : paramindikatorpembilang,
+                                raddtrue : true,
                             }}
                         }>Tambah Parameter</Link>
                     </FormItem>

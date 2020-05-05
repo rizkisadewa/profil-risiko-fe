@@ -5,6 +5,7 @@ import {NotificationContainer, NotificationManager} from "react-notifications";
 import IntlMessages from "util/IntlMessages";
 
 import SaveParameterKuantitatif from "./SaveParameterKuantitatif";
+import EditParameterKuantitatif from "./EditParameterKuantitatif";
 
 const { Column, ColumnGroup } = Table;
 
@@ -18,8 +19,8 @@ class TableParameterKuantitatif extends  React.Component{
             deletestatus:'',
             loading:false,
             addbutton: (props.propstate) ? props.propstate.addtrue : false,
-            editbutton: false,
-            eid: "",
+            editbutton: (props.propstate) ? props.propstate.edittrue : false,
+            eid: (props.propstate) ? props.propstate.pkid : "",
             fetchdata: []
         }
     }
@@ -39,7 +40,8 @@ class TableParameterKuantitatif extends  React.Component{
                 indikatorpenyebut : "TEST",
                 indikatorpembilang : "TEST",
                 penomoran: 10,
-                level:2
+                level:2,
+                id_jenis_nilai : 2
             },{
                 id:2,
                 risk:'Test',
@@ -53,7 +55,8 @@ class TableParameterKuantitatif extends  React.Component{
                 indikatorpenyebut : "TEST",
                 indikatorpembilang : "TEST",
                 penomoran: 30,
-                level:3
+                level:3,
+                id_jenis_nilai : 8
             },{
                 id:3,
                 risk:'Test',
@@ -67,7 +70,8 @@ class TableParameterKuantitatif extends  React.Component{
                 indikatorpenyebut : "TEST",
                 indikatorpembilang : "TEST",
                 penomoran: 50,
-                level:4
+                level:4,
+                id_jenis_nilai : 2
             },{
                 id:4,
                 risk:'Test',
@@ -81,7 +85,8 @@ class TableParameterKuantitatif extends  React.Component{
                 indikatorpenyebut : "TEST",
                 indikatorpembilang : "TEST",
                 penomoran: 70,
-                level:5
+                level:5,
+                id_jenis_nilai : 8
             },{
                 id:5,
                 risk:'Test',
@@ -95,7 +100,8 @@ class TableParameterKuantitatif extends  React.Component{
                 indikatorpenyebut : "TEST",
                 indikatorpembilang : "TEST",
                 penomoran: 90,
-                level:2
+                level:2,
+                id_jenis_nilai : 2
             }]
         })
     }
@@ -151,7 +157,7 @@ class TableParameterKuantitatif extends  React.Component{
     }
 
     render() {
-        const {datatable, warning, loading, addbutton, editbutton, eid} = this.state;
+        const {datatable, warning, loading, addbutton, editbutton, eid, fetchdata} = this.state;
         const {propstate} = this.props;
         let {sortedInfo} = this.state;
         sortedInfo = sortedInfo || {};
@@ -159,7 +165,7 @@ class TableParameterKuantitatif extends  React.Component{
             <Card title={addbutton ? "Tambah Kuantitatif" : editbutton ? "Edit Data : ID["+eid+"]"  : "Read Table Parameter Kuantitatif"}>
                 {
                     addbutton ? <SaveParameterKuantitatif clickCancelAddButton={this.clickCancelAddButton} addPropstate={(propstate) ? propstate : false}/> :
-                    /*    editbutton ? <EditParameterManual clickCancelEditButton={this.clickCancelEditButton} fetchdata={fetchdata} eid={eid} /> :*/
+                    editbutton ? <EditParameterKuantitatif clickCancelEditButton={this.clickCancelEditButton} addPropstate={(propstate) ? propstate : false} fetchdata={fetchdata} eid={eid} /> :
                             <>
                                 <div className="table-operations">
                                     <Button className="ant-btn ant-btn-primary" onClick={this.clickAddButton}>Add</Button>
@@ -270,7 +276,8 @@ class TableParameterKuantitatif extends  React.Component{
                                                         penomoran:text.penomoran,
                                                         level:text.level,
                                                         indukparameter:145,
-                                                        risk_id:10
+                                                        risk_id:10,
+                                                        id_jenis_nilai:text.id_jenis_nilai
                                                     }]
                                                 })
                                             }}>Edit</span>
