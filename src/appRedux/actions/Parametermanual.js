@@ -109,7 +109,7 @@ export const postParameterManual = ({risk_id, penomoran, name, level, bobot, ind
                                         pr_low, pr_lowtomod, pr_mod, pr_modtohigh, pr_high, token}) => {
     return (dispatch) => {
         dispatch({type: FETCH_START});
-        axios.post('api/parameter-faktor',{
+        axios.post('api/ingredients',{
             risk_id: risk_id,
             name: name,
             level: level,
