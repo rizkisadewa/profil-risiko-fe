@@ -117,14 +117,14 @@ class EditParameterManual extends React.Component{
                                             )}
                                         </FormItem>
 
-                                        <FormItem {...formItemLayout} label="Name">
+                                        <FormItem {...formItemLayout} label="Parameter">
                                             {getFieldDecorator('name', {
-                                                initialValue:prop.parameter,
+                                                initialValue:prop.name,
                                                 rules: [{
-                                                    required: true, message: 'Please input name field.',
+                                                    required: true, message: 'Please input parameter field.',
                                                 }],
                                             })(
-                                                <Input id="name" placeholder="Input Name"/>
+                                                <Input id="name" placeholder="Input parameter"/>
                                             )}
                                         </FormItem>
 
@@ -154,13 +154,13 @@ class EditParameterManual extends React.Component{
                                         </FormItem>
 
                                         <FormItem {...formItemLayout} label="Induk/Parameter">
-                                            {getFieldDecorator('peringkatrisiko', {
-                                                initialValue:prop.indukparameter,
+                                            {getFieldDecorator('induk_id', {
+                                                initialValue:prop.induk_id,
                                                 rules: [{
                                                     required: true, message: 'Please input induk/parameter field.',
                                                 }],
                                             })(
-                                                <Select id="peringkatrisiko"
+                                                <Select id="induk_id"
                                                         showSearch
                                                         placeholder="Select induk/parameter"
                                                         optionFilterProp="children"
@@ -205,13 +205,13 @@ class EditParameterManual extends React.Component{
 
                                         <label style={{ textDecoration: 'underline', fontWeight: 'bold', textAlign: 'center'}}>Peringkat Risiko</label><br/>
                                         <FormItem {...formItemLayout} label="Low">
-                                            {getFieldDecorator('low', {
-                                                initialValue:prop.low,
+                                            {getFieldDecorator('pr_low', {
+                                                initialValue:prop.pr_low,
                                                 rules: [{
                                                     required: true, message: 'Please input low field.'
                                                 },{type:"number", message: 'Input must be number type.'}],
                                             })(
-                                                <InputNumber id="low" placeholder="Input Low"
+                                                <InputNumber id="pr_low" placeholder="Input Low"
                                                              className="w-100"
                                                              min={0}
                                                 />
@@ -219,13 +219,13 @@ class EditParameterManual extends React.Component{
                                         </FormItem>
 
                                         <FormItem {...formItemLayout} label="Low to Moderate">
-                                            {getFieldDecorator('lowtomoderate', {
-                                                initialValue:prop.lowtomoderate,
+                                            {getFieldDecorator('pr_lowtomod', {
+                                                initialValue:prop.pr_lowtomod,
                                                 rules: [{
                                                     required: true, message: 'Please input low to moderate field.'
                                                 },{type:"number", message: 'Input must be number type.'}],
                                             })(
-                                                <InputNumber id="low" placeholder="Input Low to Moderate"
+                                                <InputNumber id="pr_lowtomod" placeholder="Input Low to Moderate"
                                                              className="w-100"
                                                              min={0}
                                                 />
@@ -233,13 +233,13 @@ class EditParameterManual extends React.Component{
                                         </FormItem>
 
                                         <FormItem {...formItemLayout} label="Moderate">
-                                            {getFieldDecorator('moderate', {
-                                                initialValue:prop.moderate,
+                                            {getFieldDecorator('pr_mod', {
+                                                initialValue:prop.pr_mod,
                                                 rules: [{
                                                     required: true, message: 'Please input moderate field.'
                                                 },{type:"number", message: 'Input must be number type.'}],
                                             })(
-                                                <InputNumber id="low" placeholder="Input Moderate"
+                                                <InputNumber id="pr_mod" placeholder="Input Moderate"
                                                              className="w-100"
                                                              min={0}
                                                 />
@@ -247,13 +247,13 @@ class EditParameterManual extends React.Component{
                                         </FormItem>
 
                                         <FormItem {...formItemLayout} label="Moderate to High">
-                                            {getFieldDecorator('moderatetohigh', {
-                                                initialValue:prop.moderatetohigh,
+                                            {getFieldDecorator('pr_modtohigh', {
+                                                initialValue:prop.pr_modtohigh,
                                                 rules: [{
                                                     required: true, message: 'Please input moderate to high field.'
                                                 },{type:"number", message: 'Input must be number type.'}],
                                             })(
-                                                <InputNumber id="low" placeholder="Input Moderate to High"
+                                                <InputNumber id="pr_modtohigh" placeholder="Input Moderate to High"
                                                              className="w-100"
                                                              min={0}
                                                 />
@@ -261,13 +261,13 @@ class EditParameterManual extends React.Component{
                                         </FormItem>
 
                                         <FormItem {...formItemLayout} label="High">
-                                            {getFieldDecorator('high', {
-                                                initialValue:prop.high,
+                                            {getFieldDecorator('pr_high', {
+                                                initialValue:prop.pr_high,
                                                 rules: [{
                                                     required: true, message: 'Please input high field.'
                                                 },{type:"number", message: 'Input must be number type.'}],
                                             })(
-                                                <InputNumber id="low" placeholder="Input High"
+                                                <InputNumber id="pr_high" placeholder="Input High"
                                                              className="w-100"
                                                              min={0}
                                                 />

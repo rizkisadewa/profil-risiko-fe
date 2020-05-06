@@ -1,12 +1,15 @@
 import React from "react";
-import {Divider, Button, Card, Table, Spin} from "antd";
+import {Divider, Button, Card, Table, Spin, Input, Pagination} from "antd";
 import SweetAlert from "react-bootstrap-sweetalert";
 import {NotificationContainer, NotificationManager} from "react-notifications";
 import IntlMessages from "util/IntlMessages";
 import SaveParameterManual from "./SaveParameterManual";
 import EditParameterManual from "./EditParameterManual";
 
-const { Column, ColumnGroup } = Table;
+import {getAllParameterManualTable, countAllParameterManual} from "../../../../appRedux/actions/Parametermanual";
+import {connect} from "react-redux";
+import {SearchOutlined} from "@ant-design/icons";
+import Highlighter from "react-highlight-words";
 
 class TableParameterManual extends  React.Component{
     constructor(props) {
@@ -20,84 +23,71 @@ class TableParameterManual extends  React.Component{
             addbutton: false,
             editbutton: false,
             eid: "",
-            fetchdata: []
+            fetchdata: [],
+            statusallparametermanualtable :'',
+            statusallparametermanual:'',
+            paramname : '',
+            edname:'',
+            paging:1
         }
     }
 
-    componentWillMount(){
+    componentDidMount(){
+        this.props.getAllParameterManualTable({page:this.state.paging, token:this.props.token, name:this.state.paramname});
+        this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname});
+    }
+
+    componentWillReceiveProps(nextProps) {
+        // this.handleProp(nextProps);
         this.setState({
-            datatable : [{
-                id:1,
-                risk:'Test',
-                parameter:'Test',
-                low:1,
-                lowtomoderate:2,
-                moderate:3,
-                moderatetohigh:4,
-                high:5,
-                bobot:3,
-                bulan:this.props.fetchdata[0].stringmonth,
-                tahun:this.props.fetchdata[0].isyear,
-                penomoran: 10,
-                level:2
-            },{
-                id:2,
-                risk:'Test',
-                parameter:'Test',
-                low:6,
-                lowtomoderate:7,
-                moderate:8,
-                moderatetohigh:9,
-                high:10,
-                bobot:6,
-                bulan:this.props.fetchdata[0].stringmonth,
-                tahun:this.props.fetchdata[0].isyear,
-                penomoran: 30,
-                level:3
-            },{
-                id:3,
-                risk:'Test',
-                parameter:'Test',
-                low:11,
-                lowtomoderate:12,
-                moderate:13,
-                moderatetohigh:14,
-                high:15,
-                bobot:9,
-                bulan:this.props.fetchdata[0].stringmonth,
-                tahun:this.props.fetchdata[0].isyear,
-                penomoran: 50,
-                level:4
-            },{
-                id:4,
-                risk:'Test',
-                parameter:'Test',
-                low:16,
-                lowtomoderate:17,
-                moderate:18,
-                moderatetohigh:19,
-                high:20,
-                bobot:12,
-                bulan:this.props.fetchdata[0].stringmonth,
-                tahun:this.props.fetchdata[0].isyear,
-                penomoran: 70,
-                level:5
-            },{
-                id:5,
-                risk:'Test',
-                parameter:'Test',
-                low:21,
-                lowtomoderate:22,
-                moderate:23,
-                moderatetohigh:24,
-                high:25,
-                bobot:15,
-                bulan:this.props.fetchdata[0].stringmonth,
-                tahun:this.props.fetchdata[0].isyear,
-                penomoran: 90,
-                level:2
-            }]
-        })
+            statusallparametermanualtable : nextProps.statusallparametermanualtable,
+            statusallparametermanual : nextProps.statusallparametermanual,
+        });
+
+        // console.log(nextProps.deleteparameterfaktor);
+        if (nextProps.statusallparametermanualtable === 200 && nextProps.statusallparametermanual === 200){
+            if (nextProps.countallparametermanual){
+                if (nextProps.statusallparametermanualtable.rows) {
+                    this.setState({
+                        loading: false,
+                        lengthdata: nextProps.countallparametermanual,
+                        deletestatus: '',
+                        datatable: [],
+                    });
+                } else {
+                    this.setState({
+                        loading: false,
+                        lengthdata: nextProps.countallparametermanual,
+                        deletestatus: '',
+                        datatable: nextProps.getallparametermanualtable,
+                    });
+                }
+            } else {
+                this.setState({
+                    loading:false,
+                    lengthdata:0,
+                    deletestatus : '',
+                    datatable : [],
+                });
+            }
+        }
+
+        /*if(nextProps.deleteparametermanual === 200){
+            this.setState({
+                loading:false,
+                deletestatus: nextProps.deleteparametermanual
+            });
+        }*/
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        /*if (nextState.deletestatus !== this.state.deletestatus){
+            this.onRefresh();
+            this.setState({
+                deletestatus : nextProps.deleteparametermanual,
+            });
+        }*/
+        return true;
     }
 
     componentDidUpdate(){
@@ -118,6 +108,111 @@ class TableParameterManual extends  React.Component{
         });
     };
 
+    getColumnSearchProps = dataIndex => ({
+        filterDropdown : ({setSelectedKeys, selectedKeys, confirm, clearFilters}) => (
+            <div style={{padding : 8}}>
+                <Input
+                    ref={node => {
+                        this.searchInput = node;
+                    }}
+                    placeholder={`Search ${dataIndex}`}
+                    value={
+                        (this.state.edname !== '' && dataIndex === 'name') ?
+                            this.state.edname :
+                                selectedKeys[0]
+                    }
+                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                    onPressEnter={() => this.handleSearch(selectedKeys, confirm, dataIndex)}
+                    style={{width:188, marginBottom:8, display:'block'}}
+                />
+
+                <Button
+                    type="primary"
+                    onClick={() => this.handleSearch(selectedKeys, confirm, dataIndex)}
+                    icon={'<SearchOutlined/>'}
+                    size="small"
+                    style={{width:90, marginRight:8}}
+                >Search</Button>
+
+                <Button onClick={() => this.handleReset(clearFilters, dataIndex)} size="small" style={{width:90}}>Reset</Button>
+            </div>
+        ),
+        filterIcon : filtered => <SearchOutlined style={{color:
+                (this.state.edname !== '' && dataIndex === 'name') ?
+                    '#1890ff' :
+                        filtered ? '#1890ff' :
+                            undefined}}/>,
+        onFilter : (value, record) =>
+            record[dataIndex]
+                .toString()
+                .toLowerCase()
+                .includes(value.toLowerCase()),
+        onFilterDropdownVisibleChange : visible => {
+            if (visible){
+                setTimeout(() => this.searchInput.select());
+            }
+        },
+        render : text =>
+            ((this.state.edname !== '' && dataIndex === 'name')) ? (
+                    <Highlighter
+                        highlightStyle={{backgroundColor: 'ffc069', padding:0}}
+                        searchWords={[(this.state.edname !== '' && dataIndex === 'name') ? this.state.edname :
+                                this.state.searchText
+                        ]}
+                        autoEscape
+                        textToHighlight={text.toString()}
+                    />
+                ) :
+                this.state.searchedColumn === dataIndex ? (
+                    <Highlighter
+                        highlightStyle={{backgroundColor: 'ffc069', padding:0}}
+                        searchWords={[this.state.searchText]}
+                        autoEscape
+                        textToHighlight={text.toString()}
+                    />
+                ) : (text),
+    });
+
+    handleSearch = (selectedKeys, confirm, dataIndex) => {
+        confirm();
+        this.setState({
+            searchText: (selectedKeys[0])?selectedKeys[0]:'',
+            searchedColumn: dataIndex,
+        });
+
+        if (dataIndex === 'name'){
+            var paramnames = selectedKeys[0];
+            if (!paramnames){
+                paramnames = ''
+            }
+
+            this.setState({
+                paramname : paramnames,
+                loading : true,
+                edname : paramnames
+            })
+            this.props.getAllParameterManualTable({page:1, token:this.props.token, name:paramnames});
+            this.props.countAllParameterManual({token:this.props.token, name:paramnames});
+        }
+    };
+
+    handleReset = (clearFilters, dataIndex) => {
+        clearFilters();
+        this.setState({
+            searchText: ''
+        });
+
+        if (dataIndex === 'name'){
+            this.setState({
+                paramname : '',
+                loading : true,
+                edname : ''
+            })
+            this.props.getAllParameterManualTable({page:1, token:this.props.token, name:''});
+            this.props.countAllParameterManual({token:this.props.token, name:''});
+        }
+    };
+
     onClickCancel = () => {
         this.props.clickCancelFilterButton();
     };
@@ -126,12 +221,6 @@ class TableParameterManual extends  React.Component{
         this.setState({
             warning: false
         })
-    };
-
-    onRefresh = () => {
-        this.setState({
-            loading:true,
-        });
     };
 
     clickAddButton = () => {
@@ -152,12 +241,168 @@ class TableParameterManual extends  React.Component{
             editbutton: false,
         })
         this.onRefresh();
-    }
+    };
+
+    clickAddSuccessButton = (status) => {
+        // this.props.getAllFaktorParameterTable({page:this.state.paging, token:this.props.token});
+        this.setState({
+            addbutton: false
+        });
+
+        if (status === 201 || status === 200){
+            this.onRefresh();
+            NotificationManager.success("Data has saved.", "Success !!");
+        }
+    };
+
+    onChangePagination = page => {
+        this.setState({
+            paging: page,
+            loading:true
+        });
+        this.props.getAllParameterManualTable({page:page, token:this.props.token, name:this.state.paramname});
+        this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname});
+    };
+
+    onRefresh = () => {
+        this.setState({
+            loading:true,
+            paging:1
+        });
+        this.props.getAllParameterManualTable({page:1, token:this.props.token, name:this.state.paramname});
+        this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname});
+    };
 
     render() {
-        const {datatable,warning, loading, addbutton, editbutton, eid, fetchdata} = this.state;
+        const {datatable,warning, loading, addbutton, editbutton, eid, fetchdata, paging, lengthdata} = this.state;
+        // const {token} = this.props;
         let {sortedInfo} = this.state;
         sortedInfo = sortedInfo || {};
+        const columns = [
+        {
+            title:"#",
+            dataIndex:"id",
+            key:"id",
+            sorter:(a, b) => a.id-b.id,
+            sortOrder: sortedInfo.columnKey === 'id' && sortedInfo.order,
+        }, {
+            title:"Risk",
+            dataIndex:"risk_name",
+            key:"risk_name",
+            sorter: (a, b) => a.risk_name.localeCompare(b.risk_name),
+            sortOrder: sortedInfo.columnKey === 'risk_name' && sortedInfo.order
+        }, {
+            title:"Parameter",
+            dataIndex:"name",
+            key:"name",
+            ...this.getColumnSearchProps('name'),
+            sorter: (a, b) => a.name.localeCompare(b.name),
+            sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order
+        }, {
+            title: 'Peringkat Risiko',
+            children: [
+                {
+                    title:"Low",
+                    dataIndex:"pr_low",
+                    key:"pr_low",
+                    sorter:(a, b) => a.pr_low.localeCompare(b.pr_low),
+                    sortOrder:sortedInfo.columnKey === 'pr_low' && sortedInfo.order
+                }, {
+                    title:"Low To Moderate",
+                    dataIndex:"pr_lowtomod",
+                    key:"pr_lowtomod",
+                    sorter:(a, b) => a.pr_lowtomod.localeCompare(b.pr_lowtomod),
+                    sortOrder:sortedInfo.columnKey === 'pr_lowtomod' && sortedInfo.order
+                }, {
+                    title:"Moderate",
+                    dataIndex:"pr_mod",
+                    key:"pr_mod",
+                    sorter:(a, b) => a.pr_mod.localeCompare(b.pr_mod),
+                    sortOrder:sortedInfo.columnKey === 'pr_mod' && sortedInfo.order
+                }, {
+                    title:"Moderate To High",
+                    dataIndex:"pr_modtohigh",
+                    key:"pr_modtohigh",
+                    sorter:(a, b) => a.pr_modtohigh.localeCompare(b.pr_modtohigh),
+                    sortOrder:sortedInfo.columnKey === 'pr_modtohigh' && sortedInfo.order
+                }, {
+                    title:"High",
+                    dataIndex:"pr_high",
+                    key:"pr_high",
+                    sorter:(a, b) => a.pr_high.localeCompare(b.pr_high),
+                    sortOrder:sortedInfo.columnKey === 'pr_high' && sortedInfo.order
+                }
+            ]
+        }, {
+            title:"Bobot",
+            dataIndex:"bobot",
+            key:"bobot",
+            sorter:(a, b) => a.bobot.localeCompare(b.bobot),
+            sortOrder:sortedInfo.columnKey === 'bobot' && sortedInfo.order,
+            render: (data) => (
+                data+'%'
+            )
+        }, {
+            title:"Bulan",
+            dataIndex:"bulan",
+            key:"bulan",
+            sorter:(a, b) => a.bulan.localeCompare(b.bulan),
+            sortOrder:sortedInfo.columnKey === 'bulan' && sortedInfo.order,
+            render:(data) => {
+                var months = ["-","January","February","March","April","May","June","July","August","September","October","November","December"];
+                var bulan = '';
+                if (data > 12 || data < 0 || data === null){
+                    bulan = '-';
+                } else {
+                    bulan = months[parseInt(data)];
+                }
+
+                return bulan;
+            }
+        }, {
+            title:"Tahun",
+            dataIndex:"tahun",
+            key:"tahun",
+            sorter:(a, b) => a.tahun.localeCompare(b.tahun),
+            sortOrder:sortedInfo.columnKey === 'tahun' && sortedInfo.order
+        }, {
+            title:"Action",
+            key:"action",
+            render:(text, record) => (
+                <span>
+                    <span className="gx-link" onClick={() => {
+                        this.setState({
+                            eid : text.id,
+                            editbutton: true,
+                            fetchdata : [{
+                                id:text.id,
+                                risk:text.risk,
+                                name:text.name,
+                                pr_low:text.pr_low,
+                                pr_lowtomod:text.pr_lowtomod,
+                                pr_mod:text.pr_mod,
+                                pr_modtohigh:text.pr_modtohigh,
+                                pr_high:text.pr_high,
+                                bobot:text.bobot,
+                                bulan:text.bulan,
+                                tahun:text.tahun,
+                                penomoran:text.penomoran,
+                                level:text.level,
+                                induk_id:text.induk_id,
+                                risk_id:text.risk_id
+                            }]
+                        })
+                    }}>Edit</span>
+                    <Divider type="vertical"/>
+                    <span className="gx-link" onClick={() => {
+                        this.setState({
+                            warning: true
+                        })
+                    }}>Delete</span>
+                </span>
+            )
+        }];
+
         return (
             <Card title={addbutton ? "Tambah Parameter & Indikator" : editbutton ? "Edit Data : ID["+eid+"]"  : "Read Table Parameter Manual"}>
                 {
@@ -170,124 +415,17 @@ class TableParameterManual extends  React.Component{
                                 <Button className="ant-btn" onClick={this.onRefresh}>Refresh</Button>
                             </div>
                             <Spin tip="Loading..." spinning={loading}>
-                                <Table dataSource={datatable} className="gx-table-responsive" onChange={this.handleChange} rowKey="id">
-                                <Column
-                                    title="#"
-                                    dataIndex="id"
-                                    key="id"
-                                    sorter={(a, b) => a.id-b.id}
-                                    sortOrder={sortedInfo.columnKey === 'id' && sortedInfo.order}
-                                />
-                                <Column
-                                    title="Risk"
-                                    dataIndex="risk"
-                                    key="risk"
-                                    sorter={(a, b) => a.risk.localeCompare(b.risk)}
-                                    sortOrder={sortedInfo.columnKey === 'risk' && sortedInfo.order}
-                                />
-                                <Column
-                                    title="Parameter"
-                                    dataIndex="parameter"
-                                    key="parameter"
-                                    sorter={(a, b) => a.parameter.localeCompare(b.parameter)}
-                                    sortOrder={sortedInfo.columnKey === 'parameter' && sortedInfo.order}
-                                />
-                                <ColumnGroup title="Peringkat Risiko">
-                                    <Column
-                                        title="Low"
-                                        dataIndex="low"
-                                        key="low"
-                                        sorter={(a, b) => a.low.localeCompare(b.low)}
-                                        sortOrder={sortedInfo.columnKey === 'low' && sortedInfo.order}
-                                    />
-                                    <Column
-                                        title="Low To Moderate"
-                                        dataIndex="lowtomoderate"
-                                        key="lowtomoderate"
-                                        sorter={(a, b) => a.lowtomoderate.localeCompare(b.lowtomoderate)}
-                                        sortOrder={sortedInfo.columnKey === 'lowtomoderate' && sortedInfo.order}
-                                    />
-                                    <Column
-                                        title="Moderate"
-                                        dataIndex="moderate"
-                                        key="moderate"
-                                        sorter={(a, b) => a.moderate.localeCompare(b.moderate)}
-                                        sortOrder={sortedInfo.columnKey === 'moderate' && sortedInfo.order}
-                                    />
-                                    <Column
-                                        title="Moderate To High"
-                                        dataIndex="moderatetohigh"
-                                        key="moderatetohigh"
-                                        sorter={(a, b) => a.moderatetohigh.localeCompare(b.moderatetohigh)}
-                                        sortOrder={sortedInfo.columnKey === 'moderatetohigh' && sortedInfo.order}
-                                    />
-                                    <Column
-                                        title="High"
-                                        dataIndex="high"
-                                        key="high"
-                                        sorter={(a, b) => a.high.localeCompare(b.high)}
-                                        sortOrder={sortedInfo.columnKey === 'high' && sortedInfo.order}
-                                    />
-                                </ColumnGroup>
-                                <Column
-                                    title="Bobot"
-                                    dataIndex="bobot"
-                                    key="bobot"
-                                    sorter={(a, b) => a.bobot.localeCompare(b.bobot)}
-                                    sortOrder={sortedInfo.columnKey === 'bobot' && sortedInfo.order}
-                                />
-                                <Column
-                                    title="Bulan"
-                                    dataIndex="bulan"
-                                    key="bulan"
-                                    sorter={(a, b) => a.bulan.localeCompare(b.bulan)}
-                                    sortOrder={sortedInfo.columnKey === 'bulan' && sortedInfo.order}
-                                />
-                                <Column
-                                    title="Tahun"
-                                    dataIndex="tahun"
-                                    key="tahun"
-                                    sorter={(a, b) => a.tahun.localeCompare(b.tahun)}
-                                    sortOrder={sortedInfo.columnKey === 'tahun' && sortedInfo.order}
-                                />
-                                <Column
-                                    title="Action"
-                                    key="action"
-                                    render={(text, record) => (
-                                        <span>
-                                            <span className="gx-link" onClick={() => {
-                                                this.setState({
-                                                    eid : text.id,
-                                                    editbutton: true,
-                                                    fetchdata : [{
-                                                        id:text.id,
-                                                        risk:text.risk,
-                                                        parameter:text.parameter,
-                                                        low:text.low,
-                                                        lowtomoderate:text.lowtomoderate,
-                                                        moderate:text.moderate,
-                                                        moderatetohigh:text.moderatetohigh,
-                                                        high:text.high,
-                                                        bobot:text.bobot,
-                                                        bulan:text.bulan,
-                                                        tahun:text.tahun,
-                                                        penomoran:text.penomoran,
-                                                        level:text.level,
-                                                        indukparameter:145,
-                                                        risk_id:10
-                                                    }]
-                                                })
-                                            }}>Edit</span>
-                                            <Divider type="vertical"/>
-                                            <span className="gx-link" onClick={() => {
-                                                this.setState({
-                                                    warning: true
-                                                })
-                                            }}>Delete</span>
-                                        </span>
-                                    )}
-                                />
-                            </Table>
+                                <Table dataSource={datatable} className="gx-table-responsive" onChange={this.handleChange} rowKey="id" columns={columns}
+                                       pagination={false}/>
+                                <div className="table-operations" style={{ paddingTop : '1rem', float : 'right' }}>
+                                    {
+                                        (lengthdata) ?
+                                            lengthdata > 0 ?
+                                                <Pagination current={paging} total={lengthdata ? lengthdata : 1} onChange={this.onChangePagination}/> : ''
+                                            : ''
+
+                                    }
+                                </div>
                             </Spin>
                             <SweetAlert show={warning}
                                         warning
@@ -315,4 +453,10 @@ class TableParameterManual extends  React.Component{
     }
 }
 
-export default TableParameterManual;
+const mapStateToProps = ({auth, parametermanual}) => {
+    const {token} = auth;
+    const {getallparametermanualtable,postparametermanual,statusallparametermanualtable,countallparametermanual,statusallparametermanual} = parametermanual;
+    return {token,getallparametermanualtable,postparametermanual,statusallparametermanualtable,countallparametermanual,statusallparametermanual};
+};
+
+export default connect(mapStateToProps, {getAllParameterManualTable, countAllParameterManual})(TableParameterManual);

@@ -112,13 +112,13 @@ class SaveParameterManual extends React.Component{
                         )}
                     </FormItem>
 
-                    <FormItem {...formItemLayout} label="Name">
+                    <FormItem {...formItemLayout} label="Parameter">
                         {getFieldDecorator('name', {
                             rules: [{
-                                required: true, message: 'Please input name field.',
+                                required: true, message: 'Please input parameter field.',
                             }],
                         })(
-                            <Input id="name" placeholder="Input Name"/>
+                            <Input id="name" placeholder="Input Parameter"/>
                         )}
                     </FormItem>
 
@@ -147,12 +147,12 @@ class SaveParameterManual extends React.Component{
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="Induk/Parameter">
-                        {getFieldDecorator('peringkatrisiko', {
+                        {getFieldDecorator('induk_id', {
                             rules: [{
                                 required: true, message: 'Please input induk/parameter field.',
                             }],
                         })(
-                            <Select id="peringkatrisiko"
+                            <Select id="induk_id"
                                     showSearch
                                     placeholder="Select induk/parameter"
                                     optionFilterProp="children"
@@ -197,12 +197,12 @@ class SaveParameterManual extends React.Component{
 
                     <label style={{ textDecoration: 'underline', fontWeight: 'bold', textAlign: 'center'}}>Peringkat Risiko</label><br/>
                     <FormItem {...formItemLayout} label="Low">
-                        {getFieldDecorator('low', {
+                        {getFieldDecorator('pr_low', {
                             rules: [{
                                 required: true, message: 'Please input low field.'
                             },{type:"number", message: 'Input must be number type.'}],
                         })(
-                            <InputNumber id="low" placeholder="Input Low"
+                            <InputNumber id="pr_low" placeholder="Input Low"
                                          className="w-100"
                                          min={0}
                             />
@@ -210,12 +210,12 @@ class SaveParameterManual extends React.Component{
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="Low to Moderate">
-                        {getFieldDecorator('lowtomoderate', {
+                        {getFieldDecorator('pr_lowtomod', {
                             rules: [{
                                 required: true, message: 'Please input low to moderate field.'
                             },{type:"number", message: 'Input must be number type.'}],
                         })(
-                            <InputNumber id="low" placeholder="Input Low to Moderate"
+                            <InputNumber id="pr_lowtomod" placeholder="Input Low to Moderate"
                                          className="w-100"
                                          min={0}
                             />
@@ -223,12 +223,12 @@ class SaveParameterManual extends React.Component{
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="Moderate">
-                        {getFieldDecorator('moderate', {
+                        {getFieldDecorator('pr_mod', {
                             rules: [{
                                 required: true, message: 'Please input moderate field.'
                             },{type:"number", message: 'Input must be number type.'}],
                         })(
-                            <InputNumber id="low" placeholder="Input Moderate"
+                            <InputNumber id="pr_mod" placeholder="Input Moderate"
                                          className="w-100"
                                          min={0}
                             />
@@ -236,12 +236,12 @@ class SaveParameterManual extends React.Component{
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="Moderate to High">
-                        {getFieldDecorator('moderatetohigh', {
+                        {getFieldDecorator('pr_modtohigh', {
                             rules: [{
                                 required: true, message: 'Please input moderate to high field.'
                             },{type:"number", message: 'Input must be number type.'}],
                         })(
-                            <InputNumber id="low" placeholder="Input Moderate to High"
+                            <InputNumber id="pr_modtohigh" placeholder="Input Moderate to High"
                                          className="w-100"
                                          min={0}
                             />
@@ -249,12 +249,12 @@ class SaveParameterManual extends React.Component{
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="High">
-                        {getFieldDecorator('high', {
+                        {getFieldDecorator('pr_high', {
                             rules: [{
                                 required: true, message: 'Please input high field.'
                             },{type:"number", message: 'Input must be number type.'}],
                         })(
-                            <InputNumber id="low" placeholder="Input High"
+                            <InputNumber id="pr_high" placeholder="Input High"
                                          className="w-100"
                                          min={0}
                             />

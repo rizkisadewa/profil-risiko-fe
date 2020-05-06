@@ -9,6 +9,7 @@ import Peringkatrisiko from "./Peringkatrisiko";
 import Masterparameter from "./Masterparameter";
 import Jenispenilaian from "./Jenispenilaian";
 import Ratioindikator from "./RatioIndikator";
+import Parametermanual from "./Parametermanual";
 
 
 const reducers = combineReducers({
@@ -21,7 +22,8 @@ const reducers = combineReducers({
   peringkatrisiko: Peringkatrisiko,
   masterparameter: Masterparameter,
   jenispenilaian: Jenispenilaian,
-  ratioindikator: Ratioindikator
+  ratioindikator: Ratioindikator,
+  parametermanual: Parametermanual
 });
 
 export default reducers;
