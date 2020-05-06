@@ -32,6 +32,7 @@ class TableParameterManual extends  React.Component{
             paramrisk_id : props.fetchdata ? props.fetchdata[0].risks : 0,
             parambulan : props.fetchdata ? props.fetchdata[0].ismonth : 0,
             paramtahun : props.fetchdata ? props.fetchdata[0].isyear : 0,
+            parambobot : 0,
             parampr_low : '',
             parampr_lowtomod : '',
             parampr_mod : '',
@@ -42,17 +43,20 @@ class TableParameterManual extends  React.Component{
             edpr_mod : '',
             edpr_modtohigh : '',
             edpr_high : '',
+            edbobot : '',
         }
     }
 
     componentDidMount(){
         this.props.getAllParameterManualTable({page:this.state.paging, token:this.props.token, name:this.state.paramname,
             risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-            pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high
+            pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
+            bobot:this.state.parambobot
         });
         this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname,
             risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-            pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high
+            pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
+            bobot:this.state.parambobot
         });
     }
 
@@ -148,7 +152,9 @@ class TableParameterManual extends  React.Component{
                                                     this.state.edpr_modtohigh :
                                                         (this.state.edpr_high !== '' && dataIndex === 'pr_high') ?
                                                             this.state.edpr_high :
-                                                            selectedKeys[0]
+                                                                (this.state.edbobot !== '' && dataIndex === 'bobot') ?
+                                                                    this.state.edbobot :
+                                                                    selectedKeys[0]
                     }
                     onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
                     onPressEnter={() => this.handleSearch(selectedKeys, confirm, dataIndex)}
@@ -179,6 +185,8 @@ class TableParameterManual extends  React.Component{
                                         '#1890ff' :
                                         (this.state.edpr_high !== '' && dataIndex === 'pr_high') ?
                                             '#1890ff' :
+                                            (this.state.edbobot !== '' && dataIndex === 'bobot') ?
+                                                '#1890ff' :
                                             filtered ? '#1890ff' :
                                                 undefined
         }}/>,
@@ -196,7 +204,8 @@ class TableParameterManual extends  React.Component{
             (
                 (this.state.edname !== '' && dataIndex === 'name') || (this.state.edpr_low !== '' && dataIndex === 'pr_low') ||
                 (this.state.edpr_lowtomod !== '' && dataIndex === 'pr_lowtomod') || (this.state.edpr_mod !== '' && dataIndex === 'pr_mod') ||
-                (this.state.edpr_modtohigh !== '' && dataIndex === 'pr_modtohigh') || (this.state.edpr_high !== '' && dataIndex === 'pr_high')) ? (
+                (this.state.edpr_modtohigh !== '' && dataIndex === 'pr_modtohigh') || (this.state.edpr_high !== '' && dataIndex === 'pr_high')||
+                (this.state.edbobot !== '' && dataIndex === 'bobot')) ? (
                     <Highlighter
                         highlightStyle={{backgroundColor: 'ffc069', padding:0}}
                         searchWords={[(this.state.edname !== '' && dataIndex === 'name') ? this.state.edname :
@@ -205,7 +214,8 @@ class TableParameterManual extends  React.Component{
                                                 (this.state.edpr_mod !== '' && dataIndex === 'pr_mod') ? this.state.edpr_mod :
                                                     (this.state.edpr_modtohigh !== '' && dataIndex === 'pr_modtohigh') ? this.state.edpr_modtohigh :
                                                         (this.state.edpr_high !== '' && dataIndex === 'pr_high') ? this.state.edpr_high :
-                                                            this.state.searchText
+                                                            (this.state.edbobot !== '' && dataIndex === 'bobot') ? this.state.edbobot :
+                                                                this.state.searchText
                         ]}
                         autoEscape
                         textToHighlight={text.toString()}
@@ -241,11 +251,13 @@ class TableParameterManual extends  React.Component{
             })
             this.props.getAllParameterManualTable({page:1, token:this.props.token, name:paramnames,
                 risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high
+                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
+                bobot:this.state.parambobot
             });
             this.props.countAllParameterManual({token:this.props.token, name:paramnames,
                 risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high
+                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
+                bobot:this.state.parambobot
             });
         }
 
@@ -262,11 +274,13 @@ class TableParameterManual extends  React.Component{
             })
             this.props.getAllParameterManualTable({page:1, token:this.props.token, name:this.state.paramname,
                 risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high
+                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
+                bobot:this.state.parambobot
             });
             this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname,
                 risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high
+                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
+                bobot:this.state.parambobot
             });
         }
 
@@ -283,11 +297,13 @@ class TableParameterManual extends  React.Component{
             })
             this.props.getAllParameterManualTable({page:1, token:this.props.token, name:this.state.paramname,
                 risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high
+                pr_lowtomod:parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
+                bobot:this.state.parambobot
             });
             this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname,
                 risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high
+                pr_lowtomod:parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
+                bobot:this.state.parambobot
             });
         }
 
@@ -304,11 +320,13 @@ class TableParameterManual extends  React.Component{
             })
             this.props.getAllParameterManualTable({page:1, token:this.props.token, name:this.state.paramname,
                 risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high
+                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
+                bobot:this.state.parambobot
             });
             this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname,
                 risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high
+                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
+                bobot:this.state.parambobot
             });
         }
 
@@ -325,11 +343,13 @@ class TableParameterManual extends  React.Component{
             })
             this.props.getAllParameterManualTable({page:1, token:this.props.token, name:this.state.paramname,
                 risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:parampr_modtohigh,pr_high:this.state.parampr_high
+                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:parampr_modtohigh,pr_high:this.state.parampr_high,
+                bobot:this.state.parambobot
             });
             this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname,
                 risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:parampr_modtohigh,pr_high:this.state.parampr_high
+                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:parampr_modtohigh,pr_high:this.state.parampr_high,
+                bobot:this.state.parambobot
             });
         }
 
@@ -346,11 +366,36 @@ class TableParameterManual extends  React.Component{
             })
             this.props.getAllParameterManualTable({page:1, token:this.props.token, name:this.state.paramname,
                 risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:parampr_high
+                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:parampr_high,
+                bobot:this.state.parambobot
             });
             this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname,
                 risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:parampr_high
+                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:parampr_high,
+                bobot:this.state.parambobot
+            });
+        }
+
+        if (dataIndex === 'bobot'){
+            var parambobot = selectedKeys[0];
+            if (!parambobot){
+                parambobot = ''
+            }
+
+            this.setState({
+                parambobot : parambobot,
+                loading : true,
+                edbobot : parambobot
+            })
+            this.props.getAllParameterManualTable({page:1, token:this.props.token, name:this.state.paramname,
+                risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
+                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
+                bobot:parambobot
+            });
+            this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname,
+                risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
+                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
+                bobot:parambobot
             });
         }
     };
@@ -369,11 +414,13 @@ class TableParameterManual extends  React.Component{
             })
             this.props.getAllParameterManualTable({page:1, token:this.props.token, name:'',
                 risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high
+                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
+                bobot:this.state.parambobot
             });
             this.props.countAllParameterManual({token:this.props.token, name:'',
                 risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high
+                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
+                bobot:this.state.parambobot
             });
         }
 
@@ -385,11 +432,13 @@ class TableParameterManual extends  React.Component{
             })
             this.props.getAllParameterManualTable({page:1, token:this.props.token, name:this.state.paramname,
                 risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:'',
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high
+                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
+                bobot:this.state.parambobot
             });
             this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname,
                 risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:'',
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high
+                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
+                bobot:this.state.parambobot
             });
         }
 
@@ -401,11 +450,13 @@ class TableParameterManual extends  React.Component{
             })
             this.props.getAllParameterManualTable({page:1, token:this.props.token, name:this.state.paramname,
                 risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:'',pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high
+                pr_lowtomod:'',pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
+                bobot:this.state.parambobot
             });
             this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname,
                 risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:'',pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high
+                pr_lowtomod:'',pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
+                bobot:this.state.parambobot
             });
         }
 
@@ -417,11 +468,13 @@ class TableParameterManual extends  React.Component{
             })
             this.props.getAllParameterManualTable({page:1, token:this.props.token, name:this.state.paramname,
                 risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:'',pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high
+                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:'',pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
+                bobot:this.state.parambobot
             });
             this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname,
                 risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:'',pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high
+                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:'',pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
+                bobot:this.state.parambobot
             });
         }
 
@@ -433,11 +486,13 @@ class TableParameterManual extends  React.Component{
             })
             this.props.getAllParameterManualTable({page:1, token:this.props.token, name:this.state.paramname,
                 risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:'',pr_high:this.state.parampr_high
+                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:'',pr_high:this.state.parampr_high,
+                bobot:this.state.parambobot
             });
             this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname,
                 risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:'',pr_high:this.state.parampr_high
+                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:'',pr_high:this.state.parampr_high,
+                bobot:this.state.parambobot
             });
         }
 
@@ -449,11 +504,31 @@ class TableParameterManual extends  React.Component{
             })
             this.props.getAllParameterManualTable({page:1, token:this.props.token, name:this.state.paramname,
                 risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:''
+                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:'',
+                bobot:this.state.parambobot
             });
             this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname,
                 risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:''
+                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:'',
+                bobot:this.state.parambobot
+            });
+        }
+
+        if (dataIndex === 'bobot'){
+           this.setState({
+                parambobot : '',
+                loading : true,
+                edbobot : ''
+            })
+            this.props.getAllParameterManualTable({page:1, token:this.props.token, name:this.state.paramname,
+                risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
+                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
+                bobot:''
+            });
+            this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname,
+                risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
+                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
+                bobot:''
             });
         }
 
@@ -519,11 +594,13 @@ class TableParameterManual extends  React.Component{
         });
         this.props.getAllParameterManualTable({page:page, token:this.props.token, name:this.state.paramname,
             risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-            pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high
+            pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
+            bobot:this.state.parambobot
         });
         this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname,
             risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-            pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high
+            pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
+            bobot:this.state.parambobot
         });
     };
 
@@ -534,11 +611,13 @@ class TableParameterManual extends  React.Component{
         });
         this.props.getAllParameterManualTable({page:1, token:this.props.token, name:this.state.paramname,
             risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-            pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high
+            pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
+            bobot:this.state.parambobot
         });
         this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname,
             risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-            pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high
+            pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
+            bobot:this.state.parambobot
         });
     };
 
@@ -611,6 +690,7 @@ class TableParameterManual extends  React.Component{
             title:"Bobot",
             dataIndex:"bobot",
             key:"bobot",
+            ...this.getColumnSearchProps('bobot'),
             sorter:(a, b) => a.bobot.localeCompare(b.bobot),
             sortOrder:sortedInfo.columnKey === 'bobot' && sortedInfo.order,
             render: (data) => (

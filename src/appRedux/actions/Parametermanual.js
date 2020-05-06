@@ -10,9 +10,14 @@ import {FETCH_ERROR,
 import axios from 'util/Api'
 
 export const getAllParameterManualTable = ({page, token, name, bulan, tahun, risk_id,
-                                               pr_low, pr_lowtomod, pr_mod, pr_modtohigh, pr_high}) => {
+                                               pr_low, pr_lowtomod, pr_mod, pr_modtohigh, pr_high, bobot}) => {
     return (dispatch) => {
         dispatch({type: FETCH_START});
+        var rbobot = '';
+        /*if (bobot > 0){
+            rbobot = '&bobot='+bobot;
+        }*/
+
         var parameters = '';
         if (risk_id > 0 && bulan > 0 && tahun > 0){
             parameters = 'page='+page+'&risk_id='+risk_id+'&name='+name+'&bulan='+bulan+'&tahun='+tahun+
@@ -39,7 +44,7 @@ export const getAllParameterManualTable = ({page, token, name, bulan, tahun, ris
             parameters = 'page='+page+'&name='+name+
                 '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
         }
-        axios.get('api/ingredients?'+parameters,{
+        axios.get('api/ingredients?'+parameters+rbobot,{
             headers: {
                 Authorization: "Bearer "+token
             }
@@ -58,9 +63,14 @@ export const getAllParameterManualTable = ({page, token, name, bulan, tahun, ris
 };
 
 export const countAllParameterManual = ({token, name,  bulan, tahun, risk_id,
-                                            pr_low, pr_lowtomod, pr_mod, pr_modtohigh, pr_high}) => {
+                                            pr_low, pr_lowtomod, pr_mod, pr_modtohigh, pr_high, bobot}) => {
     return (dispatch) => {
         dispatch({type: FETCH_START});
+        var rbobot='';
+        /*if (bobot > 0){
+            rbobot = '&bobot='+bobot;
+        }*/
+
         var parameters = '';
         if (risk_id > 0 && bulan > 0 && tahun > 0){
             parameters = 'risk_id='+risk_id+'&name='+name+'&bulan='+bulan+'&tahun='+tahun+
@@ -87,7 +97,7 @@ export const countAllParameterManual = ({token, name,  bulan, tahun, risk_id,
             parameters = 'name='+name+
                 '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
         }
-        axios.get('api/ingredients?'+parameters,{
+        axios.get('api/ingredients?'+parameters+rbobot,{
             headers: {
                 Authorization: "Bearer "+token
             }
