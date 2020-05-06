@@ -1,7 +1,7 @@
 import React from "react";
 import {Button, Input, Form, Select, InputNumber} from "antd";
 import connect from "react-redux/es/connect/connect";
-import {getAllRisks,getAllPeringkatRisiko} from "../../../../appRedux/actions/index";
+import {getAllRisks,getAllPeringkatRisiko,postParameterManual,resetPostParameterManual} from "../../../../appRedux/actions/index";
 import SweetAlerts from "react-bootstrap-sweetalert";
 
 const FormItem = Form.Item;
@@ -22,6 +22,7 @@ class SaveParameterManual extends React.Component{
             basic: false,
             dataoptionsrisk : [],
             dataoptionspringkatrisiko : [],
+            statuspost: ''
         }
     }
 
@@ -33,8 +34,14 @@ class SaveParameterManual extends React.Component{
     componentWillReceiveProps(nextProps){
         this.setState({
             dataoptionsrisk : nextProps.getallrisks,
-            dataoptionspringkatrisiko : nextProps.getallperingkatrisiko
+            dataoptionspringkatrisiko : nextProps.getallperingkatrisiko,
+            statuspost: nextProps.statuspostparametermanual
         });
+
+        if (nextProps.statuspostparametermanual === 201 || nextProps.statuspostparametermanual === 200){
+            this.props.clickAddSuccessButton(nextProps.statuspostparametermanual);
+            this.props.resetPostParameterManual();
+        }
     }
 
     render() {
@@ -59,6 +66,7 @@ class SaveParameterManual extends React.Component{
                     e.preventDefault();
                     this.props.form.validateFields((err, values) => {
                         if (!err) {
+                            this.props.postParameterManual(values);
                         }
                     });
                 }}>
@@ -283,12 +291,13 @@ class SaveParameterManual extends React.Component{
 
 const WrappedSaveParameterManual = Form.create()(SaveParameterManual);
 
-const mapStateToProps = ({auth, jenisrisiko, peringkatrisiko}) => {
+const mapStateToProps = ({auth, jenisrisiko, peringkatrisiko, parametermanual}) => {
     const {token} = auth;
     const {getallrisks} = jenisrisiko;
     const {getallperingkatrisiko} = peringkatrisiko;
-    return {token,getallrisks,getallperingkatrisiko}
+    const {statuspostparametermanual} = parametermanual;
+    return {token,getallrisks,getallperingkatrisiko,statuspostparametermanual}
 };
 
-export default connect(mapStateToProps, {getAllRisks,getAllPeringkatRisiko})(WrappedSaveParameterManual);
+export default connect(mapStateToProps, {getAllRisks,getAllPeringkatRisiko,postParameterManual,resetPostParameterManual})(WrappedSaveParameterManual);
 export {optionsLevel};

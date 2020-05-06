@@ -9,16 +9,36 @@ import {FETCH_ERROR,
 } from "../../constants/ActionTypes";
 import axios from 'util/Api'
 
-export const getAllParameterManualTable = ({page, token, name}) => {
+export const getAllParameterManualTable = ({page, token, name, bulan, tahun, risk_id,
+                                               pr_low, pr_lowtomod, pr_mod, pr_modtohigh, pr_high}) => {
     return (dispatch) => {
         dispatch({type: FETCH_START});
-        //console.log('berhasil horee --> page :',page,' token :',token);
-        var /*parameters = '';*/
-        /*if (risk_id > 0){
-            parameters = 'page='+page+'&risk_id='+risk_id+'&name='+name+'&bobot='+bobot+'&risk_nama='+risk_nama;
-        } else {*/
-            parameters = 'page='+page+'&name='+name;
-        /*}*/
+        var parameters = '';
+        if (risk_id > 0 && bulan > 0 && tahun > 0){
+            parameters = 'page='+page+'&risk_id='+risk_id+'&name='+name+'&bulan='+bulan+'&tahun='+tahun+
+                '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
+        } else if (risk_id > 0 && bulan > 0){
+            parameters = 'page='+page+'&risk_id='+risk_id+'&name='+name+'&bulan='+bulan+
+                '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
+        } else if (risk_id > 0 && tahun > 0){
+            parameters = 'page='+page+'&risk_id='+risk_id+'&name='+name+'&tahun='+tahun+
+                '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
+        } else if (bulan > 0 && tahun > 0){
+            parameters = 'page='+page+'&name='+name+'&bulan='+bulan+'&tahun='+tahun+
+                '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
+        } else if (risk_id > 0){
+            parameters = 'page='+page+'&risk_id='+risk_id+'&name='+name+
+                '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
+        } else if (bulan > 0){
+            parameters = 'page='+page+'&name='+name+'&bulan='+bulan+
+                '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
+        } else if (tahun > 0){
+            parameters = 'page='+page+'&name='+name+'&tahun='+tahun+
+                '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
+        } else {
+            parameters = 'page='+page+'&name='+name+
+                '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
+        }
         axios.get('api/ingredients?'+parameters,{
             headers: {
                 Authorization: "Bearer "+token
@@ -37,16 +57,36 @@ export const getAllParameterManualTable = ({page, token, name}) => {
     }
 };
 
-export const countAllParameterManual = ({token, name}) => {
+export const countAllParameterManual = ({token, name,  bulan, tahun, risk_id,
+                                            pr_low, pr_lowtomod, pr_mod, pr_modtohigh, pr_high}) => {
     return (dispatch) => {
         dispatch({type: FETCH_START});
-        //console.log('berhasil horee --> page :',page,' token :',token);
-        var /*parameters = '';*/
-            /*if (risk_id > 0){
-                parameters = 'page='+page+'&risk_id='+risk_id+'&name='+name+'&bobot='+bobot+'&risk_nama='+risk_nama;
-            } else {*/
-            parameters = 'name='+name;
-        /*}*/
+        var parameters = '';
+        if (risk_id > 0 && bulan > 0 && tahun > 0){
+            parameters = 'risk_id='+risk_id+'&name='+name+'&bulan='+bulan+'&tahun='+tahun+
+                '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
+        } else if (risk_id > 0 && bulan > 0){
+            parameters = 'risk_id='+risk_id+'&name='+name+'&bulan='+bulan+
+                '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
+        } else if (risk_id > 0 && tahun > 0){
+            parameters = 'risk_id='+risk_id+'&name='+name+'&tahun='+tahun+
+                '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
+        } else if (bulan > 0 && tahun > 0){
+            parameters = 'name='+name+'&bulan='+bulan+'&tahun='+tahun+
+                '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
+        } else if (risk_id > 0){
+            parameters = 'risk_id='+risk_id+'&name='+name+
+                '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
+        } else if (bulan > 0){
+            parameters = 'name='+name+'&bulan='+bulan+
+                '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
+        } else if (tahun > 0){
+            parameters = 'name='+name+'&tahun='+tahun+
+                '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
+        } else {
+            parameters = 'name='+name+
+                '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
+        }
         axios.get('api/ingredients?'+parameters,{
             headers: {
                 Authorization: "Bearer "+token
@@ -89,12 +129,8 @@ export const postParameterManual = ({risk_id, penomoran, name, level, bobot, ind
             desc_pr_modtohigh: null,
             desc_pr_high: null,
             ratio_manual: null,
-            id_indikator_pembilang: 139,
-            id_indikator_penyebut: 139,
             version: null,
             stock: null,
-            bulan: 0,
-            tahun: 0,
             jenis: "PR"
         },{
             headers: {
