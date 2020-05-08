@@ -120,13 +120,13 @@ class SaveParameterManual extends React.Component{
                         )}
                     </FormItem>
 
-                    <FormItem {...formItemLayout} label="Parameter">
+                    <FormItem {...formItemLayout} label="Name">
                         {getFieldDecorator('name', {
                             rules: [{
-                                required: true, message: 'Please input parameter field.',
+                                required: true, message: 'Please input name field.',
                             }],
                         })(
-                            <Input id="name" placeholder="Input Parameter"/>
+                            <Input id="name" placeholder="Input name"/>
                         )}
                     </FormItem>
 

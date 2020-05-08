@@ -117,14 +117,14 @@ class EditParameterManual extends React.Component{
                                             )}
                                         </FormItem>
 
-                                        <FormItem {...formItemLayout} label="Parameter">
+                                        <FormItem {...formItemLayout} label="Name">
                                             {getFieldDecorator('name', {
                                                 initialValue:prop.name,
                                                 rules: [{
-                                                    required: true, message: 'Please input parameter field.',
+                                                    required: true, message: 'Please input name field.',
                                                 }],
                                             })(
-                                                <Input id="name" placeholder="Input parameter"/>
+                                                <Input id="name" placeholder="Input name"/>
                                             )}
                                         </FormItem>
 
