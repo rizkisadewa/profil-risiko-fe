@@ -104,16 +104,16 @@ class TableParameterManual extends  React.Component{
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        /*if (nextState.deletestatus !== this.state.deletestatus){
+        if (nextState.deletestatus !== this.state.deletestatus){
             this.onRefresh();
             this.setState({
                 deletestatus : nextProps.deleteparametermanual,
             });
-        }*/
+        }
         return true;
     }
 
-    componentDidUpdate(){
+    /* componentDidUpdate(){
         if(this.state.loading){
             setTimeout(() => {
                 this.setState({
@@ -121,7 +121,7 @@ class TableParameterManual extends  React.Component{
                 })
             },300)
         }
-    }
+    } */
 
     handleChange = (pagination, filters, sorter) => {
         console.log('Various parameters', pagination, filters, sorter);
@@ -587,6 +587,18 @@ class TableParameterManual extends  React.Component{
         }
     };
 
+    clickEditSuccessButton = (status) => {
+        // this.props.getAllFaktorParameterTable({page:this.state.paging, token:this.props.token});
+        this.setState({
+            editbutton: false,
+        });
+
+        if (status === 201 || status === 200) {
+            this.onRefresh();
+            NotificationManager.success("Data has updated.", "Success !!");
+        }
+    }
+
     onChangePagination = page => {
         this.setState({
             paging: page,
@@ -639,8 +651,14 @@ class TableParameterManual extends  React.Component{
             key:"risk_name",
             sorter: (a, b) => a.risk_name.localeCompare(b.risk_name),
             sortOrder: sortedInfo.columnKey === 'risk_name' && sortedInfo.order
+        },{
+            title:"Name",
+            dataIndex:"name",
+            key:"name",
+            sorter: (a, b) => a.name.localeCompare(b.name),
+            sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order
         }, {
-            title:"Parameter",
+            title:"Induk Parameter",
             dataIndex:"name",
             key:"name",
             ...this.getColumnSearchProps('name'),
@@ -760,10 +778,11 @@ class TableParameterManual extends  React.Component{
         }];
 
         return (
-            <Card title={addbutton ? "Tambah Parameter & Indikator" : editbutton ? "Edit Data : ID["+eid+"]"  : "Read Table Parameter Manual"}>
+            <Card title={addbutton ? "Tambah Parameter Manual" : editbutton ? "Edit Data : ID["+eid+"]"  : "Read Table Parameter Manual"}>
                 {
                     addbutton ? <SaveParameterManual clickCancelAddButton={this.clickCancelAddButton} clickAddSuccessButton={this.clickAddSuccessButton}/> :
-                    editbutton ? <EditParameterManual clickCancelEditButton={this.clickCancelEditButton} fetchdata={fetchdata} eid={eid} /> :
+                    editbutton ? <EditParameterManual clickCancelEditButton={this.clickCancelEditButton}
+                                                      clickEditSuccessButton={this.clickEditSuccessButton} fetchdata={fetchdata} eid={eid} /> :
                         <>
                             <div className="table-operations">
                                 <Button className="ant-btn ant-btn-danger" onClick={this.onClickCancel}>Back Filter</Button>
@@ -811,7 +830,12 @@ class TableParameterManual extends  React.Component{
 
 const mapStateToProps = ({auth, parametermanual}) => {
     const {token} = auth;
-    const {getallparametermanualtable,postparametermanual,statusallparametermanualtable,countallparametermanual,statusallparametermanual} = parametermanual;
+    const {
+      getallparametermanualtable,
+      postparametermanual,
+      statusallparametermanualtable,
+      countallparametermanual,
+      statusallparametermanual} = parametermanual;
     return {token,getallparametermanualtable,postparametermanual,statusallparametermanualtable,countallparametermanual,statusallparametermanual};
 };
 

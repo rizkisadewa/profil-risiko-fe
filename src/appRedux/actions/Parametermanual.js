@@ -1,11 +1,15 @@
 import {FETCH_ERROR,
     FETCH_START,
-    COUNT_PARAMETER_MANUAL,
     GET_ALL_PARAMETER_MANUAL,
+    GET_PARAMETER_MANUAL,
+    PUT_PARAMETER_MANUAL,
     POST_PARAMETER_MANUAL,
-    STATUS_ALL_PARAMETER_MANUAL,
     STATUS_POST_PARAMETER_MANUAL,
-    STATUS_ALL_PARAMETER_MANUAL_TABLE
+    STATUS_PUT_PARAMETER_MANUAL,
+    COUNT_PARAMETER_MANUAL,
+    STATUS_ALL_PARAMETER_MANUAL,
+    STATUS_ALL_PARAMETER_MANUAL_TABLE,
+
 } from "../../constants/ActionTypes";
 import axios from 'util/Api'
 
@@ -44,7 +48,7 @@ export const getAllParameterManualTable = ({page, token, name, bulan, tahun, ris
             parameters = 'page='+page+'&name='+name+
                 '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
         }
-        axios.get('api/ingredients?'+parameters+rbobot,{
+        axios.get('api/parameter-manual?'+parameters+rbobot,{
             headers: {
                 Authorization: "Bearer "+token
             }
@@ -97,7 +101,7 @@ export const countAllParameterManual = ({token, name,  bulan, tahun, risk_id,
             parameters = 'name='+name+
                 '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
         }
-        axios.get('api/ingredients?'+parameters+rbobot,{
+        axios.get('api/parameter-manual?'+parameters+rbobot,{
             headers: {
                 Authorization: "Bearer "+token
             }
@@ -119,7 +123,7 @@ export const postParameterManual = ({risk_id, penomoran, name, level, bobot, ind
                                         pr_low, pr_lowtomod, pr_mod, pr_modtohigh, pr_high, token}) => {
     return (dispatch) => {
         dispatch({type: FETCH_START});
-        axios.post('api/ingredients',{
+        axios.post('api/parameter-manual',{
             risk_id: risk_id,
             name: name,
             level: level,
@@ -170,4 +174,63 @@ export const resetPostParameterManual = () => {
     return (dispatch) => {
         dispatch({type: STATUS_POST_PARAMETER_MANUAL, payload: 'STATUS_POST_PARAMETER_MANUAL'});
     }
+}
+
+export const getParameterManual = ({name, induk_id, tahun, token}) => {
+  return (dispatch) => {
+    dispatch({type: FETCH_START});
+
+    axios.get(`api/parameter-manual?name=${name}&induk_id=${induk_id}&tahun=${tahun}`, {
+      headers: {
+          Authorization: "Bearer "+token
+      }
+    }).then((res) => {
+      if(res.data){
+        dispatch({type: GET_PARAMETER_MANUAL, payload: res.data});
+      } else {
+        dispatch({type: FETCH_ERROR, payload: res.error});
+      }
+    }).catch(function (error) {
+      if(error.response) {
+        if(error.response.data.data){
+          dispatch({type: GET_PARAMETER_MANUAL, payload: error.response.data.data});
+        } else {
+          dispatch({type: FETCH_ERROR, payload: error.response.data.message});
+          console.log("Error****: "+error.response.data.message);
+        }
+      }
+    });
+  }
+};
+
+export const updateParameterManual = (updated, altered) => {
+  return (dispatch) => {
+    dispatch({type: FETCH_START});
+    let parameters = '';
+    parameters = `name=${updated.name}&induk_id=${updated.induk_id}&tahun=${updated.tahun}`;
+
+    axios.put('api/parameter-manual?'+parameters, altered, {
+      headers: {
+        Authorization: `Bearer ${updated.token}`
+      }
+    }).then(({data}) => {
+      if(data.data){
+        dispatch({
+          type: PUT_PARAMETER_MANUAL, payload: data.data
+        });
+        dispatch({type: STATUS_PUT_PARAMETER_MANUAL, payload: data.statusCode});
+      } else {
+        dispatch({type: FETCH_ERROR, payload: data.error});
+      }
+    }).catch(function (error){
+      dispatch({type: FETCH_ERROR, payload: error.message});
+      console.log("Error****: "+error.message);
+    })
+  }
+};
+
+export const resetPutParameterManual = () => {
+  return (dispatch) => {
+    dispatch({type: STATUS_PUT_PARAMETER_MANUAL, payload: 'STATUS_PUT_PARAMETER_MANUAL'});
+  }
 }
