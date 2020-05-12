@@ -18,6 +18,7 @@ class EditParameterManual extends React.Component{
             dataoptionsrisk : [],
             dataoptionspringkatrisiko : [],
             datavalue: [],
+            query: [],
             propsid : props.eid,
             statusput:'',
         }
@@ -62,7 +63,7 @@ class EditParameterManual extends React.Component{
             },
         };
 
-        const {dataoptionsrisk,dataoptionspringkatrisiko,dataoptionslevel, datavalue, ewarning} = this.state;
+        const {dataoptionsrisk,dataoptionspringkatrisiko,dataoptionslevel, query, datavalue, ewarning} = this.state;
         const {fetchdata, token} = this.props;
         const {getFieldDecorator} = this.props.form;
 
@@ -87,6 +88,12 @@ class EditParameterManual extends React.Component{
                               pr_mod: values.pr_mod,
                               pr_modtohigh: values.pr_modtohigh,
                               pr_high: values.pr_high
+                            },
+                            query: {
+                              token: token,
+                              name: fetchdata[0].name,
+                              tahun: fetchdata[0].tahun,
+                              induk_id: values.induk_id
                             }
                         });
                     }
@@ -139,7 +146,7 @@ class EditParameterManual extends React.Component{
                                                 initialValue:prop.penomoran,
                                                 rules: [{
                                                     required: true, message: 'Please input penomoran field.'
-                                                },{type:"number", message: 'Input must be number type.'}],
+                                                }],
                                             })(
                                                 <InputNumber id="penomoran" placeholder="Input Penomoran"
                                                              className="w-100"
@@ -321,12 +328,7 @@ class EditParameterManual extends React.Component{
                                      this.setState({
                                          ewarning: false,
                                      });
-                                     this.props.updateParameterManual({
-                                       name: fetchdata[0].name,
-                                       induk_id: fetchdata[0].induk_id,
-                                       tahun: fetchdata[0].tahun,
-                                       token: token
-                                     }, datavalue)
+                                     this.props.updateParameterManual(query, datavalue)
                                  }}
                                  onCancel={() => {
                                    this.setState({

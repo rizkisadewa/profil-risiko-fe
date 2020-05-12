@@ -9,7 +9,7 @@ import {FETCH_ERROR,
     COUNT_PARAMETER_MANUAL,
     STATUS_ALL_PARAMETER_MANUAL,
     STATUS_ALL_PARAMETER_MANUAL_TABLE,
-
+    DELETE_PARAMETER_MANUAL
 } from "../../constants/ActionTypes";
 import axios from 'util/Api'
 
@@ -234,3 +234,28 @@ export const resetPutParameterManual = () => {
     dispatch({type: STATUS_PUT_PARAMETER_MANUAL, payload: 'STATUS_PUT_PARAMETER_MANUAL'});
   }
 }
+
+export const deleteParameterManual = ({name, induk_id, tahun, token}) => {
+  return (dispatch) => {
+    dispatch({type: FETCH_START});
+    axios.delete(`api/parameter-manual?name=${name}&induk_id=${induk_id}&tahun=${tahun}`, {
+      headers: {
+        Authorization: "Bearer "+token
+      }
+    }).then(({data}) => {
+      if (data.statusCode === 200) {
+        dispatch({type: DELETE_PARAMETER_MANUAL, payload: data.statusCode});
+      } else {
+        dispatch({type: FETCH_ERROR, payload: data.error});
+      }
+    }).catch(function (error){
+      if(error.response){
+        if(error.response.data.data){
+          dispatch({type: DELETE_PARAMETER_MANUAL, payload: error.response.data.data});
+        } else {
+          dispatch({type: FETCH_ERROR, payload: error.response.data.message});
+        }
+      }
+    });
+  }
+};

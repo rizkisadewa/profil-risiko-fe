@@ -6,7 +6,7 @@ import IntlMessages from "util/IntlMessages";
 import SaveParameterManual from "./SaveParameterManual";
 import EditParameterManual from "./EditParameterManual";
 
-import {getAllParameterManualTable, countAllParameterManual} from "../../../../appRedux/actions/Parametermanual";
+import {getAllParameterManualTable, countAllParameterManual, deleteParameterManual} from "../../../../appRedux/actions/Parametermanual";
 import {connect} from "react-redux";
 import {SearchOutlined} from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
@@ -44,6 +44,10 @@ class TableParameterManual extends  React.Component{
             edpr_modtohigh : '',
             edpr_high : '',
             edbobot : '',
+            idvalue: '',
+            name: '',
+            tahun: '',
+            induk_id: ''
         }
     }
 
@@ -95,12 +99,12 @@ class TableParameterManual extends  React.Component{
             }
         }
 
-        /*if(nextProps.deleteparametermanual === 200){
+        if(nextProps.deleteparametermanual === 200){
             this.setState({
                 loading:false,
                 deletestatus: nextProps.deleteparametermanual
             });
-        }*/
+        }
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -541,7 +545,8 @@ class TableParameterManual extends  React.Component{
     onCancelDelete = () => {
         this.setState({
             warning: false
-        })
+        });
+        this.onChangePagination(this.state.paging);
     };
 
     clickAddSuccessButton = (status) => {
@@ -634,8 +639,8 @@ class TableParameterManual extends  React.Component{
     };
 
     render() {
-        const {datatable,warning, loading, addbutton, editbutton, eid, fetchdata, paging, lengthdata, parambulan} = this.state;
-        // const {token} = this.props;
+        const {name, tahun, induk_id, datatable,warning, loading, addbutton, editbutton, eid, fetchdata, paging, lengthdata, parambulan} = this.state;
+        const {token} = this.props;
         let {sortedInfo} = this.state;
         sortedInfo = sortedInfo || {};
         const columns = [
@@ -770,7 +775,11 @@ class TableParameterManual extends  React.Component{
                     <Divider type="vertical"/>
                     <span className="gx-link" onClick={() => {
                         this.setState({
-                            warning: true
+                            warning: true,
+                            idvalue: text.id,
+                            name: text.name,
+                            tahun: text.tahun,
+                            induk_id: text.induk_id
                         })
                     }}>Delete</span>
                 </span>
@@ -814,6 +823,11 @@ class TableParameterManual extends  React.Component{
                                                 warning: false,
                                                 deletestatus:''
                                             })
+                                            this.props.deleteParameterManual({
+                                              name: name,
+                                              induk_id: induk_id,
+                                              tahun: tahun,
+                                              token: token})
                                             NotificationManager.success("Data has deleted.", "Success !!");
                                         }}
                                         onCancel={this.onCancelDelete}
@@ -835,8 +849,10 @@ const mapStateToProps = ({auth, parametermanual}) => {
       postparametermanual,
       statusallparametermanualtable,
       countallparametermanual,
-      statusallparametermanual} = parametermanual;
-    return {token,getallparametermanualtable,postparametermanual,statusallparametermanualtable,countallparametermanual,statusallparametermanual};
+      statusallparametermanual,
+      deleteparametermanual
+    } = parametermanual;
+    return {token,getallparametermanualtable,postparametermanual,statusallparametermanualtable,countallparametermanual,statusallparametermanual,deleteparametermanual};
 };
 
-export default connect(mapStateToProps, {getAllParameterManualTable, countAllParameterManual})(TableParameterManual);
+export default connect(mapStateToProps, {getAllParameterManualTable, countAllParameterManual, deleteParameterManual})(TableParameterManual);
