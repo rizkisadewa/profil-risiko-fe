@@ -8,3 +8,4 @@ export * from './Masterparameter';
 export * from './Jenispenilaian';
 export * from './RatioIndikator';
 export * from './Parametermanual';
+export * from './Parameterkuantitatif';

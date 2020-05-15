@@ -38,13 +38,14 @@ class TableJenisRisiko extends React.Component {
             paramjenis : '',
             edname:'',
             edket:'',
-            edjenis:''
+            edjenis:'',
+            jenis: 'PR'
 
         };
     }
 
     componentDidMount(){
-        this.props.getAllRisks({token:this.props.token, page:this.state.paging, jenis:this.state.paramjenis, nama:this.state.paramname, keterangan:this.state.paramket});
+        this.props.getAllRisks({token:this.props.token, page:this.state.paging, jenis:this.state.jenis, nama:this.state.paramname, keterangan:this.state.paramket});
         this.props.getCountRisks({token:this.props.token, jenis:this.state.paramjenis, nama:this.state.paramname, keterangan:this.state.paramket});
     }
 

@@ -2,7 +2,14 @@ import React from "react";
 import {Button, Input, Form, Select, InputNumber} from "antd";
 // import {Button, Input, Form, Select, InputNumber, Spin} from "antd";
 import connect from "react-redux/es/connect/connect";
-import {getAllRisks,getAllPeringkatRisiko,jenisNilaiParam,getAllRatioIndikator} from "../../../../appRedux/actions/index";
+import {
+  getAllRisks,
+  getAllPeringkatRisiko,
+  jenisNilaiParam,
+  getAllRatioIndikator,
+  addParameterKuantitatif,
+  resetAddParameterKuantitatif
+} from "../../../../appRedux/actions/index";
 import SweetAlerts from "react-bootstrap-sweetalert";
 import {Link} from "react-router-dom";
 
@@ -58,6 +65,12 @@ class SaveParameterKuantitatif extends React.Component{
             dataoptions : nextProps.jenisnilaiparam,
             dataoptionsratioindikator : nextProps.getallratioindikator
         });
+
+        if(nextProps.addparameterkuantitatifresult.statusCode === 201 || nextProps.addparameterkuantitatifresult.statusCode === 200){
+          this.props.clickAddSuccessButton(nextProps.addparameterkuantitatifresult.statusCode);
+          // reset all state
+          this.props.resetAddParameterKuantitatif();
+        }
     }
 
     render() {
@@ -97,6 +110,23 @@ class SaveParameterKuantitatif extends React.Component{
                     e.preventDefault();
                     this.props.form.validateFields((err, values) => {
                         if (!err) {
+                          console.log("Values save parameter kuantitatif : ");
+                          console.log(values);
+                          this.props.addParameterKuantitatif(values.token, {
+                            risk_id: values.risk_id,
+                            name: values.name,
+                            level: values.level,
+                            induk_id: values.peringkatrisiko,
+                            penomoran: values.penomoran,
+                            pr_low: values.low,
+                            pr_lowtomod: values.lowtomoderate,
+                            pr_mod: values.moderate,
+                            pr_modtohigh: values.moderatetohigh,
+                            pr_high: values.high,
+                            bobot: values.bobot,
+                            id_indikator_pembilang: values.indikatorpembilang,
+                            id_indikator_penyebut: values.indikatorpenyebut
+                          });
                         }
                     });
                 }}>
@@ -514,9 +544,7 @@ class SaveParameterKuantitatif extends React.Component{
                     </FormItem>
 
                     <FormItem style={{ float : "right", paddingRight : "1rem" }}>
-                        <Link className="ant-btn" to={{pathname:'/bjbs/profilrisiko/parameterkuantitatif', cancelProps:{
-                                propscancel:true
-                            }}}>Cancel</Link>
+                        <Button onClick={this.props.clickCancelAddButton}>Cancel</Button>
                         <Button type="primary" htmlType="submit">Save</Button>
                     </FormItem>
 
@@ -537,14 +565,15 @@ class SaveParameterKuantitatif extends React.Component{
 
 const WrappedSaveParameterKuantitatif = Form.create()(SaveParameterKuantitatif);
 
-const mapStateToProps = ({auth, jenisrisiko, peringkatrisiko, masterparameter, ratioindikator}) => {
+const mapStateToProps = ({auth, jenisrisiko, peringkatrisiko, masterparameter, ratioindikator, parameterkuantitatif}) => {
     const {token} = auth;
     const {getallrisks} = jenisrisiko;
     const {getallperingkatrisiko} = peringkatrisiko;
     const {jenisnilaiparam} = masterparameter;
     const {getallratioindikator} = ratioindikator;
-    return {token,getallrisks,getallperingkatrisiko,jenisnilaiparam,getallratioindikator}
+    const {addparameterkuantitatifresult} = parameterkuantitatif;
+    return {token,getallrisks,getallperingkatrisiko,jenisnilaiparam,getallratioindikator,addparameterkuantitatifresult}
 };
 
-export default connect(mapStateToProps, {getAllRisks,getAllPeringkatRisiko,jenisNilaiParam,getAllRatioIndikator})(WrappedSaveParameterKuantitatif);
+export default connect(mapStateToProps, {getAllRisks,getAllPeringkatRisiko,jenisNilaiParam,getAllRatioIndikator,addParameterKuantitatif, resetAddParameterKuantitatif})(WrappedSaveParameterKuantitatif);
 export {optionsLevel};

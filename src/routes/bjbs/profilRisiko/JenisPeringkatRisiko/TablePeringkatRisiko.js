@@ -410,6 +410,9 @@ class TablePeringkatRisiko extends React.Component{
             ),
         }];
 
+        console.log("ini log columns");
+        console.log(columns);
+
         return (
             <Card title={addbutton ? "Add New Data" : editbutton ? "Edit Data : ID["+eid+"]" : "Read Table Jenis Peringkat Risiko"}>
                 {

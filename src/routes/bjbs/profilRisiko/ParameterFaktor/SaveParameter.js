@@ -9,8 +9,7 @@ const Option = Select.Option;
 const {TextArea} = Input;
 
 const optionsLevel = [
-    {label:"Level Pertama (1)", value:"1"},
-    {label:"Level Kedua (2)", value:"2"}
+    {label:"Level Pertama (1)", value:"1"}
 ];
 
 class SaveParameter extends React.PureComponent{
@@ -112,13 +111,13 @@ class SaveParameter extends React.PureComponent{
                         )}
                     </FormItem>
 
-                    <FormItem {...formItemLayout} label="Parameter">
+                    <FormItem {...formItemLayout} label="Name">
                         {getFieldDecorator('name', {
                             rules: [{
                                 required: true, message: 'Please input parameter field.',
                             }],
                         })(
-                            <TextArea id="name" placeholder="Input Parameter"/>
+                            <TextArea id="name" placeholder="Input Name"/>
                         )}
                     </FormItem>
 

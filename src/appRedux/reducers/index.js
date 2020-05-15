@@ -10,7 +10,7 @@ import Masterparameter from "./Masterparameter";
 import Jenispenilaian from "./Jenispenilaian";
 import Ratioindikator from "./RatioIndikator";
 import Parametermanual from "./Parametermanual";
-
+import Parameterkuantitatif from "./Parameterkuantitatif";
 
 const reducers = combineReducers({
   routing: routerReducer,
@@ -23,7 +23,8 @@ const reducers = combineReducers({
   masterparameter: Masterparameter,
   jenispenilaian: Jenispenilaian,
   ratioindikator: Ratioindikator,
-  parametermanual: Parametermanual
+  parametermanual: Parametermanual,
+  parameterkuantitatif: Parameterkuantitatif
 });
 
 export default reducers;
