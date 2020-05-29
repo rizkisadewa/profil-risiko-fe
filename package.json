@@ -5,6 +5,8 @@
   "dependencies": {
     "@amcharts/amcharts3-react": "^3.1.0",
     "@ant-design/icons": "^4.0.6",
+    "@material-ui/core": "^4.9.14",
+    "@material-ui/icons": "^4.9.1",
     "amcharts3": "^3.21.13",
     "antd": "^3.11.6",
     "antd-theme-webpack-plugin": "^1.1.6",
@@ -37,6 +39,7 @@
     "react-notifications": "^1.4.3",
     "react-placeholder": "^3.0.1",
     "react-redux": "^5.0.7",
+    "react-redux-notify": "^4.2.1",
     "react-router-dom": "^4.3.1",
     "react-router-redux": "^5.0.0-alpha.9",
     "react-scripts": "^2.1.3",

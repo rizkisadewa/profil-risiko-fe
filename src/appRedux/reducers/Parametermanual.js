@@ -5,6 +5,10 @@ import {
     COUNT_PARAMETER_MANUAL,
     STATUS_ALL_PARAMETER_MANUAL,
     GET_ALL_PARAMETER_MANUAL,
+    PUT_PARAMETER_MANUAL,
+    STATUS_PUT_PARAMETER_MANUAL,
+    GET_PARAMETER_MANUAL,
+    DELETE_PARAMETER_MANUAL
 } from "../../constants/ActionTypes";
 
 const initialTable = {
@@ -13,7 +17,11 @@ const initialTable = {
     statuspostparametermanual: STATUS_POST_PARAMETER_MANUAL,
     statusallparametermanualtable: STATUS_ALL_PARAMETER_MANUAL_TABLE,
     statusallparametermanual: STATUS_ALL_PARAMETER_MANUAL,
-    countallparametermanual: COUNT_PARAMETER_MANUAL
+    countallparametermanual: COUNT_PARAMETER_MANUAL,
+    statusputparametermanual: STATUS_PUT_PARAMETER_MANUAL,
+    getparametermanual: GET_PARAMETER_MANUAL,
+    putparametermanual: PUT_PARAMETER_MANUAL,
+    deleteparametermanual: DELETE_PARAMETER_MANUAL
 };
 
 const parametermanual = (state = initialTable, action) => {
@@ -53,6 +61,30 @@ const parametermanual = (state = initialTable, action) => {
                 ...state,
                 countallparametermanual: action.payload,
             };
+        }
+        case PUT_PARAMETER_MANUAL: {
+          return {
+            ...state,
+            putparametermanual: action.payload,
+          }
+        }
+        case STATUS_PUT_PARAMETER_MANUAL: {
+          return {
+            ...state,
+            statusputparametermanual: action.payload,
+          }
+        }
+        case GET_PARAMETER_MANUAL: {
+          return {
+            ...state,
+            getparametermanual: action.payload
+          }
+        }
+        case DELETE_PARAMETER_MANUAL: {
+          return {
+            ...state,
+            deleteparametermanual: action.payload
+          }
         }
         default:
             return state;

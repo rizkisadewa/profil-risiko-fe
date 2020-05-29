@@ -10,8 +10,7 @@ const Option = Select.Option;
 const {TextArea} = Input;
 
 const optionsLevel = [
-    {label:"Level Pertama (1)", value:1},
-    {label:"Level Kedua (2)", value:2}
+    {label:"Level Pertama (1)", value:1}
 ];
 
 class EditParameter extends React.Component{
@@ -220,7 +219,7 @@ class EditParameter extends React.Component{
                 <SweetAlerts show={ewarning}
                              warning
                              showCancel
-                             confirmBtnText={'Yes, updated it!'}
+                             confirmBtnText={'Yes, update it!'}
                              confirmBtnBsStyle="danger"
                              cancelBtnBsStyle="default"
                              title={<IntlMessages id="sweetAlerts.areYouSure"/>}

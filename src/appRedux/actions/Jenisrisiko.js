@@ -17,7 +17,8 @@ import axios from 'util/Api'
 export const getAllRisks = ({token, page, jenis, nama, keterangan}) => {
     return (dispatch) => {
         dispatch({type: FETCH_START});
-        axios.get('api/risks?page='+page+'&jenis='+jenis+'&nama='+nama+'&keterangan='+keterangan,{
+        let url = `api/risks?page=${page}&jenis=PR&nama=${nama}&keterangan=${keterangan}`
+        axios.get(url, {
             headers: {
                 Authorization: "Bearer "+token
             }

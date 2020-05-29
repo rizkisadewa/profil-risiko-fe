@@ -12,6 +12,7 @@ import {
     STATUS_ALL_RATIO_INDIKATOR,
     GET_ALL_RATIO_INDIKATOR_TABLE,
     STATUS_ALL_RATIO_INDIKATOR_TABLE,
+    GET_ALL_RATIO_INDIKATOR_KUALITATIF
 } from "../../constants/ActionTypes";
 import axios from 'util/Api'
 
@@ -25,6 +26,27 @@ export const getAllRatioIndikatortable = ({page, token, jenis}) => {
         }).then(({data}) => {
             if (data.data){
                 dispatch({type: GET_ALL_RATIO_INDIKATOR_TABLE, payload: data.data.rows});
+                dispatch({type: STATUS_ALL_RATIO_INDIKATOR_TABLE, payload: data.statusCode});
+            } else {
+                dispatch({type: FETCH_ERROR, payload: data.error});
+            }
+        }).catch(function (error) {
+            dispatch({type: FETCH_ERROR, payload: error.message});
+            console.log("Error****:", error.message);
+        });
+    }
+};
+
+export const getAllRatioIndikatorForParamterKualitatif = ({token, jenis}) => {
+    return (dispatch) => {
+        dispatch({type: FETCH_START});
+        axios.get(`api/ratio-indikator-table?jenis=${jenis}&id_jenis_nilai=4`,{
+            headers: {
+                Authorization: "Bearer "+token
+            }
+        }).then(({data}) => {
+            if (data.data){
+                dispatch({type: GET_ALL_RATIO_INDIKATOR_KUALITATIF, payload: data.data.rows});
                 dispatch({type: STATUS_ALL_RATIO_INDIKATOR_TABLE, payload: data.statusCode});
             } else {
                 dispatch({type: FETCH_ERROR, payload: data.error});

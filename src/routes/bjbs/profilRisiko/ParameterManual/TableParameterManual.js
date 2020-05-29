@@ -6,7 +6,7 @@ import IntlMessages from "util/IntlMessages";
 import SaveParameterManual from "./SaveParameterManual";
 import EditParameterManual from "./EditParameterManual";
 
-import {getAllParameterManualTable, countAllParameterManual} from "../../../../appRedux/actions/Parametermanual";
+import {getAllParameterManualTable, countAllParameterManual, deleteParameterManual} from "../../../../appRedux/actions/Parametermanual";
 import {connect} from "react-redux";
 import {SearchOutlined} from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
@@ -44,6 +44,10 @@ class TableParameterManual extends  React.Component{
             edpr_modtohigh : '',
             edpr_high : '',
             edbobot : '',
+            idvalue: '',
+            name: '',
+            tahun: '',
+            induk_id: ''
         }
     }
 
@@ -95,25 +99,25 @@ class TableParameterManual extends  React.Component{
             }
         }
 
-        /*if(nextProps.deleteparametermanual === 200){
+        if(nextProps.deleteparametermanual === 200){
             this.setState({
                 loading:false,
                 deletestatus: nextProps.deleteparametermanual
             });
-        }*/
+        }
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        /*if (nextState.deletestatus !== this.state.deletestatus){
+        if (nextState.deletestatus !== this.state.deletestatus){
             this.onRefresh();
             this.setState({
                 deletestatus : nextProps.deleteparametermanual,
             });
-        }*/
+        }
         return true;
     }
 
-    componentDidUpdate(){
+    /* componentDidUpdate(){
         if(this.state.loading){
             setTimeout(() => {
                 this.setState({
@@ -121,7 +125,7 @@ class TableParameterManual extends  React.Component{
                 })
             },300)
         }
-    }
+    } */
 
     handleChange = (pagination, filters, sorter) => {
         console.log('Various parameters', pagination, filters, sorter);
@@ -541,7 +545,8 @@ class TableParameterManual extends  React.Component{
     onCancelDelete = () => {
         this.setState({
             warning: false
-        })
+        });
+        this.onChangePagination(this.state.paging);
     };
 
     clickAddSuccessButton = (status) => {
@@ -587,6 +592,18 @@ class TableParameterManual extends  React.Component{
         }
     };
 
+    clickEditSuccessButton = (status) => {
+        // this.props.getAllFaktorParameterTable({page:this.state.paging, token:this.props.token});
+        this.setState({
+            editbutton: false,
+        });
+
+        if (status === 201 || status === 200) {
+            this.onRefresh();
+            NotificationManager.success("Data has updated.", "Success !!");
+        }
+    }
+
     onChangePagination = page => {
         this.setState({
             paging: page,
@@ -622,8 +639,8 @@ class TableParameterManual extends  React.Component{
     };
 
     render() {
-        const {datatable,warning, loading, addbutton, editbutton, eid, fetchdata, paging, lengthdata, parambulan} = this.state;
-        // const {token} = this.props;
+        const {name, tahun, induk_id, datatable,warning, loading, addbutton, editbutton, eid, fetchdata, paging, lengthdata, parambulan} = this.state;
+        const {token} = this.props;
         let {sortedInfo} = this.state;
         sortedInfo = sortedInfo || {};
         const columns = [
@@ -639,8 +656,14 @@ class TableParameterManual extends  React.Component{
             key:"risk_name",
             sorter: (a, b) => a.risk_name.localeCompare(b.risk_name),
             sortOrder: sortedInfo.columnKey === 'risk_name' && sortedInfo.order
+        },{
+            title:"Name",
+            dataIndex:"name",
+            key:"name",
+            sorter: (a, b) => a.name.localeCompare(b.name),
+            sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order
         }, {
-            title:"Parameter",
+            title:"Induk Parameter",
             dataIndex:"name",
             key:"name",
             ...this.getColumnSearchProps('name'),
@@ -752,7 +775,11 @@ class TableParameterManual extends  React.Component{
                     <Divider type="vertical"/>
                     <span className="gx-link" onClick={() => {
                         this.setState({
-                            warning: true
+                            warning: true,
+                            idvalue: text.id,
+                            name: text.name,
+                            tahun: text.tahun,
+                            induk_id: text.induk_id
                         })
                     }}>Delete</span>
                 </span>
@@ -760,10 +787,11 @@ class TableParameterManual extends  React.Component{
         }];
 
         return (
-            <Card title={addbutton ? "Tambah Parameter & Indikator" : editbutton ? "Edit Data : ID["+eid+"]"  : "Read Table Parameter Manual"}>
+            <Card title={addbutton ? "Tambah Parameter Manual" : editbutton ? "Edit Data : ID["+eid+"]"  : "Read Table Parameter Manual"}>
                 {
                     addbutton ? <SaveParameterManual clickCancelAddButton={this.clickCancelAddButton} clickAddSuccessButton={this.clickAddSuccessButton}/> :
-                    editbutton ? <EditParameterManual clickCancelEditButton={this.clickCancelEditButton} fetchdata={fetchdata} eid={eid} /> :
+                    editbutton ? <EditParameterManual clickCancelEditButton={this.clickCancelEditButton}
+                                                      clickEditSuccessButton={this.clickEditSuccessButton} fetchdata={fetchdata} eid={eid} /> :
                         <>
                             <div className="table-operations">
                                 <Button className="ant-btn ant-btn-danger" onClick={this.onClickCancel}>Back Filter</Button>
@@ -795,6 +823,11 @@ class TableParameterManual extends  React.Component{
                                                 warning: false,
                                                 deletestatus:''
                                             })
+                                            this.props.deleteParameterManual({
+                                              name: name,
+                                              induk_id: induk_id,
+                                              tahun: tahun,
+                                              token: token})
                                             NotificationManager.success("Data has deleted.", "Success !!");
                                         }}
                                         onCancel={this.onCancelDelete}
@@ -811,8 +844,15 @@ class TableParameterManual extends  React.Component{
 
 const mapStateToProps = ({auth, parametermanual}) => {
     const {token} = auth;
-    const {getallparametermanualtable,postparametermanual,statusallparametermanualtable,countallparametermanual,statusallparametermanual} = parametermanual;
-    return {token,getallparametermanualtable,postparametermanual,statusallparametermanualtable,countallparametermanual,statusallparametermanual};
+    const {
+      getallparametermanualtable,
+      postparametermanual,
+      statusallparametermanualtable,
+      countallparametermanual,
+      statusallparametermanual,
+      deleteparametermanual
+    } = parametermanual;
+    return {token,getallparametermanualtable,postparametermanual,statusallparametermanualtable,countallparametermanual,statusallparametermanual,deleteparametermanual};
 };
 
-export default connect(mapStateToProps, {getAllParameterManualTable, countAllParameterManual})(TableParameterManual);
+export default connect(mapStateToProps, {getAllParameterManualTable, countAllParameterManual, deleteParameterManual})(TableParameterManual);

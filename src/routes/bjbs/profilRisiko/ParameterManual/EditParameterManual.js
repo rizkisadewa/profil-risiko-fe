@@ -1,9 +1,10 @@
 import React from "react";
 import connect from "react-redux/es/connect/connect";
 import {Button, Input, Form, Select, InputNumber, Spin} from "antd";
-import {getAllRisks,getAllPeringkatRisiko} from "../../../../appRedux/actions/index";
+import {updateParameterManual, getAllRisks,getAllPeringkatRisiko , resetPutParameterManual, getParameterManual} from "../../../../appRedux/actions/index";
 import {optionsLevel} from "./SaveParameterManual";
 import SweetAlerts from "react-bootstrap-sweetalert";
+import IntlMessages from "util/IntlMessages";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -13,12 +14,13 @@ class EditParameterManual extends React.Component{
         super(props);
         this.state = {
             dataoptionslevel : optionsLevel,
-            basic: false,
             ewarning: false,
             dataoptionsrisk : [],
             dataoptionspringkatrisiko : [],
-            propsvalue : [],
-            propsid : props.eid
+            datavalue: [],
+            query: [],
+            propsid : props.eid,
+            statusput:'',
         }
     }
 
@@ -27,11 +29,26 @@ class EditParameterManual extends React.Component{
         this.props.getAllPeringkatRisiko({page:'', token:this.props.token, description:'', name:'', jenis_nilai:''});
     }
 
+    componentWillMount(){
+      this.props.getParameterManual({
+        name: this.props.name,
+        induk_id: this.props.induk_id,
+        tahun: this.props.tahun,
+        token: this.props.token
+      })
+    }
+
     componentWillReceiveProps(nextProps){
         this.setState({
             dataoptionsrisk : nextProps.getallrisks,
-            dataoptionspringkatrisiko : nextProps.getallperingkatrisiko
+            statusput: nextProps.statusputparametermanual,
+            dataoptionspringkatrisiko : nextProps.getallperingkatrisiko,
         });
+
+        if (nextProps.statusputparametermanual === 200 || nextProps.statusputparametermanual === 201) {
+          this.props.clickEditSuccessButton(nextProps.statusputparametermanual);
+          this.props.resetPutParameterManual();
+        }
     }
 
     render() {
@@ -46,19 +63,42 @@ class EditParameterManual extends React.Component{
             },
         };
 
-        const {dataoptionsrisk,dataoptionspringkatrisiko,dataoptionslevel,basic} = this.state;
+        const {dataoptionsrisk,dataoptionspringkatrisiko,dataoptionslevel, query, datavalue, ewarning} = this.state;
         const {fetchdata, token} = this.props;
         const {getFieldDecorator} = this.props.form;
 
         return (
-            <>
-                <Form onSubmit={(e)=>{
-                    e.preventDefault();
-                    this.props.form.validateFields((err, values) => {
-                        if (!err) {
-                        }
-                    });
-                }}>
+          <>
+            <Form onSubmit={(e)=>{
+                e.preventDefault();
+                console.log(fetchdata);
+                this.props.form.validateFields((err, values) => {
+                    if (!err) {
+                        this.setState({
+                            ewarning: true,
+                            datavalue: {
+                              risk_id: values.risk_id,
+                              penomoran: values.penomoran,
+                              name: values.name,
+                              level: values.level,
+                              induk_id: values.induk_id,
+                              bobot: values.bobot,
+                              pr_low: values.pr_low,
+                              pr_lowtomod: values.pr_lowtomod,
+                              pr_mod: values.pr_mod,
+                              pr_modtohigh: values.pr_modtohigh,
+                              pr_high: values.pr_high
+                            },
+                            query: {
+                              token: token,
+                              name: fetchdata[0].name,
+                              tahun: fetchdata[0].tahun,
+                              induk_id: values.induk_id
+                            }
+                        });
+                    }
+                });
+            }}>
                     {
                         fetchdata.map((prop, index) =>{
                             return (
@@ -106,7 +146,7 @@ class EditParameterManual extends React.Component{
                                                 initialValue:prop.penomoran,
                                                 rules: [{
                                                     required: true, message: 'Please input penomoran field.'
-                                                },{type:"number", message: 'Input must be number type.'}],
+                                                }],
                                             })(
                                                 <InputNumber id="penomoran" placeholder="Input Penomoran"
                                                              className="w-100"
@@ -189,14 +229,6 @@ class EditParameterManual extends React.Component{
                                                              className="w-100"
                                                              min={0}
                                                              max={100}
-                                                             onKeyUp={(e, value)=> {
-                                                                 var val = parseInt(e.target.value);
-                                                                 if (val>100 || val<0){
-                                                                     this.setState({
-                                                                         basic: true,
-                                                                     })
-                                                                 }
-                                                             }}
                                                              formatter={value => `${value}%`}
                                                              parser={value => value.replace('%', '')}
                                                 />
@@ -209,7 +241,7 @@ class EditParameterManual extends React.Component{
                                                 initialValue:prop.pr_low,
                                                 rules: [{
                                                     required: true, message: 'Please input low field.'
-                                                },{type:"number", message: 'Input must be number type.'}],
+                                                }]
                                             })(
                                                 <InputNumber id="pr_low" placeholder="Input Low"
                                                              className="w-100"
@@ -223,7 +255,7 @@ class EditParameterManual extends React.Component{
                                                 initialValue:prop.pr_lowtomod,
                                                 rules: [{
                                                     required: true, message: 'Please input low to moderate field.'
-                                                },{type:"number", message: 'Input must be number type.'}],
+                                                }]
                                             })(
                                                 <InputNumber id="pr_lowtomod" placeholder="Input Low to Moderate"
                                                              className="w-100"
@@ -237,7 +269,7 @@ class EditParameterManual extends React.Component{
                                                 initialValue:prop.pr_mod,
                                                 rules: [{
                                                     required: true, message: 'Please input moderate field.'
-                                                },{type:"number", message: 'Input must be number type.'}],
+                                                }]
                                             })(
                                                 <InputNumber id="pr_mod" placeholder="Input Moderate"
                                                              className="w-100"
@@ -251,7 +283,7 @@ class EditParameterManual extends React.Component{
                                                 initialValue:prop.pr_modtohigh,
                                                 rules: [{
                                                     required: true, message: 'Please input moderate to high field.'
-                                                },{type:"number", message: 'Input must be number type.'}],
+                                                }]
                                             })(
                                                 <InputNumber id="pr_modtohigh" placeholder="Input Moderate to High"
                                                              className="w-100"
@@ -265,7 +297,7 @@ class EditParameterManual extends React.Component{
                                                 initialValue:prop.pr_high,
                                                 rules: [{
                                                     required: true, message: 'Please input high field.'
-                                                },{type:"number", message: 'Input must be number type.'}],
+                                                }]
                                             })(
                                                 <InputNumber id="pr_high" placeholder="Input High"
                                                              className="w-100"
@@ -285,27 +317,42 @@ class EditParameterManual extends React.Component{
                         })
                     }
 
-                    <SweetAlerts show={basic}
-                                 customClass="gx-sweet-alert-top-space"
-                                 title={"Input must be 0-100 %"}
+                    <SweetAlerts show={ewarning}
+                                 warning
+                                 showCancel
+                                 confirmBtnText={'Yes, update it!'}
+                                 confirmBtnBsStyle="danger"
+                                 cancelBtnBsStyle="default"
+                                 title={<IntlMessages id="sweetAlerts.areYouSure"/>}
                                  onConfirm={()=>{
                                      this.setState({
-                                         basic: false,
-                                     })
-                                 }}/>
+                                         ewarning: false,
+                                     });
+                                     this.props.updateParameterManual(query, datavalue)
+                                 }}
+                                 onCancel={() => {
+                                   this.setState({
+                                     ewarning: false
+                                   })
+                                 }}
+                    >
+                         <IntlMessages id="sweetAlerts.youWillNotAble"/>
+                     </SweetAlerts>
                 </Form>
-            </>
+          </>
+
         );
     }
 }
 
 const WrappedEditParameterManual = Form.create()(EditParameterManual);
 
-const mapStateToProps = ({auth, jenisrisiko, peringkatrisiko}) => {
+const mapStateToProps = ({auth, jenisrisiko, peringkatrisiko, parametermanual}) => {
     const {token} = auth;
     const {getallrisks} = jenisrisiko;
     const {getallperingkatrisiko} = peringkatrisiko;
-    return {token,getallrisks,getallperingkatrisiko}
+    const {statusputparametermanual, getparametermanual} = parametermanual;
+    return {token,getallrisks,getallperingkatrisiko, statusputparametermanual, getparametermanual}
 };
 
-export default connect(mapStateToProps, {getAllRisks,getAllPeringkatRisiko})(WrappedEditParameterManual);
+export default connect(mapStateToProps, {updateParameterManual, resetPutParameterManual, getAllRisks,getAllPeringkatRisiko, getParameterManual})(WrappedEditParameterManual);
