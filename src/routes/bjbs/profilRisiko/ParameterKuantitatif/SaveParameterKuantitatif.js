@@ -66,10 +66,19 @@ class SaveParameterKuantitatif extends React.Component{
             dataoptionsratioindikator : nextProps.getallratioindikator
         });
 
-        if(nextProps.addparameterkuantitatifresult.statusCode === 201 || nextProps.addparameterkuantitatifresult.statusCode === 200){
-          this.props.clickAddSuccessButton(nextProps.addparameterkuantitatifresult.statusCode);
-          // reset all state
-          this.props.resetAddParameterKuantitatif();
+        switch(nextProps.addparameterkuantitatifresult.statusCode){
+          case 200:
+          case 201:
+          case 400:
+            this.props.clickAddSuccessButton(
+              nextProps.addparameterkuantitatifresult.statusCode,
+              nextProps.addparameterkuantitatifresult.message
+            );
+            // reset all state
+            this.props.resetAddParameterKuantitatif();
+            break;
+          default:
+            break;
         }
     }
 

@@ -6,11 +6,10 @@ import {
   ADD_PARAMETER_KUANTITATIF,
   UPDATE_PARAMETER_KUANTITATIF,
   GET_PARAMETER_KUANTITATIF,
-  DELETE_PARAMETER_KUANTITATIF,
-  FETCH_ERROR,
-  FETCH_START
+  DELETE_PARAMETER_KUANTITATIF
 } from "../../constants/ActionTypes";
 import axios from 'util/Api';
+import { backendUrl } from "util/Api";
 
 export const fetchAllParameterKuantitatifRequest = () => {
   return {
@@ -129,8 +128,11 @@ export const fetchAllParameterKuantitatif = ({token, page, searchData}) => {
         const errorMsg = error.message;
         dispatch(fetchAllParameterKuantitatifFailure(errorMsg));
       })
+
     }
+
   }
+
 }
 
 export const countAllParameterKuantitatif = (token) => {
@@ -152,29 +154,33 @@ export const countAllParameterKuantitatif = (token) => {
 };
 
 export const addParameterKuantitatif = (token, newParameterKuantitatif) => {
-  return (dispatch) => {
+
+  return async (dispatch) => {
     dispatch(fetchAllParameterKuantitatifRequest());
 
-    axios.post('api/parameter-kuantitatif', newParameterKuantitatif, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: "Bearer "+token
-      }
-    }).then((response) => {
-      const parameterkuantitatif = response.data;
-
-      if(parameterkuantitatif.statusCode === 201 || parameterkuantitatif.statusCode === 200) {
-        dispatch({
-          type: ADD_PARAMETER_KUANTITATIF,
-          payload: parameterkuantitatif
-        });
-      } else {
-        dispatch(fetchAllParameterKuantitatifFailure(parameterkuantitatif.message));
-      }
-    }).catch(function (error){
+    try {
+      const rawResponse = await axios({
+        method: "POST",
+        url: 'api/parameter-kuantitatif',
+        baseURL: backendUrl,
+        headers : {
+          Authorization: `Bearer ${token}`
+        },
+        data: newParameterKuantitatif,
+        validateStatus: function(status) {
+          return status < 500; // Reject only if the status code is greater than or equal to 500
+        }
+      });
+      const response = rawResponse.data;
+      dispatch({
+        type: ADD_PARAMETER_KUANTITATIF,
+        payload: response
+      });
+    } catch(error) {
       const errorMsg = error.message;
       dispatch(fetchAllParameterKuantitatifFailure(errorMsg));
-    });
+    }
+
   }
 }
 
@@ -187,30 +193,35 @@ export const resetAddParameterKuantitatif = () => {
   }
 }
 
-export const updateParameterKuantitatif = (id, token, altered) => {
-  return (dispatch) => {
+export const updateParameterKuantitatif = ({id, token, altered}) => {
+
+  return async (dispatch) => {
     dispatch(fetchAllParameterKuantitatifRequest());
 
-    axios.put('api/parameter-kuantitatif/'+id, altered, {
-      header: {
-        'Content-Type': 'application/json',
-        Authorization: "Bearer "+token
-      }
-    }).then((response) => {
-      const parameterkuantitatif = response.data;
-
-      if(parameterkuantitatif.statusCode === 201 || parameterkuantitatif.statusCode === 200) {
-        dispatch({
-          type: UPDATE_PARAMETER_KUANTITATIF,
-          payload: parameterkuantitatif
-        });
-      } else {
-        dispatch(fetchAllParameterKuantitatifFailure(parameterkuantitatif.message));
-      }
-    }).catch(function (error) {
+    try {
+      const rawResponse = await axios({
+        method: "PUT",
+        url: 'api/parameter-kuantitatif/'+id,
+        baseURL: backendUrl,
+        headers : {
+          Authorization: `Bearer ${token}`
+        },
+        data: altered,
+        validateStatus: function(status) {
+          return status < 500; // Reject only if the status code is greater than or equal to 500
+        }
+      });
+      const response = rawResponse.data;
+      dispatch({
+        type: UPDATE_PARAMETER_KUANTITATIF,
+        payload: response
+      });
+    } catch(error) {
       const errorMsg = error.message;
       dispatch(fetchAllParameterKuantitatifFailure(errorMsg));
-    });
+    }
+
+
   }
 }
 
@@ -249,34 +260,45 @@ export const getParameterKuanttiatif = ({token, id}) => {
 }
 
 export const deleteParameterKuantitatif = (token, id) => {
-  return (dispatch) => {
-    
-    axios.delete('api/parameter-kuantitatif/'+id, {
-      'Content-Type': 'application/json',
-      Authorization: "Bearer "+token
-    }).then((response) => {
-      const parameterkuantitatif = response.data;
+  return async (dispatch, getState) => {
 
-      if(parameterkuantitatif.statusCode === 200 || parameterkuantitatif.statusCode === 201){
+    dispatch(fetchAllParameterKuantitatifRequest());
+
+    try {
+      await axios({
+        method: "DELETE",
+        url: 'api/parameter-kuantitatif/'+id,
+        baseURL: backendUrl,
+        headers : {
+          Authorization: `Bearer ${token}`
+        },
+        validateStatus: function(status) {
+          return status < 500; // Reject only if the status code is greater than or equal to 500
+        }
+      }).then((response) => {
+        const responseData = response.data;
         dispatch({
           type: DELETE_PARAMETER_KUANTITATIF,
-          payload: parameterkuantitatif.message
+          payload: responseData
         });
-      } else {
-        dispatch(fetchAllParameterKuantitatifFailure(parameterkuantitatif.message));
-      }
-    }).catch(function (error) {
+      }).catch((error) => {
+        const errorMsg = error.message;
+        dispatch(fetchAllParameterKuantitatifFailure(errorMsg));
+      })
+
+
+    } catch(error) {
       const errorMsg = error.message;
-      dispatch({type: FETCH_ERROR, payload: errorMsg});
-    })
+      dispatch(fetchAllParameterKuantitatifFailure(errorMsg));
+    }
   }
 }
 
 export const resetDeleteParameterKuantitatif = () => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({
-      type: UPDATE_PARAMETER_KUANTITATIF,
-      payload: ''
+      type: DELETE_PARAMETER_KUANTITATIF,
+      payload: []
     });
   }
 }

@@ -1,24 +1,25 @@
-import React from "react";
-import {Divider, Button, Card, Table, Input, Spin, Form, Pagination} from "antd";
+import React, {useState, useRef} from "react";
+import {Divider, Button, Card, Table, Input, Spin, Pagination} from "antd";
 import SweetAlert from "react-bootstrap-sweetalert";
-import {NotificationContainer, NotificationManager} from "react-notifications";
+import {NotificationManager} from "react-notifications";
 import IntlMessages from "util/IntlMessages";
 import {SearchOutlined} from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
+import moment from "moment";
+import Snackbar from "@material-ui/core/Snackbar";
 
 import SaveParameterKuantitatif from "./SaveParameterKuantitatif";
 import EditParameterKuantitatif from "./EditParameterKuantitatif";
 
 // import moment from 'moment';
-import connect from "react-redux/es/connect/connect";
+import { connect } from 'react-redux';
 import {
   fetchAllParameterKuantitatif,
   countAllParameterKuantitatif,
   deleteParameterKuantitatif,
   resetDeleteParameterKuantitatif
 } from "../../../../appRedux/actions/Parameterkuantitatif";
-
-const { Column, ColumnGroup } = Table;
+import MySnackbarContentWrapper from "../../../../components/Snackbar/SnackBar";
 
 function TableParameterKuantitatif ({
   authData,
@@ -34,7 +35,6 @@ function TableParameterKuantitatif ({
     // state
     const [sortedInfo, setSortedInfo] = React.useState({});
     const [warning, setWarning] = React.useState(false);
-    const [deleteStatus, setDeleteStatus] = React.useState('');
     const [loading, setLoading] = React.useState(false);
     const [addbutton, setaddbutton] = React.useState(false);
     const [editbutton, seteditbutton] = React.useState(false);
@@ -61,13 +61,65 @@ function TableParameterKuantitatif ({
       bobot: ''
     });
 
+    // handling add / edit dialog
+    const [changed, setChanged] = React.useState();
+
+    // useEffect
     React.useEffect(() => {
       fetchAllParameterKuantitatif({
         token: authData.token,
         page: 1
       });
       countAllParameterKuantitatif(authData.token);
-    }, []);
+
+      if(typeof deleteResponse.statusCode !== "undefined"){
+        clickDeleteSuccessButton(deleteResponse.statusCode, deleteResponse.message);
+      }
+
+    }, [changed, deleteResponse]);
+
+    // Snackbar
+    // Ref
+    const queueRef = useRef([]);
+    const [open, setOpen] = useState(false);
+    const [messageInfo, setMessageInfo] = useState(undefined);
+
+    const processQueue = () => {
+      if (queueRef.current.length > 0) {
+        setMessageInfo(queueRef.current.shift());
+        setOpen(true);
+      }
+    }
+
+    const handleSnackBar = (type, message, open) => {
+      queueRef.current.push({
+        message,
+        key: new Date().getTime(),
+        type
+      });
+      if (open) {
+        // immediately begin dismissing current message
+        // to start showing new one
+        setOpen(false);
+      } else {
+        processQueue();
+      }
+    };
+
+    const handleCloseSB = (event, reason) => {
+      if (reason === "clickaway") {
+        return;
+      }
+      setOpen(false);
+    };
+
+    const handleExitedSB = () => {
+      processQueue();
+    };
+
+    const handleChanged = value => {
+      setChanged(value);
+    };
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
 
@@ -115,7 +167,6 @@ function TableParameterKuantitatif ({
     }
 
     const handleChange = (pagination, filters, sorter) => {
-        console.log('Various parameters', pagination, filters, sorter);
         setSortedInfo(sorter);
     };
 
@@ -124,14 +175,14 @@ function TableParameterKuantitatif ({
     };
 
     const onRefresh = () => {
-        setLoading(true)
+        setLoading(true);
+        console.log("**** SET ON FRESH CALLED *****");
         fetchAllParameterKuantitatif({
           token: authData.token,
           page: 1
         });
         countAllParameterKuantitatif(authData.token);
         setLoading(false);
-        resetDeleteParameterKuantitatif();
     };
 
     const clickaddbutton = () => {
@@ -161,34 +212,56 @@ function TableParameterKuantitatif ({
         setLoading(false);
     };
 
-    const clickAddSuccessButton = (status) => {
+    const clickAddSuccessButton = (status, message) => {
       setaddbutton(false);
 
+      // reload the
+      setTimeout(() => handleChanged(moment().unix()), 2000);
+
       if(status === 201 || status === 200) {
-        onRefresh();
-        NotificationManager.success("Data has saved.", "Success !!");
+        // NotificationManager.success("Data has saved.", `${message}`, 1000);
+        handleSnackBar("success", `${message}`);
+      } else {
+        // NotificationManager.error("Data has not saved.", `${message}`, 1000);
+        handleSnackBar("success", `${message}`);
       }
+
     }
 
-    const clickEditSuccessButton = (status) => {
+    const clickEditSuccessButton = (status, message) => {
+
       seteditbutton(false);
 
-      if(status === 201 || status === 200) {
-        onRefresh();
-        NotificationManager.success("Data has updated.", "Success !!");
+      // reload the
+      setTimeout(() => handleChanged(moment().unix()), 2000);
+
+      if(status === 200 || status === 201) {
+        handleSnackBar("success", `${message}`);
+
       } else {
-        onRefresh();
-        NotificationManager.error("Data Error during update.", "Error !!");
+        NotificationManager.error("Data Error during update.", `${message}`, 1000);
+        handleSnackBar("error", `${message}`);
       }
 
       // reset fetch data
       setFetchData([]);
     }
 
-    // Handle Change TextField
-    const searchingHandleChange = name => event => {
-      setSearchTarget({ ...searchTarget, [name]: event.target.value });
-    };
+    const handleDeleteButton = (id, name) => {
+      setWarning(false);
+      deleteParameterKuantitatif(authData.token, id);
+    }
+
+    const clickDeleteSuccessButton = (status, message) => {
+      if(status === 200 || status === 201){
+        console.log("a1");
+        NotificationManager.success(`Success!`, `${message}`, 1500);
+        handleSnackBar("success", `${message}`);
+      } else {
+        NotificationManager.error(`Failed!`, `${message}`, 1500);
+        handleSnackBar("error", `${message}`);
+      }
+    }
 
     // TABLE HANDLE
     // function
@@ -306,7 +379,7 @@ function TableParameterKuantitatif ({
         sorter: (a, b) => a.risk_name.localeCompare(b.risk_id),
         sortOrder: sortedInfo.columnKey === 'risk_name' && sortedInfo.order
     },{
-        title:"Name",
+        title:"Parameter",
         dataIndex:"name",
         key:"name",
         sorter: (a, b) => a.name.localeCompare(b.name),
@@ -386,7 +459,6 @@ function TableParameterKuantitatif ({
         render:(text, record) => (
             <span>
                 <span className="gx-link" onClick={() => {
-                  console.log("text : "+JSON.stringify(text));
                   setEid(text.id);
                   seteditbutton(true);
                   setFetchData([
@@ -402,7 +474,6 @@ function TableParameterKuantitatif ({
                         pr_modtohigh:parseInt(text.pr_modtohigh),
                         pr_high:parseInt(text.pr_high),
                         bobot:parseInt(text.bobot),
-                        level: parseInt(text.level),
                         id_indikator_pembilang:parseInt(text.id_indikator_pembilang),
                         id_indikator_penyebut:parseInt(text.id_indikator_penyebut),
                         penomoran:parseInt(text.penomoran),
@@ -413,7 +484,6 @@ function TableParameterKuantitatif ({
                         induk_id: parseInt(text.induk_id)
                     }
                   ]);
-                  console.log("FetchData : "+fetchdata);
                 }}>Edit</span>
                 <Divider type="vertical"/>
                 <span className="gx-link" onClick={() => {
@@ -430,7 +500,6 @@ function TableParameterKuantitatif ({
                           pr_modtohigh:parseInt(text.pr_modtohigh),
                           pr_high:parseInt(text.pr_high),
                           bobot:parseInt(text.bobot),
-                          level: parseInt(text.level),
                           id_indikator_pembilang:parseInt(text.id_indikator_pembilang),
                           id_indikator_penyebut:parseInt(text.id_indikator_penyebut),
                           penomoran:parseInt(text.penomoran),
@@ -461,8 +530,6 @@ function TableParameterKuantitatif ({
               </div>
           </Spin>
       </Card>
-    ) : parameterKuantitatifData.error ? (
-      <h2>{parameterKuantitatifData.error}</h2>
     ) : (
         <Card title={addbutton ? "Tambah Kuantitatif" : editbutton ? "Edit Data : ID["+eid+"]"  : "Read Table Parameter Kuantitatif"}>
             {
@@ -496,9 +563,13 @@ function TableParameterKuantitatif ({
                                         cancelBtnBsStyle="default"
                                         title={<IntlMessages id="sweetAlerts.areYouSure"/>}
                                         onConfirm={() => {
-                                            setWarning(false);
-                                            deleteParameterKuantitatif(authData.token, fetchdata[0].id);
-                                            NotificationManager.error(`${fetchdata[0].name} has deleted.`);
+                                          // setWarning(false);
+                                          // deleteParameterKuantitatif(authData.token, fetchdata[0].id);
+                                          // setTimeout(() => handleChanged(moment().unix()), 2000);
+                                          // resetDeleteParameterKuantitatif();
+                                          // NotificationManager.success("done", "test", 1500);
+
+                                          handleDeleteButton(fetchdata[0].id, fetchdata[0].name);
                                         }}
                                         onCancel={onCancelDelete}
                             >
@@ -506,7 +577,24 @@ function TableParameterKuantitatif ({
                             </SweetAlert>
                         </>
             }
-            <NotificationContainer/>
+
+            <Snackbar
+              key={messageInfo ? messageInfo.key : undefined}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "right"
+              }}
+              open={open}
+              autoHideDuration={5000}
+              onClose={handleCloseSB}
+              onExited={handleExitedSB}
+            >
+              <MySnackbarContentWrapper
+                onClose={handleCloseSB}
+                variant={messageInfo ? messageInfo.type : undefined}
+                message={messageInfo ? messageInfo.message : undefined}
+              />
+            </Snackbar>
         </Card>
     );
 }
@@ -524,7 +612,7 @@ const mapDispatchToProps = dispatch => {
     fetchAllParameterKuantitatif: (token, page, searchData) => dispatch(fetchAllParameterKuantitatif(token, page, searchData)),
     countAllParameterKuantitatif: (token) => dispatch(countAllParameterKuantitatif(token)),
     deleteParameterKuantitatif: (token, id) => dispatch(deleteParameterKuantitatif(token, id)),
-    resetDeleteParameterKuantitatif: () => resetDeleteParameterKuantitatif()
+    resetDeleteParameterKuantitatif: () => dispatch(resetDeleteParameterKuantitatif()),
   }
 }
 

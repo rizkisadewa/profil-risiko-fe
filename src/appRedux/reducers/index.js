@@ -11,6 +11,8 @@ import Jenispenilaian from "./Jenispenilaian";
 import Ratioindikator from "./RatioIndikator";
 import Parametermanual from "./Parametermanual";
 import Parameterkuantitatif from "./Parameterkuantitatif";
+import Parameterkualitatif from "./Parameterkualitatif";
+import Ingredients from "./Ingredients";
 
 const reducers = combineReducers({
   routing: routerReducer,
@@ -24,7 +26,9 @@ const reducers = combineReducers({
   jenispenilaian: Jenispenilaian,
   ratioindikator: Ratioindikator,
   parametermanual: Parametermanual,
-  parameterkuantitatif: Parameterkuantitatif
+  parameterkuantitatif: Parameterkuantitatif,
+  parameterkualitatif: Parameterkualitatif,
+  ingredients: Ingredients
 });
 
 export default reducers;

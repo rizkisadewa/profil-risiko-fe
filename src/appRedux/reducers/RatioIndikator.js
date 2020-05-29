@@ -9,12 +9,14 @@ import {
     STATUS_ALL_RATIO_INDIKATOR,
     COUNT_RATIO_INDIKATOR,
     STATUS_PUT_RATIO_INDIKATOR,
-    GET_ALL_RATIO_INDIKATOR_TABLE
+    GET_ALL_RATIO_INDIKATOR_TABLE,
+    GET_ALL_RATIO_INDIKATOR_KUALITATIF
 } from "../../constants/ActionTypes";
 
 const initialRatioIndikator = {
     getallratioindikator: GET_ALL_RATIO_INDIKATOR,
     getallratioindikatortable: GET_ALL_RATIO_INDIKATOR_TABLE,
+    getallratioindikatorkualitatif: GET_ALL_RATIO_INDIKATOR_KUALITATIF,
     getratioindikator: GET_RATIO_INDIKATOR,
     postratioindikator: POST_RATIO_INDIKATOR,
     deleteratioindikator: DELETE_RATIO_INDIKATOR,
@@ -94,6 +96,12 @@ const ratioindikator = (state = initialRatioIndikator, action) => {
                 ...state,
                 countratioindikator: action.payload,
             };
+        }
+        case GET_ALL_RATIO_INDIKATOR_KUALITATIF: {
+            return {
+              ...state,
+              getallratioindikatorkualitatif: action.payload
+            }
         }
         default:
             return state;

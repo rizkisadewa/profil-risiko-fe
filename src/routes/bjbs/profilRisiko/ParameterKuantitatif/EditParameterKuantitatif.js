@@ -27,11 +27,8 @@ class EditParameterKuantitatif extends React.Component{
             ewarning: false,
             dataoptionsrisk : [],
             dataoptionspringkatrisiko : [],
-            propsvalue : [],
-            propsid : props.eid,
             dataoptionsratioindikator : [],
             dataoptions : [],
-            query: [],
             datavalue: [],
             //state value
             //state value
@@ -48,7 +45,8 @@ class EditParameterKuantitatif extends React.Component{
             paramrisk_id:'',
             paramjenisnilai:'',
             paramindikatorpembilang:'',
-            paramindikatorpenyebut:''
+            paramindikatorpenyebut:'',
+            statusput : ''
 
         }
     }
@@ -65,14 +63,26 @@ class EditParameterKuantitatif extends React.Component{
             dataoptionsrisk : nextProps.getallrisks,
             dataoptionspringkatrisiko : nextProps.getallperingkatrisiko,
             dataoptions : nextProps.jenisnilaiparam,
-            dataoptionsratioindikator : nextProps.getallratioindikator
+            dataoptionsratioindikator : nextProps.getallratioindikator,
+            statusput: nextProps.updateparameterkuantitatifresult
         });
 
-        if(nextProps.updateparameterkuantitatifresult.statusCode === 200 || nextProps.updateparameterkuantitatifresult.statusCode === 201){
-          this.props.clickEditSuccessButton(nextProps.updateparameterkuantitatifresult.statusCode);
-          // reset all state
-          this.props.resetUpdateParameterKuantitatif();
+        switch(nextProps.updateparameterkuantitatifresult.statusCode){
+          case 200:
+          case 201:
+          case 400:
+            // reset all state
+            this.props.resetUpdateParameterKuantitatif();
+            this.props.clickEditSuccessButton(
+              nextProps.updateparameterkuantitatifresult.statusCode,
+              nextProps.updateparameterkuantitatifresult.message
+            );
+            break;
+          default:
+            break;
         }
+
+
     }
 
     render() {
@@ -93,8 +103,6 @@ class EditParameterKuantitatif extends React.Component{
           ewarning,
           dataoptionsrisk,
           dataoptionspringkatrisiko,
-          propsvalue,
-          propsid,
           dataoptionsratioindikator,
           dataoptions,
           paramparameter,
@@ -111,7 +119,6 @@ class EditParameterKuantitatif extends React.Component{
           paramjenisnilai,
           paramindikatorpembilang,
           paramindikatorpenyebut,
-          query,
           datavalue
         } = this.state;
         const {fetchdata, token} = this.props;
@@ -122,10 +129,6 @@ class EditParameterKuantitatif extends React.Component{
               e.preventDefault();
               this.props.form.validateFields((err, values) => {
                   if (!err) {
-                    console.log("Edit submited : ");
-                    console.log(values);
-                    console.log("Token");
-                    console.log(token);
                     this.setState({
                         ewarning: true,
                         datavalue:values
@@ -550,7 +553,11 @@ class EditParameterKuantitatif extends React.Component{
                                this.setState({
                                    ewarning: false,
                                });
-                               this.props.updateParameterKuantitatif(fetchdata[0].id, token, datavalue)
+                               this.props.updateParameterKuantitatif({
+                                 id: fetchdata[0].id,
+                                 token: token,
+                                 altered: datavalue
+                               })
                            }}
                            onCancel={() => {
                              this.setState({

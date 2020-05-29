@@ -16,12 +16,12 @@ const initialState = {
   addparameterkuantitatifresult: [],
   updateparameterkuantitatifresult: [],
   oneofparameterkuantitatifdata: [],
-  deleteparameterkuantiatatifresult: '',
+  deleteparameterkuantiatatifresult: [],
   getparameterkuantitatif: GET_PARAMETER_KUANTITATIF,
   error: ''
 };
 
-const parameterkuantitatif = (state = initialState, action) => {
+const Parameterkuantitatif = (state = initialState, action) => {
   switch (action.type) {
 
     case COUNT_PARAMETER_KUANTATIF: {
@@ -84,10 +84,12 @@ const parameterkuantitatif = (state = initialState, action) => {
     }
 
     case DELETE_PARAMETER_KUANTITATIF : {
+      var newState = Object.assign({}, state);
       return {
-        ...state,
+        loading: false,
         deleteparameterkuantiatatifresult: action.payload,
-        error: ''
+        error: '',
+        newState: newState
       }
     }
 
@@ -97,4 +99,4 @@ const parameterkuantitatif = (state = initialState, action) => {
   }
 }
 
-export default parameterkuantitatif;
+export default Parameterkuantitatif;
