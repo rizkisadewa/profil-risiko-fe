@@ -17,38 +17,56 @@ export const getAllParameterManualTable = ({page, token, name, bulan, tahun, ris
                                                pr_low, pr_lowtomod, pr_mod, pr_modtohigh, pr_high, bobot}) => {
     return (dispatch) => {
         dispatch({type: FETCH_START});
-        var rbobot = '';
-        /*if (bobot > 0){
-            rbobot = '&bobot='+bobot;
-        }*/
 
-        var parameters = '';
-        if (risk_id > 0 && bulan > 0 && tahun > 0){
-            parameters = 'page='+page+'&risk_id='+risk_id+'&name='+name+'&bulan='+bulan+'&tahun='+tahun+
-                '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
-        } else if (risk_id > 0 && bulan > 0){
-            parameters = 'page='+page+'&risk_id='+risk_id+'&name='+name+'&bulan='+bulan+
-                '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
-        } else if (risk_id > 0 && tahun > 0){
-            parameters = 'page='+page+'&risk_id='+risk_id+'&name='+name+'&tahun='+tahun+
-                '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
-        } else if (bulan > 0 && tahun > 0){
-            parameters = 'page='+page+'&name='+name+'&bulan='+bulan+'&tahun='+tahun+
-                '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
-        } else if (risk_id > 0){
-            parameters = 'page='+page+'&risk_id='+risk_id+'&name='+name+
-                '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
-        } else if (bulan > 0){
-            parameters = 'page='+page+'&name='+name+'&bulan='+bulan+
-                '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
-        } else if (tahun > 0){
-            parameters = 'page='+page+'&name='+name+'&tahun='+tahun+
-                '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
-        } else {
-            parameters = 'page='+page+'&name='+name+
-                '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
+        var searchParameters = '';
+
+        let paramColumn = [
+          "page", "name", "bulan", "tahun", "risk_id",
+          "pr_low", "pr_lowtomod", "pr_mod", "pr_modtohigh", "pr_high", "bobot"
+        ];
+
+        let searchCounter = 0;
+
+        let paramValue = [
+          page, name, bulan, tahun, risk_id,
+          pr_low, pr_lowtomod, pr_mod, pr_modtohigh, pr_high, bobot
+        ];
+
+        // if empty string, then assume undefined
+        if(
+          pr_low === '' ||
+          pr_lowtomod === '' ||
+          pr_mod === '' ||
+          pr_modtohigh === '' ||
+          pr_high === ''
+        ){
+          paramColumn = [
+            "page", "name", "bulan", "tahun", "risk_id", "bobot"
+          ];
+          paramValue = [
+            page, name, bulan, tahun, risk_id, bobot
+          ];
         }
-        axios.get('api/parameter-manual?'+parameters+rbobot,{
+
+        // looping all column
+        for(let i=0;i<paramColumn.length;i++){
+
+          // checking if undefined or null
+          if(typeof paramValue[i] !== 'undefined'){
+            // conditon for number greater than 0
+            if(paramValue[i] !== ""){
+              searchCounter += 1;
+
+              if(searchCounter > 1) {
+                searchParameters += '&';
+              }
+              searchParameters += `${paramColumn[i]}=${paramValue[i]}`;
+
+            }
+          }
+        }
+
+        axios.get('api/parameter-manual?'+searchParameters,{
             headers: {
                 Authorization: "Bearer "+token
             }
@@ -70,38 +88,56 @@ export const countAllParameterManual = ({token, name,  bulan, tahun, risk_id,
                                             pr_low, pr_lowtomod, pr_mod, pr_modtohigh, pr_high, bobot}) => {
     return (dispatch) => {
         dispatch({type: FETCH_START});
-        var rbobot='';
-        /*if (bobot > 0){
-            rbobot = '&bobot='+bobot;
-        }*/
 
-        var parameters = '';
-        if (risk_id > 0 && bulan > 0 && tahun > 0){
-            parameters = 'risk_id='+risk_id+'&name='+name+'&bulan='+bulan+'&tahun='+tahun+
-                '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
-        } else if (risk_id > 0 && bulan > 0){
-            parameters = 'risk_id='+risk_id+'&name='+name+'&bulan='+bulan+
-                '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
-        } else if (risk_id > 0 && tahun > 0){
-            parameters = 'risk_id='+risk_id+'&name='+name+'&tahun='+tahun+
-                '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
-        } else if (bulan > 0 && tahun > 0){
-            parameters = 'name='+name+'&bulan='+bulan+'&tahun='+tahun+
-                '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
-        } else if (risk_id > 0){
-            parameters = 'risk_id='+risk_id+'&name='+name+
-                '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
-        } else if (bulan > 0){
-            parameters = 'name='+name+'&bulan='+bulan+
-                '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
-        } else if (tahun > 0){
-            parameters = 'name='+name+'&tahun='+tahun+
-                '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
-        } else {
-            parameters = 'name='+name+
-                '&pr_low='+pr_low+'&pr_lowtomod='+pr_lowtomod+'&pr_mod='+pr_mod+'&pr_modtohigh='+pr_modtohigh+'&pr_high='+pr_high;
+        var searchParameters = '';
+
+        let paramColumn = [
+          "name", "bulan", "tahun", "risk_id",
+          "pr_low", "pr_lowtomod", "pr_mod", "pr_modtohigh", "pr_high", "bobot"
+        ];
+
+        let searchCounter = 0;
+
+        let paramValue = [
+          name, bulan, tahun, risk_id,
+          pr_low, pr_lowtomod, pr_mod, pr_modtohigh, pr_high, bobot
+        ];
+
+        // if empty string, then assume undefined
+        if(
+          pr_low === '' ||
+          pr_lowtomod === '' ||
+          pr_mod === '' ||
+          pr_modtohigh === '' ||
+          pr_high === ''
+        ){
+          paramColumn = [
+            "name", "bulan", "tahun", "risk_id", "bobot"
+          ];
+          paramValue = [
+            name, bulan, tahun, risk_id, bobot
+          ];
         }
-        axios.get('api/parameter-manual?'+parameters+rbobot,{
+
+        // looping all column
+        for(let i=0;i<paramColumn.length;i++){
+
+          // checking if undefined or null
+          if(typeof paramValue[i] !== 'undefined'){
+            // conditon for number greater than 0
+            if(paramValue[i] !== ""){
+              searchCounter += 1;
+
+              if(searchCounter > 1) {
+                searchParameters += '&';
+              }
+              searchParameters += `${paramColumn[i]}=${paramValue[i]}`;
+
+            }
+          }
+        }
+
+        axios.get('api/parameter-manual?'+searchParameters,{
             headers: {
                 Authorization: "Bearer "+token
             }

@@ -191,14 +191,14 @@ function TableParameterKuantitatif ({
     };
 
     const clickCancelAddButton = event => {
-        console.log("Test Cancel ");
         setaddbutton(false);
         onRefresh();
     };
 
-    const clickCanceleditbutton = () => {
+    const clickCancelEditButton = event => {
         seteditbutton(false)
         onRefresh();
+        setFetchData([]);
     }
 
     const onChangePagination = page => {
@@ -376,7 +376,7 @@ function TableParameterKuantitatif ({
         title:"Risk",
         dataIndex:"risk_name",
         key:"risk_name",
-        sorter: (a, b) => a.risk_name.localeCompare(b.risk_id),
+        sorter: (a, b) => a.risk_name.localeCompare(b.risk_name),
         sortOrder: sortedInfo.columnKey === 'risk_name' && sortedInfo.order
     },{
         title:"Parameter",
@@ -442,18 +442,6 @@ function TableParameterKuantitatif ({
             data+'%'
         )
     }, {
-        title:"Indikator Pembilang",
-        dataIndex:"indikator_pembilang",
-        key:"indikator_pembilang",
-        getColumnSearchProps: getColumnSearchProps('indikator_pembilang'),
-        sorter:(a, b) => a.indikator_pembilang.localeCompare(b.indikator_pembilang)
-    }, {
-        title:"Indikator Penyebut",
-        dataIndex:"indikator_penyebut",
-        key:"indikator_penyebut",
-        getColumnSearchProps: getColumnSearchProps('indikator_penyebut'),
-        sorter:(a, b) => a.indikator_penyebut.localeCompare(b.indikator_penyebut)
-    }, {
         title:"Action",
         key:"action",
         render:(text, record) => (
@@ -461,6 +449,13 @@ function TableParameterKuantitatif ({
                 <span className="gx-link" onClick={() => {
                   setEid(text.id);
                   seteditbutton(true);
+
+                  // sorting value for selected master version in parameter version
+                  let masterversionlistdata = [];
+                  for(let i=0;i<text.parameterVersionList.length;i++){
+                    masterversionlistdata.push(parseInt(text.parameterVersionList[i].mst_version.id));
+                  }
+
                   setFetchData([
                     ...fetchdata,
                     {
@@ -474,16 +469,19 @@ function TableParameterKuantitatif ({
                         pr_modtohigh:parseInt(text.pr_modtohigh),
                         pr_high:parseInt(text.pr_high),
                         bobot:parseInt(text.bobot),
-                        id_indikator_pembilang:parseInt(text.id_indikator_pembilang),
-                        id_indikator_penyebut:parseInt(text.id_indikator_penyebut),
                         penomoran:parseInt(text.penomoran),
                         level:text.level,
                         indukparameter:text.indukparameter,
                         risk_id: parseInt(text.risk_id),
                         jenis_nilai_id:parseInt(text.jenis_nilai_id),
-                        induk_id: parseInt(text.induk_id)
+                        induk_id: parseInt(text.induk_id),
+                        parameter_faktor_id: parseInt(text.parameter_faktor_id),
+                        masterversionlist: masterversionlistdata,
+                        ratioindikatorformula: text.ratioIndikatorFormulaList
                     }
                   ]);
+
+                  console.log(text);
                 }}>Edit</span>
                 <Divider type="vertical"/>
                 <span className="gx-link" onClick={() => {
@@ -534,7 +532,7 @@ function TableParameterKuantitatif ({
         <Card title={addbutton ? "Tambah Kuantitatif" : editbutton ? "Edit Data : ID["+eid+"]"  : "Read Table Parameter Kuantitatif"}>
             {
                 addbutton ? <SaveParameterKuantitatif clickCancelAddButton={clickCancelAddButton} clickAddSuccessButton={clickAddSuccessButton}/> :
-                editbutton ? <EditParameterKuantitatif clickCanceleditbutton={clickCanceleditbutton}
+                editbutton ? <EditParameterKuantitatif clickCancelEditButton={clickCancelEditButton}
                                                         clickEditSuccessButton={clickEditSuccessButton} fetchdata={fetchdata} eid={eid} /> :
                         <>
                             <div className="table-operations">

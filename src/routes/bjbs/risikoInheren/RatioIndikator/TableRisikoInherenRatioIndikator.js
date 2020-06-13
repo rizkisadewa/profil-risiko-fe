@@ -5,13 +5,17 @@ import {Divider, Button, Card, Table, Input, Pagination, Spin} from "antd";
 import IntlMessages from "util/IntlMessages";
 import Highlighter from "react-highlight-words";
 import {SearchOutlined} from "@ant-design/icons";
-import SavePeringkatRisiko from "./SavePeringkatRisiko";
-import EditPeringkatRisiko from "./EditPeringkatRisiko";
+import SaveRisikoInherenRatioIndikator from "./SaveRisikoInherenRatioIndikator";
+import EditRisikoInherenRatioIndikator from "./EditRisikoInherenRatioIndikator";
 
 import {connect} from "react-redux";
-import {getAllPeringkatRisiko, deletePeringkatRisiko, countAllPeringkatRisiko} from "../../../../appRedux/actions/Peringkatrisiko";
+import {
+  getAllRisikoInherenRatioIndikator,
+  deleteRisikoInherenRatioIndikator,
+  countAllRisikoInherenRatioIndikator
+} from "../../../../appRedux/actions/RisikoInherenRatioIndikator";
 
-class TablePeringkatRisiko extends React.Component{
+class TableRisikoInherenRatioIndikator extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
@@ -26,8 +30,8 @@ class TablePeringkatRisiko extends React.Component{
             fetchdata: [],
             datatable: [],
             idvalue:'',
-            statusallperingkatrisikotable:'',
-            statusallperingkatrisiko:'',
+            statusallrisikoinherenratioindikatortable:'',
+            statusallrisikoinherenratioindikator:'',
             loading: false,
             lengthdata:0,
             deletestatus:'',
@@ -41,31 +45,31 @@ class TablePeringkatRisiko extends React.Component{
     }
 
     componentDidMount(){
-        this.props.getAllPeringkatRisiko({page:this.state.paging, token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
-        this.props.countAllPeringkatRisiko({token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
+        this.props.getAllRisikoInherenRatioIndikator({page:this.state.paging, token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
+        this.props.countAllRisikoInherenRatioIndikator({token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
     }
 
     componentWillReceiveProps(nextProps){
         this.setState({
-            statusallperingkatrisikotable : nextProps.statusallperingkatrisikotable,
-            statusallperingkatrisiko : nextProps.statusallperingkatrisiko
+            statusallrisikoinherenratioindikatortable : nextProps.statusallrisikoinherenratioindikatortable,
+            statusallrisikoinherenratioindikator : nextProps.statusallrisikoinherenratioindikator
         });
 
-        if (nextProps.statusallperingkatrisikotable === 200 && nextProps.statusallperingkatrisiko === 200){
-            if (nextProps.countperingkatrisiko){
-                if (nextProps.getallperingkatrisiko.rows){
+        if (nextProps.statusallrisikoinherenratioindikatortable === 200 && nextProps.statusallrisikoinherenratioindikator === 200){
+            if (nextProps.countrisikoinherenratioindikator){
+                if (nextProps.getallrisikoinherenratioindikator.rows){
                     this.setState({
                         loading:false,
-                        lengthdata:nextProps.countperingkatrisiko,
+                        lengthdata:nextProps.countrisikoinherenratioindikator,
                         deletestatus:'',
                         datatable : [],
                     });
                 } else {
                     this.setState({
                         loading:false,
-                        lengthdata:nextProps.countperingkatrisiko,
+                        lengthdata:nextProps.countrisikoinherenratioindikator,
                         deletestatus:'',
-                        datatable : nextProps.getallperingkatrisiko,
+                        datatable : nextProps.getallrisikoinherenratioindikator,
                     });
                 }
             } else {
@@ -78,10 +82,10 @@ class TablePeringkatRisiko extends React.Component{
             }
         }
 
-        if (nextProps.deleteperingkatrisiko === 200){
+        if (nextProps.deleterisikoinherenratioindikator === 200){
             this.setState({
                 loading:false,
-                deletestatus: nextProps.deleteperingkatrisiko
+                deletestatus: nextProps.deleterisikoinherenratioindikator
             });
         }
     }
@@ -90,7 +94,7 @@ class TablePeringkatRisiko extends React.Component{
         if (nextState.deletestatus !== this.state.deletestatus){
             this.onRefresh();
             this.setState({
-                deletestatus : nextProps.deleteperingkatrisiko
+                deletestatus : nextProps.deleterisikoinherenratioindikator
             })
         }
         return true;
@@ -196,8 +200,8 @@ class TablePeringkatRisiko extends React.Component{
                 loading:true,
                 edname: parameters
             });
-            this.props.getAllPeringkatRisiko({page:1, token:this.props.token, description:this.state.description, name:parameters, jenis_nilai:this.state.paramjenisnilai});
-            this.props.countAllPeringkatRisiko({token:this.props.token, description:this.state.description, name:parameters, jenis_nilai:this.state.paramjenisnilai});
+            this.props.getAllRisikoInherenRatioIndikator({page:1, token:this.props.token, description:this.state.description, name:parameters, jenis_nilai:this.state.paramjenisnilai});
+            this.props.countAllRisikoInherenRatioIndikator({token:this.props.token, description:this.state.description, name:parameters, jenis_nilai:this.state.paramjenisnilai});
         }
 
         if (dataIndex === 'description'){
@@ -211,8 +215,8 @@ class TablePeringkatRisiko extends React.Component{
                 loading:true,
                 eddesc:paramdesc
             });
-            this.props.getAllPeringkatRisiko({page:1, token:this.props.token, description:paramdesc, name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
-            this.props.countAllPeringkatRisiko({token:this.props.token, description:paramdesc, name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
+            this.props.getAllRisikoInherenRatioIndikator({page:1, token:this.props.token, description:paramdesc, name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
+            this.props.countAllRisikoInherenRatioIndikator({token:this.props.token, description:paramdesc, name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
         }
 
         if (dataIndex === 'jenis_nilai'){
@@ -226,8 +230,8 @@ class TablePeringkatRisiko extends React.Component{
                 loading:true,
                 edjenisnilai:paramjenisnilai
             });
-            this.props.getAllPeringkatRisiko({page:1, token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:paramjenisnilai});
-            this.props.countAllPeringkatRisiko({token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:paramjenisnilai});
+            this.props.getAllRisikoInherenRatioIndikator({page:1, token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:paramjenisnilai});
+            this.props.countAllRisikoInherenRatioIndikator({token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:paramjenisnilai});
         }
     };
 
@@ -243,8 +247,8 @@ class TablePeringkatRisiko extends React.Component{
                 loading:true,
                 edname:''
             });
-            this.props.getAllPeringkatRisiko({page:1, token:this.props.token, description:this.state.description, name:'', jenis_nilai:this.state.paramjenisnilai});
-            this.props.countAllPeringkatRisiko({token:this.props.token, description:this.state.description, name:'', jenis_nilai:this.state.paramjenisnilai});
+            this.props.getAllRisikoInherenRatioIndikator({page:1, token:this.props.token, description:this.state.description, name:'', jenis_nilai:this.state.paramjenisnilai});
+            this.props.countAllRisikoInherenRatioIndikator({token:this.props.token, description:this.state.description, name:'', jenis_nilai:this.state.paramjenisnilai});
         }
 
         if (dataIndex === 'description'){
@@ -253,8 +257,8 @@ class TablePeringkatRisiko extends React.Component{
                 loading:true,
                 eddesc:''
             });
-            this.props.getAllPeringkatRisiko({page:1, token:this.props.token, description:'', name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
-            this.props.countAllPeringkatRisiko({token:this.props.token, description:'', name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
+            this.props.getAllRisikoInherenRatioIndikator({page:1, token:this.props.token, description:'', name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
+            this.props.countAllRisikoInherenRatioIndikator({token:this.props.token, description:'', name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
         }
 
         if (dataIndex === 'jenis_nilai'){
@@ -263,8 +267,8 @@ class TablePeringkatRisiko extends React.Component{
                 loading:true,
                 edjenisnilai:''
             });
-            this.props.getAllPeringkatRisiko({page:1, token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:''});
-            this.props.countAllPeringkatRisiko({token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:''});
+            this.props.getAllRisikoInherenRatioIndikator({page:1, token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:''});
+            this.props.countAllRisikoInherenRatioIndikator({token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:''});
         }
     };
 
@@ -322,8 +326,8 @@ class TablePeringkatRisiko extends React.Component{
             paging: page,
             loading:true
         });
-        this.props.getAllPeringkatRisiko({page:page, token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
-        this.props.countAllPeringkatRisiko({token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
+        this.props.getAllRisikoInherenRatioIndikator({page:page, token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
+        this.props.countAllRisikoInherenRatioIndikator({token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
     }
 
     onRefresh = () => {
@@ -331,8 +335,8 @@ class TablePeringkatRisiko extends React.Component{
             loading:true,
             paging:1,
         });
-        this.props.getAllPeringkatRisiko({page:1, token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
-        this.props.countAllPeringkatRisiko({token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
+        this.props.getAllRisikoInherenRatioIndikator({page:1, token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
+        this.props.countAllRisikoInherenRatioIndikator({token:this.props.token, description:this.state.description, name:this.state.paramname, jenis_nilai:this.state.paramjenisnilai});
     }
 
     render() {
@@ -414,12 +418,12 @@ class TablePeringkatRisiko extends React.Component{
         console.log(columns);
 
         return (
-            <Card title={addbutton ? "Add New Data" : editbutton ? "Edit Data : ID["+eid+"]" : "Read Table Jenis Peringkat Risiko"}>
+            <Card title={addbutton ? "Add New Data" : editbutton ? "Edit Data : ID["+eid+"]" : "Read Table Ratio Indikator"}>
                 {
                     addbutton ?
-                        <SavePeringkatRisiko clickCancelAddButton={this.clickCancelAddButton} clickAddSuccessButton={this.clickAddSuccessButton}/> :
+                        <SaveRisikoInherenRatioIndikator clickCancelAddButton={this.clickCancelAddButton} clickAddSuccessButton={this.clickAddSuccessButton}/> :
                     editbutton ?
-                        <EditPeringkatRisiko clickCancelEditButton={this.clickCancelEditButton}
+                        <EditRisikoInherenRatioIndikator clickCancelEditButton={this.clickCancelEditButton}
                                              clickEditSuccessButton={this.clickEditSuccessButton} fetchdata={fetchdata} eid={eid}
                         /> :
                     <>
@@ -453,7 +457,7 @@ class TablePeringkatRisiko extends React.Component{
                                             warning: false,
                                             deletestatus:''
                                         })
-                                        this.props.deletePeringkatRisiko({id:idvalue, token:token});
+                                        this.props.deleteRisikoInherenRatioIndikator({id:idvalue, token:token});
                                         NotificationManager.success("Data has deleted.", "Success !!");
                                     }}
                                     onCancel={this.onCancelDelete}
@@ -468,15 +472,15 @@ class TablePeringkatRisiko extends React.Component{
     }
 }
 
-const mapStateToProps = ({auth, peringkatrisiko}) => {
+const mapStateToProps = ({auth, risikoinherenratioindikator}) => {
     const {token} = auth;
-    const {getallperingkatrisiko,
-        getperingkatrisiko,
-        statusallperingkatrisikotable,
-        countperingkatrisiko,
-        statusallperingkatrisiko,
-        deleteperingkatrisiko} = peringkatrisiko;
-    return {token,getallperingkatrisiko,getperingkatrisiko,statusallperingkatrisikotable,countperingkatrisiko,statusallperingkatrisiko,deleteperingkatrisiko};
+    const {getallrisikoinherenratioindikator,
+        getrisikoinherenratioindikator,
+        statusallrisikoinherenratioindikatortable,
+        countrisikoinherenratioindikator,
+        statusallrisikoinherenratioindikator,
+        deleterisikoinherenratioindikator} = risikoinherenratioindikator;
+    return {token,getallrisikoinherenratioindikator,getrisikoinherenratioindikator,statusallrisikoinherenratioindikatortable,countrisikoinherenratioindikator,statusallrisikoinherenratioindikator,deleterisikoinherenratioindikator};
 };
 
-export default connect(mapStateToProps, {getAllPeringkatRisiko, deletePeringkatRisiko, countAllPeringkatRisiko})(TablePeringkatRisiko);
+export default connect(mapStateToProps, {getAllRisikoInherenRatioIndikator, deleteRisikoInherenRatioIndikator, countAllRisikoInherenRatioIndikator})(TableRisikoInherenRatioIndikator);

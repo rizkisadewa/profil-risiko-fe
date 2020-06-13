@@ -3,17 +3,17 @@ import {Col, Row} from "antd";
 
 import IntlMessages from "util/IntlMessages";
 
-import TablePeringkatRisiko from "./TablePeringkatRisiko";
+import TableRisikoInherenRatioIndikator from "./TableRisikoInherenRatioIndikator";
 
-const JenisPeringkatRisiko = () => {
+const RisikoInherenRatioIndikator = () => {
     return (
         <div>
-            <h2 className="title gx-mb-4"><IntlMessages id="sidebar.profilrisiko.peringkatrisiko"/></h2>
+            <h2 className="title gx-mb-4"><IntlMessages id="sidebar.risikoinheren.ratioindikator"/></h2>
 
             <div className="gx-d-flex justify-content-center">
                 <Row className={"w-100"}>
                     <Col span={24}>
-                        <TablePeringkatRisiko/>
+                        <TableRisikoInherenRatioIndikator/>
                     </Col>
                 </Row>
             </div>
@@ -22,4 +22,4 @@ const JenisPeringkatRisiko = () => {
     );
 };
 
-export default JenisPeringkatRisiko;
+export default RisikoInherenRatioIndikator;

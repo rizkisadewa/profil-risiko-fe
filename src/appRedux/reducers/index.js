@@ -13,6 +13,10 @@ import Parametermanual from "./Parametermanual";
 import Parameterkuantitatif from "./Parameterkuantitatif";
 import Parameterkualitatif from "./Parameterkualitatif";
 import Ingredients from "./Ingredients";
+import RisikoInherenRatioIndikator from "./RisikoInherenRatioIndikator";
+import Masterversion from "./Masterversion";
+import Parameterversion from "./Parameterversion";
+import Ratioindikatorformula from "./Ratioindikatorformula";
 
 const reducers = combineReducers({
   routing: routerReducer,
@@ -28,7 +32,11 @@ const reducers = combineReducers({
   parametermanual: Parametermanual,
   parameterkuantitatif: Parameterkuantitatif,
   parameterkualitatif: Parameterkualitatif,
-  ingredients: Ingredients
+  ingredients: Ingredients,
+  risikoinherenratioindikator: RisikoInherenRatioIndikator,
+  masterversion: Masterversion,
+  parameterversion: Parameterversion,
+  ratioindikatorformula: Ratioindikatorformula
 });
 
 export default reducers;

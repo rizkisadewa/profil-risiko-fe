@@ -15,7 +15,7 @@ const optionsPenilaian = [
     {text:"Kualitatif", value:"3"}
 ];
 
-class EditPeringkatRisiko extends React.Component{
+class EditRisikoInherenRatioIndikator extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
@@ -191,7 +191,7 @@ class EditPeringkatRisiko extends React.Component{
 
 }
 
-const WrapperdEditPeringkatRisiko = Form.create()(EditPeringkatRisiko);
+const WrapperdEditRisikoInherenRatioIndikator = Form.create()(EditRisikoInherenRatioIndikator);
 
 const mapStateToProps = ({auth, peringkatrisiko, masterparameter}) => {
     const {token} = auth;
@@ -201,4 +201,4 @@ const mapStateToProps = ({auth, peringkatrisiko, masterparameter}) => {
 
 };
 
-export default connect(mapStateToProps, {updatePeringkatRisiko,getAllPeringkatRisiko,resetPutPeringkatRisiko,getPeringkatRisiko,jenisNilaiParam})(WrapperdEditPeringkatRisiko);
+export default connect(mapStateToProps, {updatePeringkatRisiko,getAllPeringkatRisiko,resetPutPeringkatRisiko,getPeringkatRisiko,jenisNilaiParam})(WrapperdEditRisikoInherenRatioIndikator);

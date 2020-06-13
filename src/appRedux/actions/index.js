@@ -11,3 +11,7 @@ export * from './Parametermanual';
 export * from './Parameterkuantitatif';
 export * from './Parameterkualitatif';
 export * from './Ingredients';
+export * from './RisikoInherenRatioIndikator';
+export * from './Masterversion';
+export * from './Parameterversion';
+export * from './Ratioindikatorformula';

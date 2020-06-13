@@ -10,6 +10,10 @@ import {
 } from "../../constants/ActionTypes";
 import axios from 'util/Api';
 import { backendUrl } from "util/Api";
+import {
+  addParameterversion,
+  resetAddParameterversion,
+} from "./Parameterversion";
 
 export const fetchAllParameterKuantitatifRequest = () => {
   return {
@@ -159,6 +163,24 @@ export const addParameterKuantitatif = (token, newParameterKuantitatif) => {
     dispatch(fetchAllParameterKuantitatifRequest());
 
     try {
+
+      let bodyData = {
+        risk_id : newParameterKuantitatif.risk_id,
+        name : newParameterKuantitatif.name,
+        level : newParameterKuantitatif.level,
+        induk_id : newParameterKuantitatif.induk_id,
+        penomoran : newParameterKuantitatif.penomoran,
+        pr_low : newParameterKuantitatif.pr_low,
+        pr_lowtomod : newParameterKuantitatif.pr_lowtomod,
+        pr_mod : newParameterKuantitatif.pr_mod,
+        pr_modtohigh : newParameterKuantitatif.pr_modtohigh,
+        pr_high : newParameterKuantitatif.pr_high,
+        bobot : newParameterKuantitatif.bobot,
+        jenis_nilai_id: newParameterKuantitatif.jenis_nilai_id,
+        parameter_faktor_id: newParameterKuantitatif.parameter_faktor_id,
+        ratio_indikator_formula : newParameterKuantitatif.ratio_indikator_formula
+      }
+
       const rawResponse = await axios({
         method: "POST",
         url: 'api/parameter-kuantitatif',
@@ -166,7 +188,7 @@ export const addParameterKuantitatif = (token, newParameterKuantitatif) => {
         headers : {
           Authorization: `Bearer ${token}`
         },
-        data: newParameterKuantitatif,
+        data: bodyData,
         validateStatus: function(status) {
           return status < 500; // Reject only if the status code is greater than or equal to 500
         }
@@ -176,6 +198,24 @@ export const addParameterKuantitatif = (token, newParameterKuantitatif) => {
         type: ADD_PARAMETER_KUANTITATIF,
         payload: response
       });
+
+      // if success
+      if(response.statusCode === 200 || response.statusCode === 201){
+
+        // update master version
+        if(newParameterKuantitatif.masterversiondata.length > 0){
+          // add all mater version list to parameter version
+          for(let j=0;j<newParameterKuantitatif.masterversiondata.length;j++){
+            dispatch(addParameterversion(token, {
+              ingredients_id: response.data.id,
+              version_id: newParameterKuantitatif.masterversiondata[j].id
+            }))
+            dispatch(resetAddParameterversion())
+          }
+        }
+      }
+
+
     } catch(error) {
       const errorMsg = error.message;
       dispatch(fetchAllParameterKuantitatifFailure(errorMsg));
@@ -284,7 +324,7 @@ export const deleteParameterKuantitatif = (token, id) => {
       }).catch((error) => {
         const errorMsg = error.message;
         dispatch(fetchAllParameterKuantitatifFailure(errorMsg));
-      })
+      });
 
 
     } catch(error) {

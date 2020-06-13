@@ -2,18 +2,38 @@ import React from "react";
 import connect from "react-redux/es/connect/connect";
 import {Button, Input, Form, Select, InputNumber, Spin} from "antd";
 import {
+  PlusCircleFilled,
+  MinusCircleFilled
+} from '@ant-design/icons';
+import {
   getAllRisks,
   getAllPeringkatRisiko,
   jenisNilaiParam,
   getAllRatioIndikator,
   updateParameterKuantitatif,
   resetUpdateParameterKuantitatif,
-  fetchAllParameterKuantitatif
+  fetchAllParameterKuantitatif,
+  fetchAllIngredients,
+  fetchAllMasterVersion,
+  getAllFaktorParameterDataOption,
+  fetchAllRatioIndikatorFormula
 } from "../../../../appRedux/actions/index";
 import {optionsLevel} from "./SaveParameterKuantitatif";
 import SweetAlerts from "react-bootstrap-sweetalert";
-import {Link} from "react-router-dom";
 import IntlMessages from "util/IntlMessages";
+import Grid from "@material-ui/core/Grid";
+
+const variableType = [
+    {label:"Independent Variable", value:"independentvariable"},
+    {label:"Dependent Variable", value:"dependentvariable"}
+];
+
+const operatorOption = [
+    {label:"Tambah (+)", value:"+"},
+    {label:"Bagi (:)", value:"/"},
+    {label:"Kurang (-)", value:"-"},
+    {label:"Kali (x)", value:"*"}
+];
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -23,6 +43,7 @@ class EditParameterKuantitatif extends React.Component{
         super(props);
         this.state = {
             dataoptionslevel : optionsLevel,
+            dataoptionsvariabletype : variableType,
             basic: false,
             ewarning: false,
             dataoptionsrisk : [],
@@ -30,7 +51,14 @@ class EditParameterKuantitatif extends React.Component{
             dataoptionsratioindikator : [],
             dataoptions : [],
             datavalue: [],
-            //state value
+            dataoptionsparameterfaktor: [],
+            dataoptionsmasterversion: [],
+            masterversionlist: [],
+            dataoptionsindukparameter: [],
+            ratioindikatorcalculation: [],
+            ratioindikatorcalculationtobeedit: [],
+            fetchdataratioindikatorformula: [],
+            fetchcountallratioindikatorformula: [],
             //state value
             paramparameter:'',
             paramlow:'',
@@ -42,11 +70,11 @@ class EditParameterKuantitatif extends React.Component{
             parampenomoran:'',
             paramlevel:'',
             paramindukparameter:'',
-            paramrisk_id:'',
             paramjenisnilai:'',
             paramindikatorpembilang:'',
             paramindikatorpenyebut:'',
-            statusput : ''
+            statusput : '',
+            numChildren : 0
 
         }
     }
@@ -56,6 +84,14 @@ class EditParameterKuantitatif extends React.Component{
         this.props.getAllPeringkatRisiko({page:'', token:this.props.token, description:'', name:'', jenis_nilai:''});
         this.props.jenisNilaiParam({token:this.props.token});
         this.props.getAllRatioIndikator({token:this.props.token});
+        this.props.fetchAllMasterVersion({token: this.props.token});
+        this.props.getAllFaktorParameterDataOption({token: this.props.token});
+        this.props.fetchAllIngredients({token: this.props.token, searchData: {
+          jenis: 'PR'
+        }});
+        this.props.fetchAllRatioIndikatorFormula({token: this.props.token, searchData: {
+          ingredients_id: this.props.fetchdata[0].id
+        }})
     }
 
     componentWillReceiveProps(nextProps){
@@ -64,7 +100,12 @@ class EditParameterKuantitatif extends React.Component{
             dataoptionspringkatrisiko : nextProps.getallperingkatrisiko,
             dataoptions : nextProps.jenisnilaiparam,
             dataoptionsratioindikator : nextProps.getallratioindikator,
-            statusput: nextProps.updateparameterkuantitatifresult
+            statusput: nextProps.updateparameterkuantitatifresult,
+            dataoptionsparameterfaktor: nextProps.getallparameterfaktor,
+            dataoptionsmasterversion : nextProps.masterversionsdata,
+            dataoptionsindukparameter: nextProps.ingredientsdata,
+            ratioindikatorcalculation: nextProps.ratioindikatorformuladata,
+            numChildren: nextProps.countallratioindikatorformula - 1
         });
 
         switch(nextProps.updateparameterkuantitatifresult.statusCode){
@@ -81,8 +122,111 @@ class EditParameterKuantitatif extends React.Component{
           default:
             break;
         }
+    }
 
+    onAddChild = () => {
 
+      this.setState(prevState => ({
+        ...prevState,
+        numChildren: this.state.numChildren + 1
+      }));
+
+      // data for calculation
+      let dataBody = {};
+      dataBody.ingredients_id = this.props.fetchdata[0].id;
+      dataBody.ratio_indikator_id = "";
+      dataBody.seq = this.state.numChildren+1;
+      dataBody.operations = "";
+      this.state.ratioindikatorcalculation.push(dataBody);
+      dataBody = {};
+      console.log(this.state.ratioindikatorcalculation)
+    }
+
+    onRemoveChild = () => {
+      if(this.state.numChildren > 0){
+        this.setState(prevState => ({
+          ...prevState,
+          numChildren: this.state.numChildren - 1
+        }));
+        console.log(this.state.numChildren);
+
+        // data for calculation
+        this.state.ratioindikatorcalculation.pop();
+      }
+    }
+
+    // ==== ON CHANGE INIT RATIO INDIKATOR ====
+    onAddInitRIVariableType = (value) => {
+
+      // clonning and update
+      const newArray = Array.from(this.state.ratioindikatorcalculation);
+      newArray[0].operations = value;
+
+      this.setState(prevState => ({
+        ...prevState,
+        ratioindikatorcalculations: newArray
+      }));
+
+    }
+
+    onAddInitRIIdIndikator = (value) => {
+
+      // clonning and update
+      const newArray = Array.from(this.state.ratioindikatorcalculation);
+      newArray[0].ratio_indikator_id = value;
+
+      this.setState(prevState => ({
+        ...prevState,
+        ratioindikatorcalculations: newArray
+      }));
+    }
+
+    // ==== /ON CHANGE INIT RATIO INDIKATOR ====
+
+    handleChangeOperator = (value, i) => {
+
+        let index = parseInt(i._owner.index) + 1;
+        // update value in object
+        const newArray = Array.from(this.state.ratioindikatorcalculation);
+        newArray[index].operations = value;
+
+        this.setState(prevState => ({
+          ...prevState,
+          ratioindikatorcalculations: newArray
+        }));
+    }
+
+    handleChangeRatioIndikator = (value, i) => {
+        let index = parseInt(i._owner.index) + 1;
+        // update value in object
+        const newArray = Array.from(this.state.ratioindikatorcalculation);
+        newArray[index].ratio_indikator_id = value;
+
+        this.setState(prevState => ({
+          ...prevState,
+          ratioindikatorcalculations: newArray
+        }));
+    }
+
+    // function array master list
+    handleChangeMultipleSelect = (value, label) => {
+      let masterversionelement = {};
+      let masterlistarray = [];
+
+      for(let i=0;i<value.length;i++){
+        masterversionelement.id = label[i].props.value;
+        masterversionelement.version_name = label[i].props.children;
+        masterlistarray.push(masterversionelement);
+        masterversionelement = {};
+      }
+
+      this.setState(prevState => ({
+        ...prevState,
+        masterversionlist: masterlistarray
+      }));
+
+      console.log("Master version list array")
+      console.log(this.state.masterversionlist);
     }
 
     render() {
@@ -102,32 +246,49 @@ class EditParameterKuantitatif extends React.Component{
           basic,
           ewarning,
           dataoptionsrisk,
-          dataoptionspringkatrisiko,
           dataoptionsratioindikator,
           dataoptions,
-          paramparameter,
-          paramlow,
-          paramlowtomoderate,
-          parammoderate,
-          parammoderatetohigh,
-          paramhigh,
-          parambobot,
-          parampenomoran,
           paramlevel,
           paramindukparameter,
-          paramrisk_id,
           paramjenisnilai,
-          paramindikatorpembilang,
-          paramindikatorpenyebut,
-          datavalue
+          datavalue,
+          dataoptionsparameterfaktor,
+          dataoptionsmasterversion,
+          dataoptionsvariabletype,
+          dataoptionsindukparameter,
+          numChildren,
+          ratioindikatorcalculation
         } = this.state;
         const {fetchdata, token} = this.props;
         const {getFieldDecorator} = this.props.form;
 
+
+        // handle children of element for counting
+        const children = [];
+
+        //looping all children
+        for (var i = 1; i < numChildren+1; i++) {
+          // console.log("NOMOR KE - "+i);
+          // console.log(fetchdataratioindikatorformula);
+          children.push(
+            <ChildComponent
+              indikatordata={dataoptionsratioindikator}
+              key={i}
+              id_operator_arithmetic={"operator_arithmetic_"+i}
+              handleChangeRatioIndikator={this.handleChangeRatioIndikator}
+              handleChangeOperator={this.handleChangeOperator}
+              operationsDefaultValue={typeof ratioindikatorcalculation[i] === "undefined" ? ratioindikatorcalculation[i-1].operations : ratioindikatorcalculation[i].operations}
+              ratioIndikatorDefaultValue={typeof ratioindikatorcalculation[i] === "undefined" ? ratioindikatorcalculation[i-1].ratio_indikator_id : ratioindikatorcalculation[i].ratio_indikator_id}
+              id_ratio_indikator={"ratio_indikator_"+i} />);
+        };
+
         return (
+
           <Form onSubmit={(e)=>{
               e.preventDefault();
               this.props.form.validateFields((err, values) => {
+                  values.ratio_indikator_formula = ratioindikatorcalculation;
+                  // console.log(values);
                   if (!err) {
                     this.setState({
                         ewarning: true,
@@ -139,6 +300,7 @@ class EditParameterKuantitatif extends React.Component{
               {
                   fetchdata.map((prop, index) =>{
                       return (
+
                           <div key={index}>
                               <Spin spinning={false} tip="Loading...">
 
@@ -223,9 +385,41 @@ class EditParameterKuantitatif extends React.Component{
                                       )}
                                   </FormItem>
 
+                                  <FormItem {...formItemLayout} label="Parameter Faktor">
+                                      {getFieldDecorator('parameterfaktor', {
+                                          initialValue: parseInt(prop.parameter_faktor_id),
+                                          rules: [{
+                                              required: true, message: 'Please input induk/parameter field.',
+                                          }],
+                                      })(
+                                          <Select id="parameterfaktor"
+                                                  showSearch
+                                                  placeholder="Select parameter faktor"
+                                                  optionFilterProp="children"
+                                                  onChange={(value)=>{
+                                                      this.setState({
+                                                          paramindukparameter:value,
+                                                      });
+                                                  }}
+                                                  style={paramindukparameter === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
+                                                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
+                                              <Option value="" disabled>Select induk/parameter</Option>
+                                              {
+                                                  dataoptionsparameterfaktor.map((prop, index) => {
+                                                      var value = prop.id;
+                                                      var label = prop.name;
+                                                      return (
+                                                          <Option key={index} value={value}>{label}</Option>
+                                                      )
+                                                  })
+                                              }
+                                          </Select>
+                                      )}
+                                  </FormItem>
+
                                   <FormItem {...formItemLayout} label="Induk/Parameter">
                                       {getFieldDecorator('induk_id', {
-                                          initialValue: prop.induk_id,
+                                          initialValue: parseInt(prop.induk_id),
                                           rules: [{
                                               required: true, message: 'Please input induk/parameter field.',
                                           }],
@@ -243,11 +437,12 @@ class EditParameterKuantitatif extends React.Component{
                                                   filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
                                               <Option value="" disabled>Select induk/parameter</Option>
                                               {
-                                                  dataoptionspringkatrisiko.map((prop, index) => {
+                                                  dataoptionsindukparameter.map((prop, index) => {
                                                       var value = prop.id;
                                                       var label = prop.name;
+                                                      var level = prop.level;
                                                       return (
-                                                          <Option key={index} value={value}>{label}</Option>
+                                                          <Option key={index} value={value}>{label} (Level {level}{level === 1 ? '/Parameter Faktor' : ''})</Option>
                                                       )
                                                   })
                                               }
@@ -325,13 +520,40 @@ class EditParameterKuantitatif extends React.Component{
                                       )}
                                   </FormItem>
 
+                                  <FormItem {...formItemLayout} label="Master Versi">
+                                      {getFieldDecorator('master_version_list', {
+                                          initialValue: prop.masterversionlist,
+                                          rules: [{
+                                              required: true, message: 'Please input master version.',
+                                          }],
+                                      })(
+                                        <Select id="master_version_list"
+                                                showSearch
+                                                mode="multiple"
+                                                placeholder="Select Jenis Penilaian"
+                                                optionFilterProp="children"
+                                                onChange={this.handleChangeMultipleSelect}
+                                                style={paramjenisnilai === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
+                                                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                                        >
+                                            {
+                                                dataoptionsmasterversion.map((prop, index) => {
+                                                    var value = prop.id;
+                                                    var label = prop.version_name;
+                                                    return (
+                                                        <Option value={value} key={index}>{label}</Option>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                      )}
+                                  </FormItem>
+
                                   <label style={{ textDecoration: 'underline', fontWeight: 'bold', textAlign: 'center'}}>Peringkat Risiko</label><br/>
                                   <FormItem {...formItemLayout} label="Low">
                                       {getFieldDecorator('pr_low', {
                                           initialValue: prop.pr_low,
-                                          rules: [{
-                                              required: true, message: 'Please input low field.'
-                                          },{type:"number", message: 'Input must be number type.'}],
+                                          rules: [{type:"number", message: 'Input must be number type.'}],
                                       })(
                                           <InputNumber id="pr_low" placeholder="Input Low"
                                                        className="w-100"
@@ -348,9 +570,7 @@ class EditParameterKuantitatif extends React.Component{
                                   <FormItem {...formItemLayout} label="Low to Moderate">
                                       {getFieldDecorator('pr_lowtomod', {
                                           initialValue: prop.pr_lowtomod,
-                                          rules: [{
-                                              required: true, message: 'Please input low to moderate field.'
-                                          },{type:"number", message: 'Input must be number type.'}],
+                                          rules: [{type:"number", message: 'Input must be number type.'}],
                                       })(
                                           <InputNumber id="pr_lowtomod" placeholder="Input Low to Moderate"
                                                        className="w-100"
@@ -367,9 +587,7 @@ class EditParameterKuantitatif extends React.Component{
                                   <FormItem {...formItemLayout} label="Moderate">
                                       {getFieldDecorator('pr_mod', {
                                           initialValue: prop.pr_mod,
-                                          rules: [{
-                                              required: true, message: 'Please input moderate field.'
-                                          },{type:"number", message: 'Input must be number type.'}],
+                                          rules: [{type:"number", message: 'Input must be number type.'}],
                                       })(
                                           <InputNumber id="pr_mod" placeholder="Input Moderate"
                                                        className="w-100"
@@ -386,9 +604,7 @@ class EditParameterKuantitatif extends React.Component{
                                   <FormItem {...formItemLayout} label="Moderate to High">
                                       {getFieldDecorator('pr_modtohigh', {
                                           initialValue: prop.pr_modtohigh,
-                                          rules: [{
-                                              required: true, message: 'Please input moderate to high field.'
-                                          },{type:"number", message: 'Input must be number type.'}],
+                                          rules: [{type:"number", message: 'Input must be number type.'}],
                                       })(
                                           <InputNumber id="pr_modtohigh" placeholder="Input Moderate to High"
                                                        className="w-100"
@@ -405,9 +621,7 @@ class EditParameterKuantitatif extends React.Component{
                                   <FormItem {...formItemLayout} label="High">
                                       {getFieldDecorator('pr_high', {
                                           initialValue: prop.pr_high,
-                                          rules: [{
-                                              required: true, message: 'Please input high field.'
-                                          },{type:"number", message: 'Input must be number type.'}],
+                                          rules: [{type:"number", message: 'Input must be number type.'}],
                                       })(
                                           <InputNumber id="pr_high" placeholder="Input High"
                                                        className="w-100"
@@ -421,118 +635,62 @@ class EditParameterKuantitatif extends React.Component{
                                       )}
                                   </FormItem>
 
+                                  {/* .INITIALS RATIO */}
                                   <label style={{ textDecoration: 'underline', fontWeight: 'bold', textAlign: 'center'}}>Indikator Ratio/Ukuran</label><br/>
-                                  <FormItem {...formItemLayout} label="Indikator Pembilang">
-                                      {getFieldDecorator('id_indikator_pembilang', {
-                                          initialValue: prop.id_indikator_pembilang,
-                                          rules: [{
-                                              required: true, message: 'Please input indikator pembilang field.',
-                                          }],
-                                      })(
-                                          <Select id="id_indikator_pembilang"
-                                                  showSearch
-                                                  placeholder="Select indikator pembilang"
-                                                  optionFilterProp="children"
-                                                  onChange={(value)=>{
-                                                      this.setState({
-                                                          paramindikatorpembilang:value
-                                                      });
-                                                  }}
-                                                  style={paramindikatorpembilang === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
-                                                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                                          >
-                                              <Option value="" disabled>Select indikator penyebut</Option>
-                                              {
-                                                  dataoptionsratioindikator.map((prop, index) => {
-                                                      var value = prop.id;
-                                                      var label = prop.name;
-                                                      return (
-                                                          <Option value={value} key={index}>{label}</Option>
-                                                      )
-                                                  })
-                                              }
-                                          </Select>
-                                      )}
-                                      <Link to={{pathname:'/bjbs/masterdata/ratioindikator',
-                                          ratioProps:{
-                                              rparameter:paramparameter ,
-                                              rlow:paramlow,
-                                              rlowtomoderate:paramlowtomoderate,
-                                              rmoderate:parammoderate,
-                                              rmoderatetohigh:parammoderatetohigh,
-                                              rhigh:paramhigh,
-                                              rbobot:parambobot,
-                                              rpenomoran:parampenomoran,
-                                              rlevel:paramlevel,
-                                              rindukparameter:paramindukparameter,
-                                              rrisk_id:paramrisk_id,
-                                              rjenisnilai:paramjenisnilai,
-                                              rindikatorpenyebut:paramindikatorpenyebut,
-                                              rindikatorpembilang:paramindikatorpembilang,
-                                              rid:prop.risk_id,
-                                              redittrue : true,
-                                          }}
-                                      }>Tambah Parameter</Link>
-                                  </FormItem>
+                                  <Grid container spacing={1}>
+                                    <Grid item xs={12} md={12} lg={2}>
+                                      <div>
+                                        <Select id="boolean_dependent_variable"
+                                                showSearch
+                                                placeholder="Type of variable"
+                                                optionFilterProp="children"
+                                                defaultValue={prop.ratioindikatorformula[0].operations}
+                                                style={{marginTop: 10, marginBottom: 10}}
+                                                onChange={this.onAddInitRIVariableType}
+                                        >
+                                            <Option value="" disabled>Select Variable Type</Option>
+                                            {
+                                                dataoptionsvariabletype.map((prop, index) => {
+                                                    var value = prop.value;
+                                                    var label = prop.label;
+                                                    return (
+                                                        <Option key={index} value={value}>{label}</Option>
+                                                    )
+                                                })
+                                            }
+                                        </Select>
+                                      </div>
+                                    </Grid>
+                                    <Grid item xs={12} md={12} lg={10}>
+                                      <Select id="init_ratio_indikator"
+                                              showSearch
+                                              placeholder="Select Initial Ratio Indikator"
+                                              optionFilterProp="children"
+                                              defaultValue={prop.ratioindikatorformula[0].ratio_indikator_id}
+                                              style={{marginTop: 10, marginBottom: 10}}
+                                              onChange={this.onAddInitRIIdIndikator}
+                                      >
+                                          <Option value="" disabled>Select Intial Ratio</Option>
+                                          {
+                                              dataoptionsratioindikator.map((prop, index) => {
+                                                  var value = prop.id;
+                                                  var label = prop.name;
+                                                  return (
+                                                      <Option key={index} value={value}>{label}</Option>
+                                                  )
+                                              })
+                                          }
+                                      </Select>
+                                    </Grid>
+                                  </Grid>
 
-                                  <FormItem {...formItemLayout} label="Indikator Penyebut">
-                                      {getFieldDecorator('id_indikator_penyebut', {
-                                          initialValue: prop.id_indikator_penyebut,
-                                          rules: [{
-                                              required: true, message: 'Please input indikator penyebut field.',
-                                          }],
-                                      })(
-                                          <Select id="id_indikator_penyebut"
-                                                  showSearch
-                                                  placeholder="Select indikator penyebut"
-                                                  optionFilterProp="children"
-                                                  onChange={(value)=>{
-                                                      this.setState({
-                                                          paramindikatorpenyebut:value
-                                                      });
-                                                  }}
-                                                  style={paramindikatorpenyebut === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
-                                                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                                          >
-                                              <Option value="" disabled>Select indikator penyebut</Option>
-                                              {
-                                                  dataoptionsratioindikator.map((prop, index) => {
-                                                      var value = prop.id;
-                                                      var label = prop.name;
-                                                      return (
-                                                          <Option value={value} key={index}>{label}</Option>
-                                                      )
-                                                  })
-                                              }
-                                          </Select>
-                                      )}
-                                      <Link to={{pathname:'/bjbs/masterdata/ratioindikator',
-                                          ratioProps:{
-                                              rparameter:paramparameter ,
-                                              rlow:paramlow,
-                                              rlowtomoderate:paramlowtomoderate,
-                                              rmoderate:parammoderate,
-                                              rmoderatetohigh:parammoderatetohigh,
-                                              rhigh:paramhigh,
-                                              rbobot:parambobot,
-                                              rpenomoran:parampenomoran,
-                                              rlevel:paramlevel,
-                                              rindukparameter:paramindukparameter,
-                                              rrisk_id:paramrisk_id,
-                                              rjenisnilai:paramjenisnilai,
-                                              rindikatorpenyebut:paramindikatorpenyebut,
-                                              rindikatorpembilang:paramindikatorpembilang,
-                                              rid:prop.risk_id,
-                                              redittrue : true,
-                                          }}
-                                      }>Tambah Parameter</Link>
-                                  </FormItem>
+                                  {/* .RATIO INDIKATOR FORMULA  */}
+                                  <ParentComponent addChild={this.onAddChild} removeChild={this.onRemoveChild}>
+                                    {children}
+                                  </ParentComponent>
 
                                   <FormItem style={{ float : "right", paddingRight : "1rem" }}>
-                                      {/*<Button onClick={this.props.clickCancelEditButton}>Cancel</Button>*/}
-                                      <Link className="ant-btn" to={{pathname:'/bjbs/profilrisiko/parameterkuantitatif', cancelProps:{
-                                              propscancel:true
-                                          }}}>Cancel</Link>
+                                      <Button onClick={this.props.clickCancelEditButton}>Cancel</Button>
                                       <Button type="primary" htmlType="submit">Edit</Button>
                                   </FormItem>
 
@@ -580,22 +738,121 @@ class EditParameterKuantitatif extends React.Component{
     }
 }
 
+const ParentComponent = props => (
+  <>
+    <Grid container spacing={1}>
+      <Grid item xs={12}  md={12} lg={12}>
+        <label style={{
+          textDecoration: 'underline',
+          fontWeight: 'bold',
+          textAlign: 'center'
+        }}>Ratio Indikator Formula</label>
+      </Grid>
+
+      <Grid item xs={12}  md={12} lg={2}>
+        <Button onClick={props.addChild}>
+          <PlusCircleFilled />
+        </Button>
+        <Button onClick={props.removeChild}>
+          <MinusCircleFilled />
+        </Button>
+      </Grid>
+
+      <Grid item xs={12}  md={12} lg={10} />
+
+    </Grid>
+    <div>
+      {props.children}
+    </div>
+  </>
+);
+
+const ChildComponent = props => (
+  <>
+    <Grid container spacing={1}>
+      <Grid item xs={12} md={12} lg={2}>
+        <Select id={props.id_operator_arithmetic}
+                showSearch
+                placeholder="Select Operator Arithmetic"
+                optionFilterProp="children"
+                style={{marginBottom: 10}}
+                onChange={props.handleChangeOperator}
+                defaultValue={props.operationsDefaultValue}
+        >
+            <Option value="" disabled>Select Operator</Option>
+            {
+                operatorOption.map((prop, index) => {
+                    var value = prop.value;
+                    var label = prop.label;
+                    return (
+                        <Option key={props.key} value={value}>{label}</Option>
+                    )
+                })
+            }
+        </Select>
+      </Grid>
+      <Grid item xs={12} md={12} lg={10}>
+        <Select id={props.id_ratio_indikator}
+                showSearch
+                placeholder="Select Ratio Indikator"
+                optionFilterProp="children"
+                style={{marginBottom: 10}}
+                defaultValue={props.ratioIndikatorDefaultValue}
+                onChange={props.handleChangeRatioIndikator}
+        >
+            <Option value="" disabled>Select Ratio Indikator</Option>
+            {
+                props.indikatordata.map((prop, index) => {
+                    var value = prop.id;
+                    var label = prop.name;
+                    return (
+                        <Option key={props.key} value={value}>{label}</Option>
+                    )
+                })
+            }
+        </Select>
+      </Grid>
+    </Grid>
+  </>
+
+)
+
 const WrappedEditParameterKuantitatif = Form.create()(EditParameterKuantitatif);
 
-const mapStateToProps = ({auth, jenisrisiko, peringkatrisiko, masterparameter, ratioindikator, parameterkuantitatif}) => {
+const mapStateToProps = ({
+  auth,
+  jenisrisiko,
+  peringkatrisiko,
+  masterparameter,
+  ratioindikator,
+  parameterkuantitatif,
+  ingredients,
+  parameterfaktor,
+  masterversion,
+  ratioindikatorformula
+}) => {
     const {token} = auth;
     const {getallrisks} = jenisrisiko;
     const {getallperingkatrisiko} = peringkatrisiko;
     const {jenisnilaiparam} = masterparameter;
     const {getallratioindikator} = ratioindikator;
     const {updateparameterkuantitatifresult} = parameterkuantitatif;
+    const {ingredientsdata} = ingredients;
+    const {getallparameterfaktor} = parameterfaktor;
+    const {masterversionsdata} = masterversion;
+    const {ratioindikatorformuladata, countallratioindikatorformula} = ratioindikatorformula;
     return {
       token,
       getallrisks,
       getallperingkatrisiko,
       jenisnilaiparam,
       getallratioindikator,
-      updateparameterkuantitatifresult
+      updateparameterkuantitatifresult,
+      ingredientsdata,
+      getallparameterfaktor,
+      masterversionsdata,
+      ratioindikatorformuladata,
+      countallratioindikatorformula
     }
 };
 
@@ -606,5 +863,9 @@ export default connect(mapStateToProps, {
   getAllRatioIndikator,
   updateParameterKuantitatif,
   resetUpdateParameterKuantitatif,
-  fetchAllParameterKuantitatif
+  fetchAllParameterKuantitatif,
+  fetchAllIngredients,
+  fetchAllMasterVersion,
+  getAllFaktorParameterDataOption,
+  fetchAllRatioIndikatorFormula
 })(WrappedEditParameterKuantitatif);

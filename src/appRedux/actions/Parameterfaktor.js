@@ -1,6 +1,7 @@
 import {FETCH_ERROR,
     FETCH_START,
     GET_ALL_PARAMETER_FAKTOR_TABLE,
+    GET_ALL_PARAMETER_FAKTOR,
     GET_PARAMETER_FAKTOR,
     PUT_PARAMETER_FAKTOR,
     POST_PARAMETER_FAKTOR,
@@ -31,6 +32,63 @@ export const getAllFaktorParameterTable = ({page, token, risk_id, name, bobot, r
             if (data.data){
                 dispatch({type: GET_ALL_PARAMETER_FAKTOR_TABLE, payload: data.data});
                 dispatch({type: STATUS_ALL_PARAMETER_FAKTOR_TABLE, payload: data.statusCode});
+            } else {
+                dispatch({type: FETCH_ERROR, payload: data.error});
+            }
+        }).catch(function (error) {
+            dispatch({type: FETCH_ERROR, payload: error.message});
+            console.log("Error****:", error.message);
+        });
+    }
+};
+
+export const getAllFaktorParameterDataOption = ({token, risk_id}) => {
+    return (dispatch) => {
+        dispatch({type: FETCH_START});
+        let url = '';
+
+        if(typeof risk_id !== 'undefined'){
+          url = `api/parameter-faktor-table?risk_id=${risk_id}&jenis=PR`
+        } else {
+          url = `api/parameter-faktor-table?jenis=PR`
+        }
+
+        axios.get(url,{
+            headers: {
+                Authorization: "Bearer "+token
+            }
+        }).then(({data}) => {
+            if (data.data){
+                dispatch({type: GET_ALL_PARAMETER_FAKTOR, payload: data.data});
+                dispatch({type: STATUS_ALL_PARAMETER_FAKTOR_TABLE, payload: data.statusCode});
+            } else {
+                dispatch({type: FETCH_ERROR, payload: data.error});
+            }
+        }).catch(function (error) {
+            dispatch({type: FETCH_ERROR, payload: error.message});
+            console.log("Error****:", error.message);
+        });
+    }
+};
+
+export const getAllFaktorParameter = ({token, risk_id, name, bobot, risk_nama}) => {
+    return (dispatch) => {
+        dispatch({type: FETCH_START});
+        //console.log('berhasil horee --> page :',page,' token :',token);
+        var parameters = '';
+        if (risk_id > 0){
+            parameters = 'risk_id='+risk_id+'&name='+name+'&bobot='+bobot+'&risk_nama='+risk_nama;
+        } else {
+            parameters = 'name='+name+'&bobot='+bobot+'&risk_nama='+risk_nama;
+        }
+        axios.get('api/parameter-faktor-table?'+parameters,{
+            headers: {
+                Authorization: "Bearer "+token
+            }
+        }).then(({data}) => {
+            if (data.data){
+                dispatch({type: GET_ALL_PARAMETER_FAKTOR, payload: data.data});
+                dispatch({type: STATUS_ALL_PARAMETER_FAKTOR, payload: data.statusCode});
             } else {
                 dispatch({type: FETCH_ERROR, payload: data.error});
             }

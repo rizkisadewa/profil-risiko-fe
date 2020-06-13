@@ -1,7 +1,13 @@
 import React from "react";
 import {Button, Input, Form, Select, InputNumber} from "antd";
 import connect from "react-redux/es/connect/connect";
-import {getAllRisks,getAllPeringkatRisiko,postParameterManual,resetPostParameterManual} from "../../../../appRedux/actions/index";
+import {
+  getAllRisks,
+  getAllPeringkatRisiko,
+  postParameterManual,
+  resetPostParameterManual,
+  getAllFaktorParameter
+} from "../../../../appRedux/actions/index";
 import SweetAlerts from "react-bootstrap-sweetalert";
 
 const FormItem = Form.Item;
@@ -29,6 +35,13 @@ class SaveParameterManual extends React.Component{
     componentDidMount(){
         this.props.getAllRisks({token:this.props.token, page:'', jenis:'', nama:'', keterangan:''});
         this.props.getAllPeringkatRisiko({page:'', token:this.props.token, description:'', name:'', jenis_nilai:''});
+        this.props.getAllFaktorParameter({
+          token:this.props.token,
+          risk_id:this.state.risk_id,
+          name:this.state.paramname,
+          bobot:this.state.parambobot,
+          risk_nama:this.state.paramriskname
+        });
     }
 
     componentWillReceiveProps(nextProps){
@@ -109,12 +122,10 @@ class SaveParameterManual extends React.Component{
                         {getFieldDecorator('penomoran', {
                             rules: [{
                                 required: true, message: 'Please input penomoran field.'
-                            },{type:"number", message: 'Input must be number type.'}],
+                            }],
                         })(
-                            <InputNumber id="penomoran" placeholder="Input Penomoran"
+                            <Input id="penomoran" placeholder="Input Penomoran"
                                          className="w-100"
-                                         min={0}
-                                         max={99}
                                          maxLength={2}
                             />
                         )}
@@ -206,9 +217,7 @@ class SaveParameterManual extends React.Component{
                     <label style={{ textDecoration: 'underline', fontWeight: 'bold', textAlign: 'center'}}>Peringkat Risiko</label><br/>
                     <FormItem {...formItemLayout} label="Low">
                         {getFieldDecorator('pr_low', {
-                            rules: [{
-                                required: true, message: 'Please input low field.'
-                            },{type:"number", message: 'Input must be number type.'}],
+                            rules: [{type:"number", message: 'Input must be number type.'}],
                         })(
                             <InputNumber id="pr_low" placeholder="Input Low"
                                          className="w-100"
@@ -219,9 +228,7 @@ class SaveParameterManual extends React.Component{
 
                     <FormItem {...formItemLayout} label="Low to Moderate">
                         {getFieldDecorator('pr_lowtomod', {
-                            rules: [{
-                                required: true, message: 'Please input low to moderate field.'
-                            },{type:"number", message: 'Input must be number type.'}],
+                            rules: [{type:"number", message: 'Input must be number type.'}],
                         })(
                             <InputNumber id="pr_lowtomod" placeholder="Input Low to Moderate"
                                          className="w-100"
@@ -232,9 +239,7 @@ class SaveParameterManual extends React.Component{
 
                     <FormItem {...formItemLayout} label="Moderate">
                         {getFieldDecorator('pr_mod', {
-                            rules: [{
-                                required: true, message: 'Please input moderate field.'
-                            },{type:"number", message: 'Input must be number type.'}],
+                            rules: [{type:"number", message: 'Input must be number type.'}],
                         })(
                             <InputNumber id="pr_mod" placeholder="Input Moderate"
                                          className="w-100"
@@ -245,9 +250,7 @@ class SaveParameterManual extends React.Component{
 
                     <FormItem {...formItemLayout} label="Moderate to High">
                         {getFieldDecorator('pr_modtohigh', {
-                            rules: [{
-                                required: true, message: 'Please input moderate to high field.'
-                            },{type:"number", message: 'Input must be number type.'}],
+                            rules: [{type:"number", message: 'Input must be number type.'}],
                         })(
                             <InputNumber id="pr_modtohigh" placeholder="Input Moderate to High"
                                          className="w-100"
@@ -258,9 +261,7 @@ class SaveParameterManual extends React.Component{
 
                     <FormItem {...formItemLayout} label="High">
                         {getFieldDecorator('pr_high', {
-                            rules: [{
-                                required: true, message: 'Please input high field.'
-                            },{type:"number", message: 'Input must be number type.'}],
+                            rules: [{type:"number", message: 'Input must be number type.'}],
                         })(
                             <InputNumber id="pr_high" placeholder="Input High"
                                          className="w-100"
@@ -291,13 +292,20 @@ class SaveParameterManual extends React.Component{
 
 const WrappedSaveParameterManual = Form.create()(SaveParameterManual);
 
-const mapStateToProps = ({auth, jenisrisiko, peringkatrisiko, parametermanual}) => {
+const mapStateToProps = ({auth, jenisrisiko, peringkatrisiko, parameterfaktor, parametermanual}) => {
     const {token} = auth;
     const {getallrisks} = jenisrisiko;
     const {getallperingkatrisiko} = peringkatrisiko;
     const {statuspostparametermanual} = parametermanual;
-    return {token,getallrisks,getallperingkatrisiko,statuspostparametermanual}
+    const {getallparameterfaktor} = parameterfaktor;
+    return {token,getallrisks,getallperingkatrisiko,statuspostparametermanual,getallparameterfaktor}
 };
 
-export default connect(mapStateToProps, {getAllRisks,getAllPeringkatRisiko,postParameterManual,resetPostParameterManual})(WrappedSaveParameterManual);
+export default connect(mapStateToProps, {
+  getAllRisks,
+  getAllPeringkatRisiko,
+  postParameterManual,
+  resetPostParameterManual,
+  getAllFaktorParameter
+})(WrappedSaveParameterManual);
 export {optionsLevel};

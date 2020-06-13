@@ -8,11 +8,13 @@ import {
     STATUS_ALL_PARAMETER_FAKTOR_TABLE,
     STATUS_ALL_PARAMETER_FAKTOR,
     COUNT_ALL_PARAMETER_FAKTOR,
-    STATUS_PUT_PARAMETER_FAKTOR
+    STATUS_PUT_PARAMETER_FAKTOR,
+    GET_ALL_PARAMETER_FAKTOR
 } from "../../constants/ActionTypes";
 
 const initialTable = {
     getallparameterfaktortable: GET_ALL_PARAMETER_FAKTOR_TABLE,
+    getallparameterfaktor: GET_ALL_PARAMETER_FAKTOR,
     getparameterfaktor: GET_PARAMETER_FAKTOR,
     postparameterfaktor: POST_PARAMETER_FAKTOR,
     deleteparameterfaktor: DELETE_PARAMETER_FAKTOR,
@@ -29,6 +31,12 @@ const parameterfaktor = (state = initialTable, action) => {
             return {
                 ...state,
                 getallparameterfaktortable: action.payload,
+            };
+        }
+        case GET_ALL_PARAMETER_FAKTOR: {
+            return {
+                ...state,
+                getallparameterfaktor: action.payload,
             };
         }
         case GET_PARAMETER_FAKTOR: {

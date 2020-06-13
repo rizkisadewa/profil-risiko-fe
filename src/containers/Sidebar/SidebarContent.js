@@ -78,43 +78,43 @@ class SidebarContent extends Component {
                       </Menu.Item>
                   </SubMenu>
 
-                  <SubMenu key="profilrisiko" className={this.getNavStyleSubMenuClass(navStyle)}
+                  <SubMenu key="risikoinheren" className={this.getNavStyleSubMenuClass(navStyle)}
                            title={<span> <i className="icon icon-auth-screen"/>
-                         <IntlMessages id="sidebar.profilrisiko"/></span>}>
-                      <Menu.Item key="bjbs/profilrisiko/jenisrisiko">
-                          <Link to="/bjbs/profilrisiko/jenisrisiko">
+                         <IntlMessages id="sidebar.risikoinheren"/></span>}>
+                      <Menu.Item key="bjbs/risikoinheren/jenisrisiko">
+                          <Link to="/bjbs/risikoinheren/jenisrisiko">
                               <i className="icon icon-affix"/>
-                              <IntlMessages id="sidebar.profilrisiko.risiko"/>
+                              <IntlMessages id="sidebar.risikoinheren.risiko"/>
                           </Link>
                       </Menu.Item>
-                      <Menu.Item key="bjbs/profilrisiko/parameter-faktor">
-                          <Link to="/bjbs/profilrisiko/parameter-faktor">
+                      <Menu.Item key="bjbs/risikoinheren/parameterfaktor">
+                          <Link to="/bjbs/risikoinheren/parameterfaktor">
                               <i className="icon icon-badge"/>
-                              <IntlMessages id="sidebar.profilrisiko.parameterfaktor"/>
+                              <IntlMessages id="sidebar.risikoinheren.parameterfaktor"/>
                           </Link>
                       </Menu.Item>
-                      <Menu.Item key="bjbs/profilrisiko/jenisperingkatrisiko">
-                          <Link to="/bjbs/profilrisiko/jenisperingkatrisiko">
+                      <Menu.Item key="bjbs/risikoinheren/ratioindikator">
+                          <Link to="/bjbs/risikoinheren/ratioindikator">
                               <i className="icon icon-crm"/>
-                              <IntlMessages id="sidebar.profilrisiko.peringkatrisiko"/>
+                              <IntlMessages id="sidebar.risikoinheren.ratioindikator"/>
                           </Link>
                       </Menu.Item>
-                      <Menu.Item key="bjbs/profilrisiko/parametermanual">
-                          <Link to="/bjbs/profilrisiko/parametermanual">
+                      <Menu.Item key="bjbs/risikoinheren/parametermanual">
+                          <Link to="/bjbs/risikoinheren/parametermanual">
                               <i className="icon icon-select"/>
-                              <IntlMessages id="sidebar.profilrisiko.parametermanual"/>
+                              <IntlMessages id="sidebar.risikoinheren.parametermanual"/>
                           </Link>
                       </Menu.Item>
-                      <Menu.Item key="bjbs/profilrisiko/parameterkuantitatif">
-                          <Link to="/bjbs/profilrisiko/parameterkuantitatif">
+                      <Menu.Item key="bjbs/risikoinheren/parameterkuantitatif">
+                          <Link to="/bjbs/risikoinheren/parameterkuantitatif">
                               <i className="icon icon-ckeditor"/>
-                              <IntlMessages id="sidebar.profilrisiko.parameterkuantitatif"/>
+                              <IntlMessages id="sidebar.risikoinheren.parameterkuantitatif"/>
                           </Link>
                       </Menu.Item>
-                      <Menu.Item key="bjbs/profilrisiko/parameterkualitatif">
-                          <Link to="/bjbs/profilrisiko/parameterkualitatif">
+                      <Menu.Item key="bjbs/risikoinheren/parameterkualitatif">
+                          <Link to="/bjbs/risikoinheren/parameterkualitatif">
                               <i className="icon icon-diamond"/>
-                              <IntlMessages id="sidebar.profilrisiko.parameterkualitatif"/>
+                              <IntlMessages id="sidebar.risikoinheren.parameterkualitatif"/>
                           </Link>
                       </Menu.Item>
                   </SubMenu>
@@ -317,4 +317,3 @@ const mapStateToProps = ({settings}) => {
   return {navStyle, themeType, locale, pathname}
 };
 export default connect(mapStateToProps)(SidebarContent);
-

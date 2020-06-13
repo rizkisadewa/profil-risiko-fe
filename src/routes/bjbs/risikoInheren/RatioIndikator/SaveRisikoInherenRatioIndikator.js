@@ -13,7 +13,7 @@ const optionsPenilaian = [
     {text:"Kualitatif", value:"3"}
 ];
 
-class SavePeringkatRisiko extends React.Component{
+class SaveRisikoInherenRatioIndikator extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
@@ -130,7 +130,7 @@ class SavePeringkatRisiko extends React.Component{
 
 }
 
-const WrapperSavePeringkatRisiko = Form.create()(SavePeringkatRisiko);
+const WrapperSaveRisikoInherenRatioIndikator = Form.create()(SaveRisikoInherenRatioIndikator);
 
 const mapStateToProps = ({auth, peringkatrisiko, masterparameter}) => {
     const {token} = auth;
@@ -139,4 +139,4 @@ const mapStateToProps = ({auth, peringkatrisiko, masterparameter}) => {
     return {token, statuspostperingkatrisiko, jenisnilaiparam};
 };
 
-export default connect(mapStateToProps, {getAllPeringkatRisiko,postPeringkatRisiko,resetPostPeringkatRisiko,jenisNilaiParam})(WrapperSavePeringkatRisiko);
+export default connect(mapStateToProps, {getAllPeringkatRisiko,postPeringkatRisiko,resetPostPeringkatRisiko,jenisNilaiParam})(WrapperSaveRisikoInherenRatioIndikator);
