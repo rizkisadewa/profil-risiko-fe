@@ -1,48 +1,51 @@
 import React from "react";
-import {Button, Input, Form, Spin, Select} from "antd";
-
+import {Button, Input, Form, Select, Spin} from "antd";
 import connect from "react-redux/es/connect/connect";
-import {updateRisk, resetPutRisk, getRisk} from "../../../../appRedux/actions/index";
 import IntlMessages from "util/IntlMessages";
+import {updatePeringkatRisiko, getAllPeringkatRisiko, resetPutPeringkatRisiko, getPeringkatRisiko, jenisNilaiParam} from "../../../../appRedux/actions/index";
 import SweetAlerts from "react-bootstrap-sweetalert";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const {TextArea} = Input;
 
-const optionsJenis = [
-    {label:"Risiko Inheren", value:"PR"},
-    {label:"KPMR", value:"KPMR"}
+const optionsPenilaian = [
+    {text:"Kuantitatif (Naik)", value:"1"},
+    {text:"Kuantitatif (Turun)", value:"2"},
+    {text:"Kualitatif", value:"3"}
 ];
 
-
-class EditJenisRisiko extends React.PureComponent{
+class EditKpmrRatioIndikator extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
+            dataoptions : optionsPenilaian,
             ewarning: false,
             datavalue:[],
             statusput:'',
-            jenis: '',
-            propsvalue: [],
-            jenisoptions: optionsJenis,
+            propsvalue : [],
             propsid : props.eid
-        };
+        }
+    }
+
+    componentDidMount(){
+        this.props.jenisNilaiParam({token:this.props.token});
     }
 
     componentWillMount(){
-        this.props.getRisk({id:this.props.eid, token:this.props.token});
+        this.props.getPeringkatRisiko({id:this.props.eid, token:this.props.token});
     }
 
     componentWillReceiveProps(nextProps){
         this.setState({
-            statusput : nextProps.statusputrisk,
-            propsvalue : nextProps.getrisk
+            dataoptions : nextProps.jenisnilaiparam,
+            statusput : nextProps.statusputperingkatrisiko,
+            propsvalue : nextProps.getperingkatrisiko
         });
 
-        if(nextProps.statusputrisk === 200 || nextProps.statusputrisk === 201){
-            this.props.clickEditSuccessButton(nextProps.statusputrisk);
-            this.props.resetPutRisk();
+        if (nextProps.statusputperingkatrisiko === 200 || nextProps.statusputperingkatrisiko === 201){
+            this.props.clickEditSuccessButton(nextProps.statusputperingkatrisiko);
+            this.props.resetPutPeringkatRisiko();
         }
     }
 
@@ -58,7 +61,7 @@ class EditJenisRisiko extends React.PureComponent{
             },
         };
 
-        const {ewarning, datavalue, propsvalue, jenis, jenisoptions} = this.state;
+        const {dataoptions, ewarning, datavalue, propsvalue} = this.state;
         const {fetchdata, token} = this.props;
         const {getFieldDecorator} = this.props.form;
         return (
@@ -71,13 +74,12 @@ class EditJenisRisiko extends React.PureComponent{
                                 ewarning: true,
                                 datavalue:values
                             });
-                            // console.log(values);
                         }
                     });
                 }}>
                     {
                         fetchdata.map((prop, index) =>{
-                            return(
+                            return (
                                 <div key={index}>
                                     <Spin spinning={propsvalue.id ? false : true} tip="Loading...">
                                         <FormItem {...formItemLayout}>
@@ -91,57 +93,51 @@ class EditJenisRisiko extends React.PureComponent{
                                             )}
                                         </FormItem>
 
-                                        <FormItem {...formItemLayout} label="Nama">
-                                            {getFieldDecorator('nama', {
-                                                initialValue:propsvalue.nama,
+                                        <FormItem {...formItemLayout} label="Name">
+                                            {getFieldDecorator('name', {
+                                                initialValue:propsvalue.name,
                                                 rules: [{
-                                                    required: true, message: 'Please input nama field.',
+                                                    required: true, message: 'Please input name field.',
                                                 }],
                                             })(
-                                                <Input id="nama" placeholder="Input Nama"/>
+                                                <Input id="name" placeholder="Input Name"/>
                                             )}
                                         </FormItem>
 
-                                        <FormItem {...formItemLayout} label="Keterangan">
-                                            {getFieldDecorator('keterangan', {
-                                                initialValue:propsvalue.keterangan,
+                                        <FormItem {...formItemLayout} label="Jenis Penilaian">
+                                            {getFieldDecorator('id_jenis_nilai', {
+                                                initialValue:propsvalue.id_jenis_nilai,
                                                 rules: [{
-                                                    required: true, message: 'Please input keterangan field.',
+                                                    required: true, message: 'Please input jenis penilaian field.',
                                                 }],
                                             })(
-                                                <TextArea id="keterangan" placeholder="Input Keterangan"/>
+                                                <Select id="id_jenis_nilai"
+                                                        showSearch
+                                                        placeholder="Select jenis penilaian"
+                                                        optionFilterProp="children"
+                                                        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                                                        >
+                                                    {
+                                                        dataoptions.map((prop, index) => {
+                                                            var value = prop.value;
+                                                            var label = prop.text;
+                                                            return (
+                                                                <Option value={value} key={index}>{label}</Option>
+                                                            )
+                                                        })
+                                                    }
+                                                </Select>
                                             )}
                                         </FormItem>
 
-                                        <FormItem {...formItemLayout} label="Jenis">
-                                            {getFieldDecorator('jenis', {
-                                                initialValue:propsvalue.jenis,
+                                        <FormItem {...formItemLayout} label="Description">
+                                            {getFieldDecorator('description', {
+                                                initialValue:propsvalue.description,
                                                 rules: [{
-                                                    required: true, message: 'Please input level field.',
+                                                    required: true, message: 'Please input jenis description field.',
                                                 }],
                                             })(
-                                              <Select id="jenis"
-                                                      showSearch
-                                                      placeholder="Select jenis"
-                                                      optionFilterProp="children"
-                                                      onChange={(value)=>{
-                                                          this.setState({
-                                                              jenis:value,
-                                                          });
-                                                      }}
-                                                      style={jenis === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
-                                                      filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
-                                                  <Option value="" disabled>Select level</Option>
-                                                  {
-                                                      jenisoptions.map((prop, index) => {
-                                                          var value = prop.value;
-                                                          var label = prop.label;
-                                                          return (
-                                                              <Option value={value} key={index}>{label}</Option>
-                                                          )
-                                                      })
-                                                  }
-                                              </Select>
+                                                <TextArea id="description" placeholder="Input description"/>
                                             )}
                                         </FormItem>
 
@@ -178,7 +174,7 @@ class EditJenisRisiko extends React.PureComponent{
                                      this.setState({
                                          ewarning: false
                                      });
-                                     this.props.updateRisk(datavalue);
+                                     this.props.updatePeringkatRisiko(datavalue);
                                  }}
                                  onCancel={() => {
                                      this.setState({
@@ -192,14 +188,17 @@ class EditJenisRisiko extends React.PureComponent{
             </>
         );
     }
+
 }
 
-const WrapperdEditJenisRisiko = Form.create()(EditJenisRisiko);
+const WrapperdEditKpmrRatioIndikator = Form.create()(EditKpmrRatioIndikator);
 
-const mapStateToProps = ({auth,jenisrisiko}) => {
+const mapStateToProps = ({auth, peringkatrisiko, masterparameter}) => {
     const {token} = auth;
-    const {statusputrisk,getrisk} = jenisrisiko;
-    return {token,statusputrisk, getrisk}
+    const {statusputperingkatrisiko,getperingkatrisiko} = peringkatrisiko;
+    const {jenisnilaiparam} = masterparameter;
+    return {token,statusputperingkatrisiko,getperingkatrisiko,jenisnilaiparam}
+
 };
 
-export default connect(mapStateToProps, {updateRisk, resetPutRisk, getRisk})(WrapperdEditJenisRisiko);
+export default connect(mapStateToProps, {updatePeringkatRisiko,getAllPeringkatRisiko,resetPutPeringkatRisiko,getPeringkatRisiko,jenisNilaiParam})(WrapperdEditKpmrRatioIndikator);

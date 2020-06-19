@@ -87,7 +87,8 @@ class EditParameterKuantitatif extends React.Component{
         this.props.fetchAllMasterVersion({token: this.props.token});
         this.props.getAllFaktorParameterDataOption({token: this.props.token});
         this.props.fetchAllIngredients({token: this.props.token, searchData: {
-          jenis: 'PR'
+          jenis: 'PR',
+          jenis_nilai_id: 1
         }});
         this.props.fetchAllRatioIndikatorFormula({token: this.props.token, searchData: {
           ingredients_id: this.props.fetchdata[0].id

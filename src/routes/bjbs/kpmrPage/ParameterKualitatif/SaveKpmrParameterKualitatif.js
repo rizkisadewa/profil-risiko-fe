@@ -25,7 +25,7 @@ const optionsLevel = [
     {label:"Level Kelima (5)", value:5}
 ];
 
-class SaveParameterKualitatif extends React.Component{
+class SaveKpmrParameterKualitatif extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
@@ -488,7 +488,7 @@ class SaveParameterKualitatif extends React.Component{
                                 }
                             </Select>
                         )}
-                        <Link to={{pathname:'/bjbs/risikoinheren/ratioindikator',
+                        <Link to={{pathname:'/bjbs/kpmr/ratioindikator',
                             ratioProps:{
                                 rparameter:addPropstate ? addPropstate.pkparameter ? addPropstate.pkparameter : paramparameter : paramparameter ,
                                 rlow:addPropstate ? addPropstate.pklow ? addPropstate.pklow : paramlow : paramlow,
@@ -529,7 +529,7 @@ class SaveParameterKualitatif extends React.Component{
 
 }
 
-const WrappedSaveParameterKualitatif = Form.create()(SaveParameterKualitatif);
+const WrappedSaveKpmrParameterKualitatif = Form.create()(SaveKpmrParameterKualitatif);
 
 const mapStateToProps = ({
   auth,
@@ -572,5 +572,5 @@ export default connect(mapStateToProps, {
   resetAddParameterKualitatif,
   fetchAllIngredients,
   addParameterKualitatif
-})(WrappedSaveParameterKualitatif);
+})(WrappedSaveKpmrParameterKualitatif);
 export {optionsLevel};

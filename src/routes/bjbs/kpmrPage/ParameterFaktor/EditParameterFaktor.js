@@ -20,7 +20,7 @@ const optionsLevel = [
     {label:"Level Pertama (1)", value:1}
 ];
 
-class EditParameter extends React.Component{
+class EditParameterFaktor extends React.Component{
     constructor(props) {
         super(props);
         // this.handleProp=this.handleProp.bind(this);
@@ -42,7 +42,8 @@ class EditParameter extends React.Component{
     }
 
     componentDidMount(){
-        this.props.getAllRisks({token:this.props.token, page:'', jenis:'PR', nama:'', keterangan:''});
+        this.props.getAllRisks({token:this.props.token, page:'', jenis:'KPMR', nama:'', keterangan:''});
+        this.props.getFaktorParameter({id:this.props.eid, token:this.props.token});
         this.props.fetchAllMasterVersion({token: this.props.token});
         this.props.getFaktorParameter({id:this.props.eid, token:this.props.token});
         this.props.fetchAllParameterversion({token: this.props.token, searchData: {
@@ -66,7 +67,6 @@ class EditParameter extends React.Component{
             this.props.clickEditSuccessButton(nextProps.statusputparameterfaktor);
             this.props.resetPutFaktorParameter();
         }
-
     }
 
     render() {
@@ -96,7 +96,7 @@ class EditParameter extends React.Component{
           paramjenisnilai,
           dataoptionsmasterversion,
           dataparameterversion
-      } = this.state;
+        } = this.state;
         const {fetchdata, token} = this.props;
         const {getFieldDecorator} = this.props.form;
         return (
@@ -114,7 +114,6 @@ class EditParameter extends React.Component{
                             datavalue:values
                         });
                     }
-
                 });
             }}>
                 {
@@ -319,7 +318,7 @@ class EditParameter extends React.Component{
 
 }
 
-const WrapperdEditParameter = Form.create()(EditParameter)
+const WrapperdEditParameterFaktor = Form.create()(EditParameterFaktor)
 
 const mapStateToProps = ({
   auth,
@@ -350,4 +349,4 @@ export default connect(mapStateToProps, {
   getFaktorParameter,
   fetchAllMasterVersion,
   fetchAllParameterversion
-})(WrapperdEditParameter);
+})(WrapperdEditParameterFaktor);

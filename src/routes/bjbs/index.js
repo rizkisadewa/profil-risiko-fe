@@ -8,6 +8,8 @@ import KeperluanDataPage from "./keperluanDataPage";
 import LaporanPage from "./laporanPage";
 import ProfileUserPage from "./profileUserPage";
 import LainLainPage from "./lainPage";
+import KpmrPage from "./kpmrPage";
+import DataInputPage from "./dataInputPage";
 
 import asyncComponent from "util/asyncComponent";
 
@@ -17,6 +19,8 @@ const Bjbs = ({match}) => (
         <Route path={`${match.url}/home`} component={asyncComponent(() => import('./HomePage'))}/>
         <Route path={`${match.url}/dashboard`} component={DashboardPage}/>
         <Route path={`${match.url}/risikoinheren`} component={RisikoInheren}/>
+        <Route path={`${match.url}/kpmr`} component={KpmrPage}/>
+        <Route path={`${match.url}/datainput`} component={DataInputPage}/>
         <Route path={`${match.url}/masterdata`} component={MasterDataPage}/>
         <Route path={`${match.url}/keperluandata`} component={KeperluanDataPage}/>
         <Route path={`${match.url}/laporan`} component={LaporanPage}/>

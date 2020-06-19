@@ -1,19 +1,22 @@
-import React from "react";
+import React, {useState, useRef} from "react";
 import {Button, Input, Form, Select, InputNumber} from "antd";
 // import {Button, Input, Form, Select, InputNumber, Spin} from "antd";
 import connect from "react-redux/es/connect/connect";
 import {
   getAllRisks,
+  getAllRatioIndikator,
   getAllPeringkatRisiko,
   jenisNilaiParam,
-  getAllRatioIndikator,
+  getAllRatioIndikatorForParamterKualitatif,
   addParameterKuantitatif,
-  resetAddParameterKuantitatif,
+  resetAddParameterKualitatif,
   fetchAllIngredients,
+  addParameterKualitatif,
   fetchAllMasterVersion,
   getAllFaktorParameterDataOption
 } from "../../../../appRedux/actions/index";
 import SweetAlerts from "react-bootstrap-sweetalert";
+import {Link} from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import {
   PlusCircleFilled,
@@ -31,10 +34,7 @@ const optionsLevel = [
 ];
 
 const operatorOption = [
-    {label:"Tambah (+)", value:"+"},
-    {label:"Bagi (:)", value:"/"},
-    {label:"Kurang (-)", value:"-"},
-    {label:"Kali (x)", value:"*"}
+    {label:"Tambah (+)", value:"+"}
 ];
 
 const variableType = [
@@ -42,33 +42,37 @@ const variableType = [
     {label:"Dependent Variable", value:"dependentvariable"}
 ];
 
-class SaveParameterKuantitatif extends React.Component{
+
+class SaveParameterKualitatifDualAlternatif extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             dataoptionslevel : optionsLevel,
             basic: false,
             dataoptionsrisk : [],
-            dataoptions : [],
+            dataoptionsratioindikatorkualitatif : [],
+            dataoptionsingredientsdata : [],
             dataoptionsratioindikator : [],
-            dataoptionsindukparameter : [],
             ratioindikatorcalculation: [],
             dataoptionsmasterversion: [],
             dataoptionsparameterfaktor: [],
-            numChildren: 0,
-            masterversionlist: [],
             //state value
-
+            paramparameter:'',
+            paramlow:'',
+            paramlowtomoderate:'',
+            parammoderate:'',
+            parammoderatetohigh:'',
+            paramhigh:'',
+            parambobot:'',
+            parampenomoran:'',
             paramlevel:'',
             paramindukparameter:'',
-            paramrisk_id: '',
+            paramrisk_id:'',
             paramjenisnilai:'',
+            paramindikatorpembilang:'',
+            paramindikatorpenyebut:'',
+            numChildren: 0,
             paramparameterfaktor: '',
-            initialratioindikator: {
-              seq: 0,
-              operations: '',
-              ratio_indikator_id: ''
-            }
         }
     }
 
@@ -76,11 +80,12 @@ class SaveParameterKuantitatif extends React.Component{
         this.props.getAllRisks({token:this.props.token, page:'', jenis:'', nama:'', keterangan:''});
         this.props.getAllPeringkatRisiko({page:'', token:this.props.token, description:'', name:'', jenis_nilai:''});
         this.props.jenisNilaiParam({token:this.props.token});
-        this.props.getAllRatioIndikator({token:this.props.token});
+        this.props.getAllRatioIndikatorForParamterKualitatif({token:this.props.token, jenis: "PR"});
         this.props.fetchAllIngredients({token: this.props.token, searchData: {
-          jenis: 'PR',
-          jenis_nilai_id: 1
+          jenis: "PR",
+          jenis_nilai_id: 21
         }});
+        this.props.getAllRatioIndikator({token:this.props.token});
         this.props.fetchAllMasterVersion({token: this.props.token});
         this.props.getAllFaktorParameterDataOption({token: this.props.token});
     }
@@ -88,24 +93,23 @@ class SaveParameterKuantitatif extends React.Component{
     componentWillReceiveProps(nextProps){
         this.setState({
             dataoptionsrisk : nextProps.getallrisks,
-            dataoptions : nextProps.jenisnilaiparam,
             dataoptionsratioindikator : nextProps.getallratioindikator,
-            dataoptionsindukparameter : nextProps.ingredientsdata,
+            dataoptionsratioindikatorkualitatif: nextProps.getallratioindikatorkualitatif,
+            dataoptionsingredientsdata: nextProps.ingredientsdata,
             dataoptionsmasterversion : nextProps.masterversionsdata,
             dataoptionsparameterfaktor : nextProps.getallparameterfaktor
-
         });
 
-        switch(nextProps.addparameterkuantitatifresult.statusCode){
+        switch(nextProps.addparameterkualitatifresult.statusCode){
           case 200:
           case 201:
           case 400:
             this.props.clickAddSuccessButton(
-              nextProps.addparameterkuantitatifresult.statusCode,
-              nextProps.addparameterkuantitatifresult.message
+              nextProps.addparameterkualitatifresult.statusCode,
+              nextProps.addparameterkualitatifresult.message
             );
             // reset all state
-            this.props.resetAddParameterKuantitatif();
+            this.props.resetAddParameterKualitatif();
             break;
           default:
             break;
@@ -116,14 +120,14 @@ class SaveParameterKuantitatif extends React.Component{
 
       this.setState(prevState => ({
         ...prevState,
-        numChildren: this.state.numChildren + 1
+        numChildren: this.state.numChildren+1
       }));
 
       // data for calculation
       let dataBody = {};
       dataBody.ratio_indikator_id = "";
-      dataBody.seq = this.state.numChildren+1;
-      dataBody.operations = "";
+      dataBody.seq = this.state.numChildren;
+      dataBody.operations = "+";
       this.state.ratioindikatorcalculation.push(dataBody);
       dataBody = {};
       console.log(this.state.ratioindikatorcalculation)
@@ -169,12 +173,13 @@ class SaveParameterKuantitatif extends React.Component{
         // this.state.ratioindikatorcalculation[index].operations = value;
 
         const newArray = Array.from(this.state.ratioindikatorcalculation);
-        newArray[index].operations = value;
+        newArray[index].operations = "+";
 
         this.setState(prevState => ({
           ...prevState,
           ratioindikatorcalculations: newArray
         }));
+        console.log(this.state.ratioindikatorcalculations);
 
     }
 
@@ -190,6 +195,8 @@ class SaveParameterKuantitatif extends React.Component{
           ...prevState,
           ratioindikatorcalculations: newArray
         }));
+
+        console.log(this.state.ratioindikatorcalculations);
 
     }
 
@@ -215,7 +222,6 @@ class SaveParameterKuantitatif extends React.Component{
     }
 
     render() {
-
         const formItemLayout = {
             labelCol: {
                 xs: {span: 24},
@@ -231,16 +237,26 @@ class SaveParameterKuantitatif extends React.Component{
             dataoptionsrisk,
             dataoptionslevel,
             basic,
-            dataoptions,
-            dataoptionsratioindikator,
+            paramparameter,
+            paramlow,
+            paramlowtomoderate,
+            parammoderate,
+            parammoderatetohigh,
+            paramhigh,
+            parambobot,
+            parampenomoran,
             paramlevel,
             paramindukparameter,
             paramrisk_id,
             paramjenisnilai,
-            paramparameterfaktor,
-            dataoptionsindukparameter,
+            paramindikatorpenyebut,
+            paramindikatorpembilang,
+            dataoptionsratioindikatorkualitatif,
+            dataoptionsingredientsdata,
+            dataoptionsratioindikator,
             numChildren,
             dataoptionsmasterversion,
+            paramparameterfaktor,
             dataoptionsparameterfaktor
         } = this.state;
         const {token, addPropstate} = this.props;
@@ -268,41 +284,38 @@ class SaveParameterKuantitatif extends React.Component{
 
                     // if any ratio indikator formula for level 2 or more
                     let ratioIndikatorFormula = [];
-                    if(typeof this.state.initialratioindikator !== 'undefined' || this.state.initialratioindikator !== ''){
-                      ratioIndikatorFormula.push(this.state.initialratioindikator);
-
-                      // check if any ratio indikator calculation
-                      if(this.state.ratioindikatorcalculation.length > 0){
-                        // loop al ratio indikator calculation
-                        for(let i=0;i<this.state.ratioindikatorcalculation.length;i++){
-                          ratioIndikatorFormula.push(this.state.ratioindikatorcalculation[i]);
-                        }
+                    // check if any ratio indikator calculation
+                    if(this.state.ratioindikatorcalculation.length > 0){
+                      // loop al ratio indikator calculation
+                      for(let i=0;i<this.state.ratioindikatorcalculation.length;i++){
+                        ratioIndikatorFormula.push(this.state.ratioindikatorcalculation[i]);
                       }
                     }
 
                     this.props.form.validateFields((err, values) => {
-                        console.log(values);
                         if (!err) {
-                          this.props.addParameterKuantitatif(values.token, {
-                            risk_id: values.risk_id,
-                            name: values.name,
-                            level: values.level,
-                            induk_id: values.induk_id,
-                            penomoran: values.penomoran,
-                            pr_low: values.low,
-                            pr_lowtomod: values.lowtomoderate,
-                            pr_mod: values.moderate,
-                            pr_modtohigh: values.moderatetohigh,
-                            pr_high: values.high,
-                            bobot: values.bobot,
-                            parameter_faktor_id: values.parameter_faktor_id,
-                            jenis_nilai_id: values.id_jenis_nilai,
-                            masterversiondata: this.state.masterversionlist,
-                            ratioindikatorinit: this.state.initialratioindikator,
-                            ratio_indikator_formula: ratioIndikatorFormula
-                          })
+                          console.log("Values save parameter kualitatif : ");
+                          values.masterversiondata = this.state.masterversionlist;
+                          values.ratio_indikator_formula = ratioIndikatorFormula;
+                          console.log(values);
+                          // this.props.addParameterKualitatif(values.token, {
+                          //   risk_id: values.risk_id,
+                          //   name: values.name,
+                          //   level: values.level,
+                          //   induk_id: values.peringkatrisiko,
+                          //   penomoran: values.penomoran,
+                          //   pr_low: values.low,
+                          //   pr_lowtomod: values.lowtomoderate,
+                          //   pr_mod: values.moderate,
+                          //   pr_modtohigh: values.moderatetohigh,
+                          //   pr_high: values.high,
+                          //   bobot: values.bobot,
+                          //   id_indikator_pembilang: 0,
+                          //   id_indikator_penyebut: 0,
+                          //   jenis_nilai_id: 4
+                          // });
                         }
-                    })
+                    });
                 }}>
                     <FormItem {...formItemLayout}>
                         {getFieldDecorator('token', {
@@ -348,25 +361,6 @@ class SaveParameterKuantitatif extends React.Component{
                         )}
                     </FormItem>
 
-                    <FormItem {...formItemLayout} label="Penomoran">
-                        {getFieldDecorator('penomoran', {
-                            initialValue: addPropstate ? addPropstate.pkpenomoran : '',
-                            rules: [{
-                                required: true, message: 'Please input penomoran field.'
-                            }],
-                        })(
-                            <Input id="penomoran" placeholder="Input Penomoran"
-                                         className="w-100"
-                                         maxLength={2}
-                                         onChange={(value)=>{
-                                             this.setState({
-                                                 parampenomoran:value,
-                                             });
-                                         }}
-                            />
-                        )}
-                    </FormItem>
-
                     <FormItem {...formItemLayout} label="Name">
                         {getFieldDecorator('name', {
                             initialValue: addPropstate ? addPropstate.pkparameter : '',
@@ -374,12 +368,33 @@ class SaveParameterKuantitatif extends React.Component{
                                 required: true, message: 'Please input name field.',
                             }],
                         })(
-                            <Input id="name" placeholder="Input Name"
+                            <Input id="name" placeholder="Input Indikator"
                                    onChange={(e,value) =>{
                                        this.setState({
                                            paramparameter:e.target.value,
                                        });
                                    }}/>
+                        )}
+                    </FormItem>
+
+                    <FormItem {...formItemLayout} label="Penomoran">
+                        {getFieldDecorator('penomoran', {
+                            initialValue: addPropstate ? addPropstate.pkpenomoran : '',
+                            rules: [{
+                                required: true, message: 'Please input penomoran field.'
+                            }],
+                        })(
+                            <InputNumber id="penomoran" placeholder="Input Penomoran"
+                                         className="w-100"
+                                         min={0}
+                                         max={99}
+                                         maxLength={2}
+                                         onChange={(value)=>{
+                                             this.setState({
+                                                 parampenomoran:value,
+                                             });
+                                         }}
+                            />
                         )}
                     </FormItem>
 
@@ -449,14 +464,14 @@ class SaveParameterKuantitatif extends React.Component{
 
                     <FormItem {...formItemLayout} label="Induk/Parameter">
                         {getFieldDecorator('induk_id', {
-                            initialValue: addPropstate ? addPropstate.pkindukid : '',
+                            initialValue: addPropstate ? addPropstate.pkindukparameter : '',
                             rules: [{
-                                required: true, message: 'Please input parameter induk.',
+                                required: true, message: 'Please input induk/parameter field.',
                             }],
                         })(
                             <Select id="induk_id"
                                     showSearch
-                                    placeholder="Select induk"
+                                    placeholder="Select induk/parameter"
                                     optionFilterProp="children"
                                     onChange={(value)=>{
                                         this.setState({
@@ -464,15 +479,14 @@ class SaveParameterKuantitatif extends React.Component{
                                         });
                                     }}
                                     style={paramindukparameter === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
-                            >
+                                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
                                 <Option value="" disabled>Select induk/parameter</Option>
                                 {
-                                    dataoptionsindukparameter.map((prop, index) => {
+                                    dataoptionsingredientsdata.map((prop, index) => {
                                         var value = prop.id;
-                                        var label = prop.name;
-                                        var level = prop.level;
+                                        var label = `Level - ${prop.level} - ${prop.name}`;
                                         return (
-                                            <Option key={index} value={value}>{label} (Level {level}{level === 1 ? '/Parameter Faktor' : ''})</Option>
+                                            <Option key={index} value={value}>{label}</Option>
                                         )
                                     })
                                 }
@@ -507,44 +521,6 @@ class SaveParameterKuantitatif extends React.Component{
                                          formatter={value => `${value}%`}
                                          parser={value => value.replace('%', '')}
                             />
-                        )}
-                    </FormItem>
-
-                    <FormItem {...formItemLayout} label="Jenis Penilaian">
-                        {getFieldDecorator('id_jenis_nilai', {
-                            initialValue: addPropstate ? addPropstate.pkjenisnilai : '',
-                            rules: [{
-                                required: true, message: 'Please input jenis penilaian field.',
-                            }],
-                        })(
-                            <Select id="id_jenis_nilai"
-                                    showSearch
-                                    placeholder="Select Jenis Penilaian"
-                                    optionFilterProp="children"
-                                    onChange={(value)=>{
-                                        this.setState({
-                                            paramjenisnilai:value
-                                        });
-                                    }}
-                                    style={paramjenisnilai === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
-                                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                            >
-                                <Option value="" disabled>Select jenis penilaian</Option>
-                                {
-                                    dataoptions.map((prop, index) => {
-                                        var value = prop.value;
-                                        var label = prop.text;
-
-                                        if (label === 'Kuantitatif (Naik)' || label === 'Kuantitatif (Turun)'){
-                                            return (
-                                                <Option value={value} key={index}>{label}</Option>
-                                            )
-                                        } else {
-                                            return '';
-                                        }
-                                    })
-                                }
-                            </Select>
                         )}
                     </FormItem>
 
@@ -662,7 +638,7 @@ class SaveParameterKuantitatif extends React.Component{
                         )}
                     </FormItem>
 
-                    <label style={{ textDecoration: 'underline', fontWeight: 'bold', textAlign: 'center'}}>Ratio Indikator/Ukuran</label><br/>
+                    <label style={{ textDecoration: 'underline', fontWeight: 'bold', textAlign: 'center'}}>Inisiasi Ratio Indikator</label><br/>
 
                     {/* .INITIALS RATIO */}
                     <Grid container spacing={1}>
@@ -709,6 +685,7 @@ class SaveParameterKuantitatif extends React.Component{
                         </Select>
                       </Grid>
                     </Grid>
+
                     {/* .RATIO INDIKATOR FORMULA  */}
                     <ParentComponent addChild={this.onAddChild} removeChild={this.onRemoveChild}>
                       {children}
@@ -728,15 +705,13 @@ class SaveParameterKuantitatif extends React.Component{
                                      })
                     }}/>
 
-
                 </Form>
             </>
-
-
         );
     }
 
 }
+
 
 const ParentComponent = props => (
   <>
@@ -777,14 +752,14 @@ const ChildComponent = props => (
                 optionFilterProp="children"
                 style={{marginBottom: 10}}
                 onChange={props.handleChangeOperator}
+                defaultValue="+"
         >
-            <Option value="" disabled>Select Operator</Option>
             {
                 operatorOption.map((prop, index) => {
                     var value = prop.value;
                     var label = prop.label;
                     return (
-                        <Option key={props.key} value={value}>{label}</Option>
+                        <Option key={props.key} value={value} disabled>{label}</Option>
                     )
                 })
             }
@@ -815,7 +790,7 @@ const ChildComponent = props => (
 
 )
 
-const WrappedSaveParameterKuantitatif = Form.create()(SaveParameterKuantitatif);
+const WrappedSaveParameterKualitatifDualAlternatif = Form.create()(SaveParameterKualitatifDualAlternatif);
 
 const mapStateToProps = ({
   auth,
@@ -824,6 +799,7 @@ const mapStateToProps = ({
   masterparameter,
   ratioindikator,
   parameterkuantitatif,
+  parameterkualitatif,
   ingredients,
   masterversion,
   parameterfaktor
@@ -832,8 +808,9 @@ const mapStateToProps = ({
     const {getallrisks} = jenisrisiko;
     const {getallperingkatrisiko} = peringkatrisiko;
     const {jenisnilaiparam} = masterparameter;
-    const {getallratioindikator} = ratioindikator;
+    const {getallratioindikator, getallratioindikatorkualitatif} = ratioindikator;
     const {addparameterkuantitatifresult} = parameterkuantitatif;
+    const {parameterkualitatifdata, addparameterkualitatifresult} = parameterkualitatif;
     const {ingredientsdata} = ingredients;
     const {masterversionsdata} = masterversion;
     const {getallparameterfaktor} = parameterfaktor;
@@ -844,21 +821,26 @@ const mapStateToProps = ({
       jenisnilaiparam,
       getallratioindikator,
       addparameterkuantitatifresult,
+      getallratioindikatorkualitatif,
+      parameterkualitatifdata,
       ingredientsdata,
       masterversionsdata,
+      addparameterkualitatifresult,
       getallparameterfaktor
     }
 };
 
 export default connect(mapStateToProps, {
   getAllRisks,
+  getAllRatioIndikator,
   getAllPeringkatRisiko,
   jenisNilaiParam,
-  getAllRatioIndikator,
+  getAllRatioIndikatorForParamterKualitatif,
   addParameterKuantitatif,
-  resetAddParameterKuantitatif,
+  resetAddParameterKualitatif,
   fetchAllIngredients,
+  addParameterKualitatif,
   fetchAllMasterVersion,
   getAllFaktorParameterDataOption
-})(WrappedSaveParameterKuantitatif);
+})(WrappedSaveParameterKualitatifDualAlternatif);
 export {optionsLevel};

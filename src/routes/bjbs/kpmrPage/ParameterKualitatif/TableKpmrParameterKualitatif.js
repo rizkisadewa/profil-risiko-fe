@@ -7,8 +7,8 @@ import Highlighter from "react-highlight-words";
 import Snackbar from "@material-ui/core/Snackbar";
 
 // import component
-import SaveParameterKualitatif from "./SaveParameterKualitatif";
-import EditParameterKualitatif from "./EditParameterKualitatif";
+import SaveKpmrParameterKualitatif from "./SaveKpmrParameterKualitatif";
+import EditKpmrParameterKualitatif from "./EditKpmrParameterKualitatif";
 import { connect } from 'react-redux';
 import moment from "moment";
 // import actions
@@ -20,7 +20,7 @@ import {
 } from "../../../../appRedux/actions/Parameterkualitatif";
 import MySnackbarContentWrapper from "../../../../components/Snackbar/SnackBar";
 
-function TableParameterKualitatif ({
+function TableKpmrParameterKualitatif ({
   authData,
   parameterKualitatifData,
   fetchAllParameterKualitatif,
@@ -509,8 +509,8 @@ function TableParameterKualitatif ({
   ) : (
     <Card title={addbutton ? "Tambah Kualitatif" : editbutton ? "Edit Data : ID["+eid+"]"  : "Read Table Parameter Kualitatif (Multi Alternatif)"}>
       {
-          addbutton ? <SaveParameterKualitatif clickCancelAddButton={clickCancelAddButton} clickAddSuccessButton={clickAddSuccessButton} /> :
-          editbutton ? <EditParameterKualitatif clickCancelEditButton={clickCancelEditButton}
+          addbutton ? <SaveKpmrParameterKualitatif clickCancelAddButton={clickCancelAddButton} clickAddSuccessButton={clickAddSuccessButton} /> :
+          editbutton ? <EditKpmrParameterKualitatif clickCancelEditButton={clickCancelEditButton}
                                                 clickEditSuccessButton={clickEditSuccessButton} fetchdata={fetchdata} eid={eid} /> :
                   <>
                       <div className="table-operations">
@@ -597,4 +597,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(TableParameterKualitatif);
+)(TableKpmrParameterKualitatif);

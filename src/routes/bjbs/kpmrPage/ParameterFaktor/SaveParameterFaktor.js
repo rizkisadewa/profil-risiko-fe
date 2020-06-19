@@ -3,7 +3,7 @@ import {Button, Input, Form, Select, InputNumber} from "antd";
 import connect from "react-redux/es/connect/connect";
 import {
   getAllRisks,
-  postFaktorParameter,
+  postFaktorParameterForKPMR,
   resetPostFaktorParameter,
   fetchAllMasterVersion
 } from "../../../../appRedux/actions/index";
@@ -17,22 +17,22 @@ const optionsLevel = [
     {label:"Level Pertama (1)", value:"1"}
 ];
 
-class SaveParameter extends React.PureComponent{
+class SaveParameterFaktor extends React.PureComponent{
     constructor(props) {
         super(props);
         // this.handleProp=this.handleProp.bind(this);
         this.state = {
             dataoptions : [],
             dataoptionslevel : optionsLevel,
-            dataoptionsmasterversion: [],
             basic: false,
             statuspost: '',
             paramjenisnilai:'',
+            dataoptionsmasterversion: [],
         }
     }
 
     componentDidMount(){
-        this.props.getAllRisks({token:this.props.token, page:'', jenis:'', nama:'', keterangan:''});
+        this.props.getAllRisks({token:this.props.token, page:'', jenis:'KPMR', nama:'', keterangan:''});
         this.props.fetchAllMasterVersion({token: this.props.token});
     }
 
@@ -77,11 +77,12 @@ class SaveParameter extends React.PureComponent{
                     e.preventDefault();
                     this.props.form.validateFields((err, values) => {
                         if (!err) {
-                            this.props.postFaktorParameter(values);
+                            this.props.postFaktorParameterForKPMR(values);
+                            console.log("****SUBMIT DATA PARAMETER FAKTOR KPMR")
+                            console.log(values);
                         }
-                        // console.log("****PARAMETER VERSION LIST****")
-                        // console.log(values);
                     });
+
                 }}>
                     <FormItem {...formItemLayout}>
                         {getFieldDecorator('token', {
@@ -235,13 +236,13 @@ class SaveParameter extends React.PureComponent{
 
 }
 
-const WrappedSaveParameter = Form.create()(SaveParameter);
+const WrappedSaveParameterFaktor = Form.create()(SaveParameterFaktor);
 
 const mapStateToProps = ({auth, parameterfaktor, jenisrisiko, masterversion}) => {
     const {token} = auth;
     const {statuspostparameterfaktor} = parameterfaktor;
-    const {masterversionsdata} = masterversion;
     const {getallrisks} = jenisrisiko;
+    const {masterversionsdata} = masterversion;
     return {
       statuspostparameterfaktor,
       token,
@@ -251,8 +252,8 @@ const mapStateToProps = ({auth, parameterfaktor, jenisrisiko, masterversion}) =>
 };
 
 export default connect(mapStateToProps, {
-  postFaktorParameter,
+  postFaktorParameterForKPMR,
   getAllRisks,
   resetPostFaktorParameter,
   fetchAllMasterVersion
-})(WrappedSaveParameter);
+})(WrappedSaveParameterFaktor);

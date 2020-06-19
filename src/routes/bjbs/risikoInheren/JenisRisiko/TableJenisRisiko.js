@@ -5,7 +5,7 @@ import {Divider, Button, Card, Table, Input, Spin, Pagination} from "antd";
 import IntlMessages from "util/IntlMessages";
 import Highlighter from "react-highlight-words";
 import {SearchOutlined} from "@ant-design/icons";
-import {getAllRisks, deleteRisk, getCountRisks} from "../../../../appRedux/actions/index";
+import {getAllRisksForTable, deleteRisk, getCountRisks} from "../../../../appRedux/actions/index";
 import connect from "react-redux/es/connect/connect";
 
 import SaveJenisRisiko from "./SaveJenisRisiko";
@@ -39,18 +39,25 @@ class TableJenisRisiko extends React.Component {
             edname:'',
             edket:'',
             edjenis:'',
-            jenis: 'PR'
+            jenis: ''
 
         };
     }
 
     componentDidMount(){
-        this.props.getAllRisks({token:this.props.token, page:this.state.paging, jenis:this.state.jenis, nama:this.state.paramname, keterangan:this.state.paramket});
+        this.props.getAllRisksForTable({
+          token:this.props.token,
+          page:this.state.paging,
+          searchData: {
+            jenis:this.state.jenis,
+            nama:this.state.paramname,
+            keterangan:this.state.paramket
+          }});
         this.props.getCountRisks({token:this.props.token, jenis:this.state.paramjenis, nama:this.state.paramname, keterangan:this.state.paramket});
     }
 
     componentWillReceiveProps(nextProps) {
-        // this.props.getAllRisks({token:this.props.token});
+        // this.props.getAllRisksForTable({token:this.props.token});
         this.setState({
             statusjenisrisikotable : nextProps.statusallrisks,
             statusjenisrisiko : nextProps.statusallrisk
@@ -204,7 +211,11 @@ class TableJenisRisiko extends React.Component {
                 loading:true,
                 edname: paramname
             });
-            this.props.getAllRisks({token:this.props.token, page:this.state.paging, jenis:this.state.paramjenis, nama:paramname, keterangan:this.state.paramket});
+            this.props.getAllRisksForTable({token:this.props.token, page:this.state.paging, searchData: {
+              jenis:this.state.paramjenis,
+              nama:paramname,
+              keterangan:this.state.paramket
+            }});
             this.props.getCountRisks({token:this.props.token, jenis:this.state.paramjenis, nama:paramname, keterangan:this.state.paramket});
         }
 
@@ -219,7 +230,11 @@ class TableJenisRisiko extends React.Component {
                 loading:true,
                 edket: paramket
             });
-            this.props.getAllRisks({token:this.props.token, page:this.state.paging, jenis:this.state.paramjenis, nama:this.state.paramname, keterangan:paramket});
+            this.props.getAllRisksForTable({token:this.props.token, page:this.state.paging, searchData: {
+              jenis:this.state.paramjenis,
+              nama:this.state.paramname,
+              keterangan:paramket
+            }});
             this.props.getCountRisks({token:this.props.token, jenis:this.state.paramjenis, nama:this.state.paramname, keterangan:paramket});
         }
 
@@ -234,7 +249,11 @@ class TableJenisRisiko extends React.Component {
                 loading:true,
                 edjenis: paramjenis
             });
-            this.props.getAllRisks({token:this.props.token, page:this.state.paging, jenis:paramjenis, nama:this.state.paramname, keterangan:this.state.paramket});
+            this.props.getAllRisksForTable({token:this.props.token, page:this.state.paging, searchData: {
+              jenis:paramjenis,
+              nama:this.state.paramname,
+              keterangan:this.state.paramket
+            }});
             this.props.getCountRisks({token:this.props.token, jenis:paramjenis, nama:this.state.paramname, keterangan:this.state.paramket});
         }
     };
@@ -251,7 +270,11 @@ class TableJenisRisiko extends React.Component {
                 loading:true,
                 edname: ''
             });
-            this.props.getAllRisks({token:this.props.token, page:this.state.paging, jenis:this.state.paramjenis, nama:'', keterangan:this.state.paramket});
+            this.props.getAllRisksForTable({token:this.props.token, page:this.state.paging, searchData: {
+              jenis:this.state.paramjenis,
+              nama:'',
+              keterangan:this.state.paramket
+            }});
             this.props.getCountRisks({token:this.props.token, jenis:this.state.paramjenis, nama:'', keterangan:this.state.paramket});
         }
 
@@ -261,7 +284,11 @@ class TableJenisRisiko extends React.Component {
                 loading:true,
                 edket: ''
             });
-            this.props.getAllRisks({token:this.props.token, page:this.state.paging, jenis:this.state.paramjenis, nama:this.state.paramname, keterangan:''});
+            this.props.getAllRisksForTable({token:this.props.token, page:this.state.paging, searchData: {
+              jenis:this.state.paramjenis,
+              nama:this.state.paramname,
+              keterangan:''
+            }});
             this.props.getCountRisks({token:this.props.token, jenis:this.state.paramjenis, nama:this.state.paramname, keterangan:''});
         }
 
@@ -271,7 +298,11 @@ class TableJenisRisiko extends React.Component {
                 loading:true,
                 edjenis: ''
             });
-            this.props.getAllRisks({token:this.props.token, page:this.state.paging, jenis:'', nama:this.state.paramname, keterangan:this.state.paramket});
+            this.props.getAllRisksForTable({token:this.props.token, page:this.state.paging, searchData: {
+              jenis:'',
+              nama:this.state.paramname,
+              keterangan:this.state.paramket
+            }});
             this.props.getCountRisks({token:this.props.token, jenis:'', nama:this.state.paramname, keterangan:this.state.paramket});
         }
     };
@@ -330,7 +361,11 @@ class TableJenisRisiko extends React.Component {
             loading:true,
             paging:page
         });
-        this.props.getAllRisks({token:this.props.token, page:page, jenis:this.state.paramjenis, nama:this.state.paramname, keterangan:this.state.paramket});
+        this.props.getAllRisksForTable({token:this.props.token, page:page, searchData: {
+          jenis:this.state.paramjenis,
+          nama:this.state.paramname,
+          keterangan:this.state.paramket
+        }});
         this.props.getCountRisks({token:this.props.token, jenis:this.state.paramjenis, nama:this.state.paramname, keterangan:this.state.paramket});
     }
 
@@ -339,7 +374,11 @@ class TableJenisRisiko extends React.Component {
             loading:true,
             paging:1
         });
-        this.props.getAllRisks({token:this.props.token, page:1, jenis:this.state.paramjenis, nama:this.state.paramname, keterangan:this.state.paramket});
+        this.props.getAllRisksForTable({token:this.props.token, page:1, searchData: {
+          jenis:this.state.paramjenis,
+          nama:this.state.paramname,
+          keterangan:this.state.paramket
+        }});
         this.props.getCountRisks({token:this.props.token, jenis:this.state.paramjenis, nama:this.state.paramname, keterangan:this.state.paramket});
     }
 
@@ -486,4 +525,4 @@ const mapStateToProps = ({auth,jenisrisiko}) => {
     return {token, getallrisks,statusallrisks,deleteallrisks, statusallrisk, countallrisks}
 };
 
-export default connect(mapStateToProps, {getAllRisks,deleteRisk, getCountRisks})(TableJenisRisiko);
+export default connect(mapStateToProps, {getAllRisksForTable,deleteRisk, getCountRisks})(TableJenisRisiko);

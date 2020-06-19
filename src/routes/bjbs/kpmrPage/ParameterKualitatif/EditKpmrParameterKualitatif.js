@@ -15,13 +15,13 @@ import {
 } from "../../../../appRedux/actions/index";
 import SweetAlerts from "react-bootstrap-sweetalert";
 import {Link} from "react-router-dom";
-import {optionsLevel} from "./SaveParameterKualitatif";
+import {optionsLevel} from "./SaveKpmrParameterKualitatif";
 import IntlMessages from "util/IntlMessages";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-class EditParameterKualitatif extends React.Component{
+class EditKpmrParameterKualitatif extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
@@ -466,7 +466,7 @@ class EditParameterKualitatif extends React.Component{
                                     }
                                 </Select>
                             )}
-                            <Link to={{pathname:'/bjbs/risikoinheren/ratioindikator',
+                            <Link to={{pathname:'/bjbs/kpmr/ratioindikator',
                                 ratioProps:{
                                     rparameter:fetchdata ? fetchdata.pkparameter ? fetchdata.pkparameter : paramparameter : paramparameter ,
                                     rlow:fetchdata ? fetchdata.pklow ? fetchdata.pklow : paramlow : paramlow,
@@ -540,7 +540,7 @@ class EditParameterKualitatif extends React.Component{
 
 }
 
-const WrappedEditParameterKualitatif = Form.create()(EditParameterKualitatif);
+const WrappedEditKpmrParameterKualitatif = Form.create()(EditKpmrParameterKualitatif);
 
 const mapStateToProps = ({
   auth,
@@ -582,5 +582,5 @@ export default connect(mapStateToProps, {
   fetchAllIngredients,
   addParameterKualitatif,
   updateParameterKualitatif
-})(WrappedEditParameterKualitatif);
+})(WrappedEditKpmrParameterKualitatif);
 export {optionsLevel};

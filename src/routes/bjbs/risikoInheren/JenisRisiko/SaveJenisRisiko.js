@@ -1,17 +1,24 @@
 import React from "react";
-import {Button, Input, Form} from "antd";
+import {Button, Input, Select, Form} from "antd";
 import connect from "react-redux/es/connect/connect";
 import {addRisk, resetPostRisk} from "../../../../appRedux/actions/index";
 
 const FormItem = Form.Item;
 const {TextArea} = Input;
+const Option = Select.Option;
 
+const optionsJenis = [
+    {label:"Risiko Inheren", value:"PR"},
+    {label:"KPMR", value:"KPMR"}
+];
 
 class SaveJenisRisiko extends React.PureComponent{
     constructor(props) {
         super(props);
         this.state = {
-            statuspost: ''
+            statuspost: '',
+            jenisoptions: optionsJenis,
+            jenis: ''
         }
     }
 
@@ -38,6 +45,7 @@ class SaveJenisRisiko extends React.PureComponent{
             },
         };
 
+        const {jenisoptions, jenis} = this.state;
         const {token} = this.props;
         const {getFieldDecorator} = this.props.form;
         return (
@@ -46,6 +54,8 @@ class SaveJenisRisiko extends React.PureComponent{
                     e.preventDefault();
                     this.props.form.validateFields((err, values) => {
                         if (!err) {
+                            // console.log("****VALUES ADD JENIS RISIKO / KPMR")
+                            // console.log(values);
                             this.props.addRisk(values);
                         }
                     });
@@ -81,15 +91,37 @@ class SaveJenisRisiko extends React.PureComponent{
                         )}
                     </FormItem>
 
-                    {/*<FormItem {...formItemLayout} label="Jenis">
+                    <FormItem {...formItemLayout} label="Jenis">
                         {getFieldDecorator('jenis', {
                             rules: [{
-                                required: true, message: 'Please input jenis field.',
+                                required: true, message: 'Please input level field.',
                             }],
                         })(
-                            <Input id="jenis" placeholder="Input Jenis"/>
+                          <Select id="jenis"
+                                  showSearch
+                                  placeholder="Select jenis"
+                                  optionFilterProp="children"
+                                  onChange={(value)=>{
+                                      this.setState({
+                                          jenis:value,
+                                      });
+                                  }}
+                                  style={jenis === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
+                                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
+                              <Option value="" disabled>Select level</Option>
+                              {
+                                  jenisoptions.map((prop, index) => {
+                                      var value = prop.value;
+                                      var label = prop.label;
+                                      return (
+                                          <Option value={value} key={index}>{label}</Option>
+                                      )
+                                  })
+                              }
+                          </Select>
                         )}
-                    </FormItem>*/}
+                    </FormItem>
+
 
                     <FormItem style={{ float : "right", paddingRight : "1rem" }}>
                         <Button onClick={this.props.clickCancelAddButton}>Cancel</Button>
@@ -110,4 +142,3 @@ const mapStateToProps = ({auth, jenisrisiko}) => {
 };
 
 export default connect(mapStateToProps, {addRisk, resetPostRisk})(WrappedSaveRisk);
-

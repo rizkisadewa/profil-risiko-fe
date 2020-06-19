@@ -81,12 +81,6 @@ class SidebarContent extends Component {
                   <SubMenu key="risikoinheren" className={this.getNavStyleSubMenuClass(navStyle)}
                            title={<span> <i className="icon icon-auth-screen"/>
                          <IntlMessages id="sidebar.risikoinheren"/></span>}>
-                      <Menu.Item key="bjbs/risikoinheren/jenisrisiko">
-                          <Link to="/bjbs/risikoinheren/jenisrisiko">
-                              <i className="icon icon-affix"/>
-                              <IntlMessages id="sidebar.risikoinheren.risiko"/>
-                          </Link>
-                      </Menu.Item>
                       <Menu.Item key="bjbs/risikoinheren/parameterfaktor">
                           <Link to="/bjbs/risikoinheren/parameterfaktor">
                               <i className="icon icon-badge"/>
@@ -99,43 +93,78 @@ class SidebarContent extends Component {
                               <IntlMessages id="sidebar.risikoinheren.ratioindikator"/>
                           </Link>
                       </Menu.Item>
+
+                      {/*
                       <Menu.Item key="bjbs/risikoinheren/parametermanual">
                           <Link to="/bjbs/risikoinheren/parametermanual">
                               <i className="icon icon-select"/>
                               <IntlMessages id="sidebar.risikoinheren.parametermanual"/>
                           </Link>
                       </Menu.Item>
+                      */}
                       <Menu.Item key="bjbs/risikoinheren/parameterkuantitatif">
                           <Link to="/bjbs/risikoinheren/parameterkuantitatif">
                               <i className="icon icon-ckeditor"/>
                               <IntlMessages id="sidebar.risikoinheren.parameterkuantitatif"/>
                           </Link>
                       </Menu.Item>
+
                       <Menu.Item key="bjbs/risikoinheren/parameterkualitatif">
                           <Link to="/bjbs/risikoinheren/parameterkualitatif">
-                              <i className="icon icon-diamond"/>
-                              <IntlMessages id="sidebar.risikoinheren.parameterkualitatif"/>
+                              <i className="icon icon-basic-calendar"/>
+                              <IntlMessages id="sidebar.risikoinheren.parameterkualitatif.multiplelalternatif"/>
+                          </Link>
+                      </Menu.Item>
+                      <Menu.Item key="bjbs/risikoinheren/parameterkualitatifdualalternatif">
+                          <Link to="/bjbs/risikoinheren/parameterkualitatifdualalternatif">
+                              <i className="icon icon-feedback"/>
+                              <IntlMessages id="sidebar.risikoinheren.parameterkualitatif.dualalternatif"/>
+                          </Link>
+                      </Menu.Item>
+
+                  </SubMenu>
+
+                  <SubMenu key="kpmr" className={this.getNavStyleSubMenuClass(navStyle)}
+                           title={<span> <i className="icon icon-editor"/>
+                         <IntlMessages id="sidebar.kpmr"/></span>}>
+                     <Menu.Item key="bjbs/kpmr/parameterfaktor">
+                         <Link to="/bjbs/kpmr/parameterfaktor">
+                             <i className="icon icon-badge"/>
+                             <IntlMessages id="sidebar.kpmr.parameterfaktor"/>
+                         </Link>
+                     </Menu.Item>
+                     <Menu.Item key="bjbs/kpmr/ratioindikator">
+                        <Link to="/bjbs/kpmr/ratioindikator">
+                            <i className="icon icon-crm"/>
+                            <IntlMessages id="sidebar.kpmr.ratioindikator"/>
+                        </Link>
+                     </Menu.Item>
+                     <Menu.Item key="bjbs/kpmr/parameterkualitatif">
+                        <Link to="/bjbs/kpmr/parameterkualitatif">
+                            <i className="icon icon-feedback"/>
+                            <IntlMessages id="sidebar.kpmr.parameterkualitatif"/>
+                        </Link>
+                     </Menu.Item>
+                  </SubMenu>
+
+                  <SubMenu key="datainput" className={this.getNavStyleSubMenuClass(navStyle)}
+                           title={<span> <i className="icon icon-data-entry"/>
+                         <IntlMessages id="sidebar.datainput.risikoinheren"/></span>}>
+                      <Menu.Item key="bjbs/datainput/risikoinheren/datakuantitatif">
+                          <Link to="/bjbs/datainput/risikoinheren/datakuantitatif">
+                              <i className="icon icon-table"/>
+                              <IntlMessages id="sidebar.datainput.risikoinheren.kuantitatif"/>
+                          </Link>
+                      </Menu.Item>
+                      <Menu.Item key="bjbs/datainput/kpmr/ratioindikator">
+                          <Link to="/bjbs/datainput/kpmr/ratioindikator">
+                              <i className="icon icon-table-general"/>
+                              <IntlMessages id="sidebar.datainput.kpmr.ratioindikator"/>
                           </Link>
                       </Menu.Item>
                   </SubMenu>
 
-                  <SubMenu key="masterdata" className={this.getNavStyleSubMenuClass(navStyle)}
-                           title={<span> <i className="icon icon-inbox"/>
-                         <IntlMessages id="sidebar.masterdata"/></span>}>
-                      <Menu.Item key="bjbs/masterdata/jenispenilaian">
-                          <Link to="/bjbs/masterdata/jenispenilaian">
-                              <i className="icon icon-data-display"/>
-                              <IntlMessages id="sidebar.masterdata.penilaian"/>
-                          </Link>
-                      </Menu.Item>
-                      <Menu.Item key="bjbs/masterdata/ratioindikator">
-                          <Link to="/bjbs/masterdata/ratioindikator">
-                              <i className="icon icon-map-popup-info"/>
-                              <IntlMessages id="sidebar.masterdata.ratioindikator"/>
-                          </Link>
-                      </Menu.Item>
-                  </SubMenu>
-
+                  {/*
                   <SubMenu key="keperluandata" className={this.getNavStyleSubMenuClass(navStyle)}
                            title={<span> <i className="icon icon-files"/>
                          <IntlMessages id="sidebar.keperluandata"/></span>}>
@@ -169,7 +198,8 @@ class SidebarContent extends Component {
                               <IntlMessages id="sidebar.keperluandata.frekmaterialitas"/>
                           </Link>
                       </Menu.Item>
-                      {/* Keperluan Data 2 */}
+
+
                       <Menu.Item key="bjbs/keperluandata/roa">
                           <Link to="/bjbs/keperluandata/roa">
                               <i className="icon icon-ripple"/>
@@ -194,7 +224,7 @@ class SidebarContent extends Component {
                               <IntlMessages id="sidebar.keperluandata.norminatifk241"/>
                           </Link>
                       </Menu.Item>
-                      {/* Keperluan Data 3 */}
+
                       <Menu.Item key="bjbs/keperluandata/neracalabarugi">
                           <Link to="/bjbs/keperluandata/neracalabarugi">
                               <i className="icon icon-transfer"/>
@@ -231,7 +261,7 @@ class SidebarContent extends Component {
                               <IntlMessages id="sidebar.keperluandata.datalitigasi"/>
                           </Link>
                       </Menu.Item>
-                      {/* Keperluan Data 4 */}
+
                       <Menu.Item key="bjbs/keperluandata/rbb">
                           <Link to="/bjbs/keperluandata/rbb">
                               <i className="icon icon-invert-color"/>
@@ -245,9 +275,11 @@ class SidebarContent extends Component {
                           </Link>
                       </Menu.Item>
                   </SubMenu>
+                  */}
+
                   {/* Laporan */}
                   <SubMenu key="laporan" className={this.getNavStyleSubMenuClass(navStyle)}
-                           title={<span> <i className="icon icon-feedback"/>
+                           title={<span> <i className="icon icon-data-display"/>
                          <IntlMessages id="sidebar.laporan"/></span>}>
                       <Menu.Item key="bjbs/laporan/laporanprofilrisikokeojk">
                           <Link to="/bjbs/laporan/laporanprofilrisikokeojk">
@@ -268,7 +300,35 @@ class SidebarContent extends Component {
                           </Link>
                       </Menu.Item>
                   </SubMenu>
+
+                  <SubMenu key="masterdata" className={this.getNavStyleSubMenuClass(navStyle)}
+                           title={<span> <i className="icon icon-inbox"/>
+                         <IntlMessages id="sidebar.masterdata"/></span>}>
+                     <Menu.Item key="bjbs/risikoinheren/jenisrisiko">
+                         <Link to="/bjbs/risikoinheren/jenisrisiko">
+                             <i className="icon icon-affix"/>
+                             <IntlMessages id="sidebar.risikoinheren.risiko"/>
+                         </Link>
+                     </Menu.Item>
+                      <Menu.Item key="bjbs/masterdata/jenispenilaian">
+                          <Link to="/bjbs/masterdata/jenispenilaian">
+                              <i className="icon icon-data-display"/>
+                              <IntlMessages id="sidebar.masterdata.penilaian"/>
+                          </Link>
+                      </Menu.Item>
+                      {/* Master Ratio Indikator */}
+                      {/*
+                      <Menu.Item key="bjbs/masterdata/ratioindikator">
+                          <Link to="/bjbs/masterdata/ratioindikator">
+                              <i className="icon icon-map-popup-info"/>
+                              <IntlMessages id="sidebar.masterdata.ratioindikator"/>
+                          </Link>
+                      </Menu.Item>
+                      */}
+                  </SubMenu>
+
                   {/* Profile User */}
+                  {/*
                   <SubMenu key="profileuser" className={this.getNavStyleSubMenuClass(navStyle)}
                            title={<span> <i className="icon icon-user-o"/>
                          <IntlMessages id="sidebar.profileuser"/></span>}>
@@ -291,7 +351,10 @@ class SidebarContent extends Component {
                           </Link>
                       </Menu.Item>
                   </SubMenu>
+                  */}
+
                   {/*Lain-Lain*/}
+                  {/*
                   <Menu.Item key="bjbs/lainlain">
                       <Link to="/bjbs/lainlain">
                           <i className="icon icon-setting"/>
@@ -299,9 +362,12 @@ class SidebarContent extends Component {
                       </Link>
                   </Menu.Item>
 
+
                   <Menu.Item key="bjbs/logout">
                       <SignOutApp/>
                   </Menu.Item>
+
+                  */}
               </MenuItemGroup>
             </Menu>
           </CustomScrollbars>

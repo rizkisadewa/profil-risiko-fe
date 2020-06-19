@@ -11,6 +11,7 @@ const RisikoInherenPage = ({match}) => (
         <Route path={`${match.url}/parametermanual`} component={asyncComponent(() => import('../risikoInheren/ParameterManual'))}/>
         <Route path={`${match.url}/parameterkuantitatif`} component={asyncComponent(() => import('../risikoInheren/ParameterKuantitatif'))}/>
         <Route path={`${match.url}/parameterkualitatif`} component={asyncComponent(() => import('../risikoInheren/ParameterKualitatif'))}/>
+        <Route path={`${match.url}/parameterkualitatifdualalternatif`} component={asyncComponent(() => import('../risikoInheren/ParameterKualitatifDualAlternatif'))}/>
     </Switch>
 );
 
