@@ -17,8 +17,12 @@ import {
   fetchAllParameterKuantitatif,
   countAllParameterKuantitatif,
   deleteParameterKuantitatif,
-  resetDeleteParameterKuantitatif
-} from "../../../../appRedux/actions/Parameterkuantitatif";
+  resetDeleteParameterKuantitatif,
+  fetchAllParameterKualitatifDualAlternatif,
+  countAllParameterKualitatifDualAlternatif,
+  deleteParameterKualitatifDualAlternatif,
+  resetDeleteParameterKualitatifDualAlternatif
+} from "../../../../appRedux/actions/index";
 import MySnackbarContentWrapper from "../../../../components/Snackbar/SnackBar";
 
 function TableParameterKualitatifDualAlternatif ({
@@ -29,106 +33,111 @@ function TableParameterKualitatifDualAlternatif ({
   countAllParameterKuantitatif,
   deleteParameterKuantitatif,
   deleteResponse,
-  resetDeleteParameterKuantitatif
+  resetDeleteParameterKuantitatif,
+  countAllParameterKualitatifDualAlternatif,
+  fetchAllParameterKualitatifDualAlternatif,
+  parameterKualiatifDualAlternatifData,
+  deleteParameterKualitatifDualAlternatif,
+  resetDeleteParameterKualitatifDualAlternatif
 }){
-      const dataDummy = [
-        {
-          id: 1321,
-          risk_id: 45,
-          name: "Test Ikhsan Solusi 2",
-          level: 1,
-          created_at: "2020-06-09T11:53:23.000Z",
-          updated_at: "2020-06-13T07:21:50.000Z",
-          deleted_at: null,
-          induk_id: 1311,
-          keys: null,
-          penomoran: "1 ",
-          pr_low: "0",
-          pr_lowtomod: "0",
-          pr_mod: "0",
-          pr_modtohigh: "0",
-          pr_high: "0",
-          urutan_sub: null,
-          bobot: 4,
-          desc_pr_low: null,
-          desc_pr_lowtomod: null,
-          desc_pr_mod: null,
-          desc_pr_modtohigh: null,
-          desc_pr_high: null,
-          ratio_manual: null,
-          id_indikator_pembilang: 0,
-          id_indikator_penyebut: 0,
-          version: null,
-          stock: null,
-          jenis_nilai_id: 2,
-          id_rationilaidet: null,
-          bulan: 6,
-          tahun: 2026,
-          jenis: "PR",
-          created_by: "s0581",
-          version_id: null,
-          parameter_faktor_id: 1257,
-          bulan_kuantitatif: 6,
-          tahun_kuantitatif: 2026,
-          risk_name: null,
-          risk_desc: null,
-          parameter_induk: 1,
-          parameter_faktor: "Komposisi Portofolio Aset termasuk jenis akad yang digunakan dan Tingkat Konsentrasi",
-          parameterVersionList: [
-            {
-              id: 57,
-              ingredients_id: 1321,
-              version_id: 1,
-              mst_version: {
-                created_at: "2020-06-03 14:43:08",
-                id: 1,
-                version_name: "Version-0-2020-06-03",
-                created_by: "s0581"
-              }
-            },
-            {
-              id: 58,
-              ingredients_id: 1321,
-              version_id: 2,
-              mst_version: {
-                created_at: "2020-06-03 14:43:31",
-                id: 2,
-                version_name: "Version-1-2020-06-03",
-                created_by: "s0581"
-              }
-            }
-          ],
-          ratioIndikatorFormulaList: [
-            {
-              created_time: "2020-06-15 13:54:44",
-              id: 95,
-              ingredients_id: 1321,
-              ratio_indikator_id: 237,
-              seq: 0,
-              operations: "dependentvariable",
-              created_by: null
-            },
-            {
-              created_time: "2020-06-15 13:54:44",
-              id: 96,
-              ingredients_id: 1321,
-              ratio_indikator_id: 237,
-              seq: 1,
-              operations: "+",
-              created_by: null
-            },
-            {
-              created_time: "2020-06-15 13:54:44",
-              id: 97,
-              ingredients_id: 1321,
-              ratio_indikator_id: 238,
-              seq: 2,
-              operations: "+",
-              created_by: null
-            }
-          ]
-        }
-      ]
+      // const dataDummy = [
+      //   {
+      //     id: 1321,
+      //     risk_id: 45,
+      //     name: "Test Ikhsan Solusi 2",
+      //     level: 1,
+      //     created_at: "2020-06-09T11:53:23.000Z",
+      //     updated_at: "2020-06-13T07:21:50.000Z",
+      //     deleted_at: null,
+      //     induk_id: 1311,
+      //     keys: null,
+      //     penomoran: "1 ",
+      //     pr_low: "0",
+      //     pr_lowtomod: "0",
+      //     pr_mod: "0",
+      //     pr_modtohigh: "0",
+      //     pr_high: "0",
+      //     urutan_sub: null,
+      //     bobot: 4,
+      //     desc_pr_low: null,
+      //     desc_pr_lowtomod: null,
+      //     desc_pr_mod: null,
+      //     desc_pr_modtohigh: null,
+      //     desc_pr_high: null,
+      //     ratio_manual: null,
+      //     id_indikator_pembilang: 0,
+      //     id_indikator_penyebut: 0,
+      //     version: null,
+      //     stock: null,
+      //     jenis_nilai_id: 2,
+      //     id_rationilaidet: null,
+      //     bulan: 6,
+      //     tahun: 2026,
+      //     jenis: "PR",
+      //     created_by: "s0581",
+      //     version_id: null,
+      //     parameter_faktor_id: 1257,
+      //     bulan_kuantitatif: 6,
+      //     tahun_kuantitatif: 2026,
+      //     risk_name: null,
+      //     risk_desc: null,
+      //     parameter_induk: 1,
+      //     parameter_faktor: "Komposisi Portofolio Aset termasuk jenis akad yang digunakan dan Tingkat Konsentrasi",
+      //     parameterVersionList: [
+      //       {
+      //         id: 57,
+      //         ingredients_id: 1321,
+      //         version_id: 1,
+      //         mst_version: {
+      //           created_at: "2020-06-03 14:43:08",
+      //           id: 1,
+      //           version_name: "Version-0-2020-06-03",
+      //           created_by: "s0581"
+      //         }
+      //       },
+      //       {
+      //         id: 58,
+      //         ingredients_id: 1321,
+      //         version_id: 2,
+      //         mst_version: {
+      //           created_at: "2020-06-03 14:43:31",
+      //           id: 2,
+      //           version_name: "Version-1-2020-06-03",
+      //           created_by: "s0581"
+      //         }
+      //       }
+      //     ],
+      //     ratioIndikatorFormulaList: [
+      //       {
+      //         created_time: "2020-06-15 13:54:44",
+      //         id: 95,
+      //         ingredients_id: 1321,
+      //         ratio_indikator_id: 237,
+      //         seq: 0,
+      //         operations: "dependentvariable",
+      //         created_by: null
+      //       },
+      //       {
+      //         created_time: "2020-06-15 13:54:44",
+      //         id: 96,
+      //         ingredients_id: 1321,
+      //         ratio_indikator_id: 237,
+      //         seq: 1,
+      //         operations: "+",
+      //         created_by: null
+      //       },
+      //       {
+      //         created_time: "2020-06-15 13:54:44",
+      //         id: 97,
+      //         ingredients_id: 1321,
+      //         ratio_indikator_id: 238,
+      //         seq: 2,
+      //         operations: "+",
+      //         created_by: null
+      //       }
+      //     ]
+      //   }
+      // ]
 
       // state
       const [sortedInfo, setSortedInfo] = React.useState({});
@@ -164,11 +173,14 @@ function TableParameterKualitatifDualAlternatif ({
 
       // useEffect
       React.useEffect(() => {
-        fetchAllParameterKuantitatif({
+        fetchAllParameterKualitatifDualAlternatif({
           token: authData.token,
-          page: 1
-        });
-        countAllParameterKuantitatif(authData.token);
+          page: 1,
+          searchData: {
+            jenis_nilai_id: 21
+          }
+        })
+        countAllParameterKualitatifDualAlternatif(authData.token);
 
         if(typeof deleteResponse.statusCode !== "undefined"){
           clickDeleteSuccessButton(deleteResponse.statusCode, deleteResponse.message);
@@ -347,16 +359,17 @@ function TableParameterKualitatifDualAlternatif ({
 
       const handleDeleteButton = (id, name) => {
         setWarning(false);
-        deleteParameterKuantitatif(authData.token, id);
+        deleteParameterKualitatifDualAlternatif(authData.token, id);
+        resetDeleteParameterKualitatifDualAlternatif();
       }
 
       const clickDeleteSuccessButton = (status, message) => {
         if(status === 200 || status === 201){
-          console.log("a1");
-          NotificationManager.success(`Success!`, `${message}`, 1500);
+          // console.log("a1");
+          // NotificationManager.success(`Success!`, `${message}`, 1500);
           handleSnackBar("success", `${message}`);
         } else {
-          NotificationManager.error(`Failed!`, `${message}`, 1500);
+          // NotificationManager.error(`Failed!`, `${message}`, 1500);
           handleSnackBar("error", `${message}`);
         }
       }
@@ -551,8 +564,8 @@ function TableParameterKualitatifDualAlternatif ({
 
                     // sorting value for selected master version in parameter version
                     let masterversionlistdata = [];
-                    for(let i=0;i<text.parameterVersionList.length;i++){
-                      masterversionlistdata.push(parseInt(text.parameterVersionList[i].mst_version.id));
+                    for(let i=0;i<text.master_version_list.length;i++){
+                      masterversionlistdata.push(parseInt(text.master_version_list[i].version_id));
                     }
 
                     setFetchData([
@@ -576,7 +589,7 @@ function TableParameterKualitatifDualAlternatif ({
                           induk_id: parseInt(text.induk_id),
                           parameter_faktor_id: parseInt(text.parameter_faktor_id),
                           masterversionlist: masterversionlistdata,
-                          ratioindikatorformula: text.ratioIndikatorFormulaList
+                          ratioindikatorformula: text.ratio_indikator_formula
                       }
                     ]);
 
@@ -639,7 +652,7 @@ function TableParameterKualitatifDualAlternatif ({
                                   <Button className="ant-btn" onClick={onRefresh}>Refresh</Button>
                               </div>
                               <Spin tip="Loading..." spinning={loading}>
-                                  <Table dataSource={dataDummy}
+                                  <Table dataSource={parameterKualiatifDualAlternatifData.parameterkualitatifdualalternatifdata}
                                   className="gx-table-responsive" onChange={handleChange}
                                   columns={columns} rowKey="id" pagination={false} />
                                   <div className="table-operations" style={{ paddingTop : '1rem', float : 'right' }}>
@@ -700,7 +713,8 @@ const mapStateToProps = state => {
   return {
     authData: state.auth,
     parameterKuantitatifData: state.parameterkuantitatif,
-    deleteResponse: state.parameterkuantitatif.deleteparameterkuantiatatifresult
+    deleteResponse: state.parameterkualitatifdualalternatif.deleteparameterkualitatifdualalternatifresult,
+    parameterKualiatifDualAlternatifData: state.parameterkualitatifdualalternatif
   }
 }
 
@@ -710,6 +724,10 @@ const mapDispatchToProps = dispatch => {
     countAllParameterKuantitatif: (token) => dispatch(countAllParameterKuantitatif(token)),
     deleteParameterKuantitatif: (token, id) => dispatch(deleteParameterKuantitatif(token, id)),
     resetDeleteParameterKuantitatif: () => dispatch(resetDeleteParameterKuantitatif()),
+    countAllParameterKualitatifDualAlternatif: (token) => dispatch(countAllParameterKualitatifDualAlternatif(token)),
+    fetchAllParameterKualitatifDualAlternatif: (token, page, searchData) => dispatch(fetchAllParameterKualitatifDualAlternatif(token, page, searchData)),
+    deleteParameterKualitatifDualAlternatif: (token, id) => dispatch(deleteParameterKualitatifDualAlternatif(token, id)),
+    resetDeleteParameterKualitatifDualAlternatif: () => dispatch(resetDeleteParameterKualitatifDualAlternatif())
   }
 }
 

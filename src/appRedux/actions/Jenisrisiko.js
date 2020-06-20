@@ -66,7 +66,6 @@ export const getAllRisksForTable = ({token, page, searchData}) => {
     return (dispatch) => {
       dispatch({type: FETCH_START});
 
-      var parameters = '';
       var searchParameters = '';
 
       let paramColumn = [
@@ -99,7 +98,6 @@ export const getAllRisksForTable = ({token, page, searchData}) => {
           // conditon for number greater than 0
           if(paramValue[i] !== ""){
             searchCounter += 1;
-            parameters += `&${paramColumn[i]}=${paramValue[i]}`;
 
             if(searchCounter > 1) {
               searchParameters += '&';

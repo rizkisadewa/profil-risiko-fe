@@ -1,4 +1,4 @@
-import React, {useState, useRef} from "react";
+import React from "react";
 import {Button, Input, Form, Select, InputNumber, Spin} from "antd";
 // import {Button, Input, Form, Select, InputNumber, Spin} from "antd";
 import connect from "react-redux/es/connect/connect";
@@ -7,17 +7,17 @@ import {
   getAllPeringkatRisiko,
   jenisNilaiParam,
   getAllRatioIndikator,
-  updateParameterKuantitatif,
+  updateParameterKualitatifDualAlternatif,
   resetUpdateParameterKuantitatif,
   fetchAllParameterKuantitatif,
   fetchAllIngredients,
   fetchAllMasterVersion,
   getAllFaktorParameterDataOption,
   fetchAllRatioIndikatorFormula,
-  getAllRatioIndikatorForParamterKualitatif
+  getAllRatioIndikatorForParamterKualitatif,
+  resetUpdateParameterKualitatifDualAlternatif
 } from "../../../../appRedux/actions/index";
 import SweetAlerts from "react-bootstrap-sweetalert";
-import {Link} from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import {
   PlusCircleFilled,
@@ -31,8 +31,7 @@ const Option = Select.Option;
 const optionsLevel = [
     {label:"Level Kedua (2)", value:2},
     {label:"Level Ketiga (3)", value:3},
-    {label:"Level Keempat (4)", value:4},
-    {label:"Level Kelima (5)", value:5}
+    {label:"Level Keempat (4)", value:4}
 ];
 
 const operatorOption = [
@@ -53,7 +52,6 @@ class EditParameterKualitatifDualAlternatif extends React.Component{
           ewarning: false,
           dataoptionsrisk : [],
           dataoptionsvariabletype : variableType,
-          dataoptionsratioindikatorkualitatif : [],
           dataoptionsingredientsdata : [],
           dataoptionsratioindikator : [],
           ratioindikatorcalculation: [],
@@ -61,26 +59,16 @@ class EditParameterKualitatifDualAlternatif extends React.Component{
           datavalue: [],
           dataoptionsparameterfaktor: [],
           //state value
-          paramparameter:'',
-          paramlow:'',
-          paramlowtomoderate:'',
-          parammoderate:'',
-          parammoderatetohigh:'',
-          paramhigh:'',
-          parambobot:'',
-          parampenomoran:'',
           paramlevel:'',
           paramindukparameter:'',
           paramrisk_id:'',
           paramjenisnilai:'',
-          paramindikatorpembilang:'',
-          paramindikatorpenyebut:'',
           numChildren: 0,
       }
   }
 
   componentDidMount(){
-      this.props.getAllRisks({token:this.props.token, page:'', jenis:'', nama:'', keterangan:''});
+      this.props.getAllRisks({token:this.props.token, page:'', jenis:'PR', nama:'', keterangan:''});
       this.props.getAllPeringkatRisiko({page:'', token:this.props.token, description:'', name:'', jenis_nilai:''});
       this.props.jenisNilaiParam({token:this.props.token});
       this.props.getAllRatioIndikatorForParamterKualitatif({token:this.props.token, jenis: "PR"});
@@ -108,16 +96,16 @@ class EditParameterKualitatifDualAlternatif extends React.Component{
           dataoptionsparameterfaktor: nextProps.getallparameterfaktor,
       });
 
-      switch(nextProps.updateparameterkuantitatifresult.statusCode){
+      switch(nextProps.updateparameterkualitatifdualalternatifresult.statusCode){
         case 200:
         case 201:
         case 400:
-          this.props.clickAddSuccessButton(
-            nextProps.updateparameterkuantitatifresult.statusCode,
-            nextProps.updateparameterkuantitatifresult.message
+          this.props.clickEditSuccessButton(
+            nextProps.updateparameterkualitatifdualalternatifresult.statusCode,
+            nextProps.updateparameterkualitatifdualalternatifresult.message
           );
           // reset all state
-          this.props.resetAddParameterKualitatif();
+          this.props.resetUpdateParameterKualitatifDualAlternatif();
           break;
         default:
           break;
@@ -134,7 +122,7 @@ class EditParameterKualitatifDualAlternatif extends React.Component{
     // data for calculation
     let dataBody = {};
     dataBody.ratio_indikator_id = "";
-    dataBody.seq = this.state.numChildren;
+    dataBody.seq = this.state.numChildren + 1;
     dataBody.operations = "+";
     this.state.ratioindikatorcalculation.push(dataBody);
     dataBody = {};
@@ -176,7 +164,7 @@ class EditParameterKualitatifDualAlternatif extends React.Component{
 
   handleChangeOperator = (value, i) => {
 
-      let index = parseInt(i._owner.index);
+      let index = parseInt(i._owner.index) + 1;
       // update value in object
       // this.state.ratioindikatorcalculation[index].operations = value;
 
@@ -187,24 +175,22 @@ class EditParameterKualitatifDualAlternatif extends React.Component{
         ...prevState,
         ratioindikatorcalculations: newArray
       }));
-      console.log(this.state.ratioindikatorcalculations);
 
   }
 
   handleChangeRatioIndikator = (value, i) => {
-      let index = parseInt(i._owner.index);
+      let index = parseInt(i._owner.index) + 1;
       // update value in object
       // this.state.ratioindikatorcalculation[index].ratio_indikator_id = value;
 
       const newArray = Array.from(this.state.ratioindikatorcalculation);
       newArray[index].ratio_indikator_id = value;
 
+
       this.setState(prevState => ({
         ...prevState,
         ratioindikatorcalculations: newArray
       }));
-
-      console.log(this.state.ratioindikatorcalculations);
 
   }
 
@@ -245,21 +231,10 @@ class EditParameterKualitatifDualAlternatif extends React.Component{
           dataoptionsrisk,
           dataoptionslevel,
           basic,
-          paramparameter,
-          paramlow,
-          paramlowtomoderate,
-          parammoderate,
-          parammoderatetohigh,
-          paramhigh,
-          parambobot,
-          parampenomoran,
           paramlevel,
           paramindukparameter,
           paramrisk_id,
           paramjenisnilai,
-          paramindikatorpenyebut,
-          paramindikatorpembilang,
-          dataoptionsratioindikatorkualitatif,
           dataoptionsingredientsdata,
           dataoptionsratioindikator,
           numChildren,
@@ -285,8 +260,8 @@ class EditParameterKualitatifDualAlternatif extends React.Component{
             id_operator_arithmetic={"operator_arithmetic_"+i}
             handleChangeRatioIndikator={this.handleChangeRatioIndikator}
             handleChangeOperator={this.handleChangeOperator}
-            operationsDefaultValue={typeof fetchdata[0].ratioindikatorformula[i] === "undefined" ? fetchdata[0].ratioindikatorformula[i-1].operations : fetchdata[0].ratioindikatorformula[i].operations}
-            ratioIndikatorDefaultValue={typeof fetchdata[0].ratioindikatorformula[i] === "undefined" ? fetchdata[0].ratioindikatorformula[i-1].ratio_indikator_id : fetchdata[0].ratioindikatorformula[i].ratio_indikator_id}
+            operationsDefaultValue="+"
+            ratioIndikatorDefaultValue={typeof fetchdata[0].ratioindikatorformula[i] === "undefined" ? "" : fetchdata[0].ratioindikatorformula[i].ratio_indikator_id}
             id_ratio_indikator={"ratio_indikator_"+i}
             />);
       };
@@ -296,14 +271,30 @@ class EditParameterKualitatifDualAlternatif extends React.Component{
         <Form onSubmit={(e)=>{
             e.preventDefault();
             this.props.form.validateFields((err, values) => {
-                values.ratio_indikator_formula = ratioindikatorcalculation;
+
+                let ratioindikatorcalculationsfixed = [];
+                let ratioindikatorcalculationsbody = {};
+
+                for(let i=0;i<ratioindikatorcalculation.length;i++){
+                  ratioindikatorcalculationsbody.ratio_indikator_id = ratioindikatorcalculation[i].ratio_indikator_id;
+                  ratioindikatorcalculationsbody.seq = ratioindikatorcalculation[i].seq;
+                  ratioindikatorcalculationsbody.operations = ratioindikatorcalculation[i].operations;
+                  ratioindikatorcalculationsfixed.push(ratioindikatorcalculationsbody);
+                  ratioindikatorcalculationsbody = {};
+                }
+
+
+                values.ratio_indikator_formula = ratioindikatorcalculationsfixed;
+
                 console.log(values);
-                // if (!err) {
-                //   this.setState({
-                //       ewarning: true,
-                //       datavalue:values
-                //   });
-                // }
+                console.log(ratioindikatorcalculation);
+                console.log(ratioindikatorcalculationsfixed)
+                if (!err) {
+                  this.setState({
+                      ewarning: true,
+                      datavalue:values
+                  });
+                }
             });
         }}>
                 {
@@ -367,11 +358,8 @@ class EditParameterKualitatifDualAlternatif extends React.Component{
                                         required: true, message: 'Please input penomoran field.'
                                     }],
                                 })(
-                                    <InputNumber id="penomoran" placeholder="Input Penomoran"
+                                    <Input id="penomoran" placeholder="Input Penomoran"
                                                  className="w-100"
-                                                 min={0}
-                                                 max={99}
-                                                 maxLength={2}
                                                  onChange={(value)=>{
                                                      this.setState({
                                                          parampenomoran:value,
@@ -653,7 +641,7 @@ class EditParameterKualitatifDualAlternatif extends React.Component{
                                         showSearch
                                         placeholder="Select Initial Ratio Indikator"
                                         optionFilterProp="children"
-                                        defaultValue={prop.ratioindikatorformula[0].ratio_indikator_id}
+                                          defaultValue={prop.ratioindikatorformula[0].ratio_indikator_id}
                                         style={{marginTop: 10, marginBottom: 10}}
                                         onChange={this.onAddInitRIIdIndikator}
                                 >
@@ -678,7 +666,7 @@ class EditParameterKualitatifDualAlternatif extends React.Component{
 
                             <FormItem style={{ float : "right", paddingRight : "1rem" }}>
                                 <Button onClick={this.props.clickCancelEditButton}>Cancel</Button>
-                                <Button type="primary" htmlType="submit">Save</Button>
+                                <Button type="primary" htmlType="submit">Update</Button>
                             </FormItem>
                           </Spin>
                         </div>
@@ -698,7 +686,7 @@ class EditParameterKualitatifDualAlternatif extends React.Component{
                                    this.setState({
                                        ewarning: false,
                                    });
-                                   this.props.updateParameterKuantitatif({
+                                   this.props.updateParameterKualitatifDualAlternatif({
                                      id: fetchdata[0].id,
                                      token: token,
                                      altered: datavalue
@@ -818,7 +806,8 @@ const mapStateToProps = ({
   ingredients,
   parameterfaktor,
   masterversion,
-  ratioindikatorformula
+  ratioindikatorformula,
+  parameterkualitatifdualalternatif
 }) => {
     const {token} = auth;
     const {getallrisks} = jenisrisiko;
@@ -830,6 +819,7 @@ const mapStateToProps = ({
     const {getallparameterfaktor} = parameterfaktor;
     const {masterversionsdata} = masterversion;
     const {ratioindikatorformuladata, countallratioindikatorformula} = ratioindikatorformula;
+    const {updateparameterkualitatifdualalternatifresult} = parameterkualitatifdualalternatif;
     return {
       token,
       getallrisks,
@@ -841,7 +831,8 @@ const mapStateToProps = ({
       getallparameterfaktor,
       masterversionsdata,
       ratioindikatorformuladata,
-      countallratioindikatorformula
+      countallratioindikatorformula,
+      updateparameterkualitatifdualalternatifresult
     }
 };
 
@@ -850,12 +841,13 @@ export default connect(mapStateToProps, {
   getAllPeringkatRisiko,
   jenisNilaiParam,
   getAllRatioIndikator,
-  updateParameterKuantitatif,
+  updateParameterKualitatifDualAlternatif,
   resetUpdateParameterKuantitatif,
   fetchAllParameterKuantitatif,
   fetchAllIngredients,
   fetchAllMasterVersion,
   getAllFaktorParameterDataOption,
   fetchAllRatioIndikatorFormula,
-  getAllRatioIndikatorForParamterKualitatif
+  getAllRatioIndikatorForParamterKualitatif,
+  resetUpdateParameterKualitatifDualAlternatif
 })(WrappedEditParameterKualitatifDualAlternatif);

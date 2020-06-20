@@ -1,5 +1,5 @@
 import React from "react";
-import {Divider, Button, Card, Table, Spin, Input, Pagination, Form, Select,} from "antd";
+import {Divider, Button, Card, Table, Spin, Input, Pagination } from "antd";
 import SweetAlert from "react-bootstrap-sweetalert";
 import {NotificationContainer, NotificationManager} from "react-notifications";
 import IntlMessages from "util/IntlMessages";
@@ -20,25 +20,10 @@ import {SearchOutlined} from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 import Grid from "@material-ui/core/Grid";
 
-const FormItem = Form.Item;
-const Option = Select.Option;
-
-const masterVersion = [
-      {
-          "id": 2,
-          "version_name": "Version-1-2020-06-03",
-      },
-      {
-          "id": 1,
-          "version_name": "Version-0-2020-06-03",
-      }
-]
-
 class TableRisikoInherenKuantitatif extends  React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            datatable: [],
             sortedInfo: null,
             warning:false,
             deletestatus:'',
@@ -46,7 +31,6 @@ class TableRisikoInherenKuantitatif extends  React.Component{
             addbutton: false,
             editbutton: false,
             eid: "",
-            fetchdata: [],
             masterversionsdata: [],
             statusallparametermanualtable :'',
             statusallparametermanual:'',
@@ -674,31 +658,17 @@ class TableRisikoInherenKuantitatif extends  React.Component{
           name,
           tahun,
           induk_id,
-          datatable,
           warning,
           loading,
           addbutton,
           editbutton,
           eid,
-          fetchdata,
           paging,
           lengthdata,
-          parambulan,
-          masterversionsdata,
-          paramrisk_id
+          parambulan
         } = this.state;
         sortedInfo = sortedInfo || {};
-        const formItemLayout = {
-            labelCol: {
-                xs: {span: 24},
-                sm: {span: 4},
-            },
-            wrapperCol: {
-                xs: {span: 24},
-                sm: {span: 20},
-            },
-        };
-
+        
         const dataDummy = [
           {
             id: 1321,

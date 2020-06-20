@@ -174,7 +174,6 @@ export const countAllRatioIndikatorFormula = (token) => {
     try {
 
       // execute axios validate status < 500
-      // execute axios validate status < 500
       await axios({
         method: "GET",
         url: `/api/ratio-indikator-formula`,
@@ -188,7 +187,7 @@ export const countAllRatioIndikatorFormula = (token) => {
       }).then((response) => {
         // if success then execute to payload
         const responseData = response.data;
-        if(responseData.data.statusCode === 200 || responseData.data.statusCode === 201){
+        if(responseData.statusCode === 200 || responseData.statusCode === 201){
           dispatch({
             type: COUNT_RATIO_INDIKATOR_FORMULA,
             payload: responseData.data.rows.length
@@ -253,7 +252,7 @@ export const resetAddRatioIndikatorFormula = () => {
 // update ratio indikator formula
 export const updateRatioIndikatorFormula = ({id, token, altered}) => {
   return async (dispatch) => {
-    dispatch(fetchAllRatioIndikatorFormula());
+    dispatch(fetchAllRatioIndikatorFormulaRequest());
 
     try {
 
@@ -297,7 +296,7 @@ export const resetUpdateRatioIndikatorFormula = () => {
 // delete ratio indikator formula
 export const deleteRatioIndikatorFormula = (token, id) => {
   return async (dispatch) => {
-    dispatch(fetchAllRatioIndikatorFormula());
+    dispatch(fetchAllRatioIndikatorFormulaRequest());
 
     try {
 

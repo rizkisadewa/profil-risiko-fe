@@ -1,5 +1,5 @@
-import React, {useState, useRef} from "react";
-import {Button, Input, Form, Select, InputNumber, Divider, Card, Table, Spin } from "antd";
+import React from "react";
+import {Button, Input, Form, Select, Card } from "antd";
 // import {Button, Input, Form, Select, InputNumber, Spin} from "antd";
 import connect from "react-redux/es/connect/connect";
 import {
@@ -16,30 +16,13 @@ import {
   getAllFaktorParameterDataOption
 } from "../../../../../appRedux/actions/index";
 import SweetAlerts from "react-bootstrap-sweetalert";
-import {Link} from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
-import {
-  PlusCircleFilled,
-  MinusCircleFilled
-} from '@ant-design/icons';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-const optionsLevel = [
-    {label:"Level Kedua (2)", value:2},
-    {label:"Level Ketiga (3)", value:3},
-    {label:"Level Keempat (4)", value:4},
-    {label:"Level Kelima (5)", value:5}
-];
-
 const operatorOption = [
     {label:"Tambah (+)", value:"+"}
-];
-
-const variableType = [
-    {label:"Independent Variable", value:"independentvariable"},
-    {label:"Dependent Variable", value:"dependentvariable"}
 ];
 
 
@@ -47,35 +30,15 @@ class SaveRisikoInherenKuantitatif extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            dataoptionslevel : optionsLevel,
             basic: false,
-            dataoptionsrisk : [],
-            dataoptionsratioindikatorkualitatif : [],
-            dataoptionsingredientsdata : [],
             dataoptionsratioindikator : [],
             ratioindikatorcalculation: [],
-            dataoptionsmasterversion: [],
             dataoptionsparameterfaktor: [],
             paramrisk_id : props.fetchdata ? props.fetchdata[0].risks : 0,
             parambulan : props.fetchdata ? props.fetchdata[0].ismonth : 0,
             paramtahun : props.fetchdata ? props.fetchdata[0].isyear : 0,
             //state value
-            paramparameter:'',
-            paramlow:'',
-            paramlowtomoderate:'',
-            parammoderate:'',
-            parammoderatetohigh:'',
-            paramhigh:'',
-            parambobot:'',
-            parampenomoran:'',
-            paramlevel:'',
-            paramindukparameter:'',
-            paramrisk_id:'',
-            paramjenisnilai:'',
-            paramindikatorpembilang:'',
-            paramindikatorpenyebut:'',
             numChildren: 0,
-            paramparameterfaktor: '',
         }
     }
 
@@ -274,38 +237,16 @@ class SaveRisikoInherenKuantitatif extends React.Component {
           case 12:
             monthText = "Desember";
             break;
-          case 1:
-            monthText = "Januari";
+          default:
             break;
+
         }
 
         const {
-            dataoptionsrisk,
-            dataoptionslevel,
             basic,
-            paramparameter,
-            paramlow,
-            paramlowtomoderate,
-            parammoderate,
-            parammoderatetohigh,
-            paramhigh,
-            parambobot,
-            parampenomoran,
-            paramlevel,
-            paramindukparameter,
-            paramrisk_id,
-            paramjenisnilai,
-            paramindikatorpenyebut,
-            paramindikatorpembilang,
-            dataoptionsratioindikatorkualitatif,
-            dataoptionsingredientsdata,
             dataoptionsratioindikator,
-            numChildren,
-            dataoptionsmasterversion,
-            paramparameterfaktor,
-            dataoptionsparameterfaktor
+            numChildren
         } = this.state;
-        const {token, addPropstate} = this.props;
         const {getFieldDecorator} = this.props.form;
 
         // handle children of element for counting
@@ -427,36 +368,6 @@ class SaveRisikoInherenKuantitatif extends React.Component {
 
 }
 
-
-const ParentComponent = props => (
-  <>
-    <Grid container spacing={1}>
-      <Grid item xs={12}  md={12} lg={12}>
-        <label style={{
-          textDecoration: 'underline',
-          fontWeight: 'bold',
-          textAlign: 'center'
-        }}>Ratio Indikator Formula</label>
-      </Grid>
-
-      <Grid item xs={12}  md={12} lg={2}>
-        <Button onClick={props.addChild}>
-          <PlusCircleFilled />
-        </Button>
-        <Button onClick={props.removeChild}>
-          <MinusCircleFilled />
-        </Button>
-      </Grid>
-
-      <Grid item xs={12}  md={12} lg={10} />
-
-    </Grid>
-    <div>
-      {props.children}
-    </div>
-  </>
-);
-
 const ChildComponent = props => (
   <>
     <Grid container spacing={1}>
@@ -558,4 +469,3 @@ export default connect(mapStateToProps, {
   fetchAllMasterVersion,
   getAllFaktorParameterDataOption
 })(WrappedSaveRisikoInherenKuantitatif);
-export {optionsLevel};

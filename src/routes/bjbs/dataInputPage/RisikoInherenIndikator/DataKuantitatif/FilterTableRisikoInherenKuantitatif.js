@@ -5,7 +5,6 @@ import { DatePicker } from 'antd';
 // import moment from 'moment';
 import connect from "react-redux/es/connect/connect";
 import {getAllRisks} from "../../../../../appRedux/actions/index";
-import TableRisikoInherenKuantitatif from "./TableRisikoInherenKuantitatif";
 import SaveRisikoInherenKuantitatif from "./SaveRisikoInherenKuantitatif";
 
 

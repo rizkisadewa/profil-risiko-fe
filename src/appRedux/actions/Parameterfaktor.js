@@ -41,7 +41,6 @@ export const getAllFaktorParameterTable = ({page, token, searchData}) => {
   } else {
     return (dispatch) => {
 
-        var parameters = '';
         var searchParameters = '';
 
         let paramColumn = [
@@ -84,7 +83,6 @@ export const getAllFaktorParameterTable = ({page, token, searchData}) => {
             // conditon for number greater than 0
             if(paramValue[i] !== ""){
               searchCounter += 1;
-              parameters += `&${paramColumn[i]}=${paramValue[i]}`;
 
               if(searchCounter > 1) {
                 searchParameters += '&';
@@ -199,7 +197,6 @@ export const countAllFaktorParameter = ({token, searchData}) => {
     return (dispatch) => {
         dispatch({type: FETCH_START});
 
-        var parameters = '';
         var searchParameters = '';
 
         let paramColumn = [
@@ -236,7 +233,6 @@ export const countAllFaktorParameter = ({token, searchData}) => {
             // conditon for number greater than 0
             if(paramValue[i] !== ""){
               searchCounter += 1;
-              parameters += `&${paramColumn[i]}=${paramValue[i]}`;
 
               if(searchCounter > 1) {
                 searchParameters += '&';
@@ -432,7 +428,7 @@ export const postFaktorParameterForKPMR = ({risk_id, penomoran, name, level, bob
                 // looping to insert parameter version
                 for(let i=0;i<master_version_list.length;i++){
                   dispatch(addParameterversion(token, {
-                    ingredients_id: data.data.id,  
+                    ingredients_id: data.data.id,
                     version_id: master_version_list[i]
                   }));
                   dispatch(resetAddParameterversion());

@@ -94,8 +94,7 @@ class EditParameter extends React.Component{
           basic,
           propsvalue,
           paramjenisnilai,
-          dataoptionsmasterversion,
-          dataparameterversion
+          dataoptionsmasterversion
       } = this.state;
         const {fetchdata, token} = this.props;
         const {getFieldDecorator} = this.props.form;

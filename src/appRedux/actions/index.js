@@ -15,3 +15,4 @@ export * from './RisikoInherenRatioIndikator';
 export * from './Masterversion';
 export * from './Parameterversion';
 export * from './Ratioindikatorformula';
+export * from './Parameterkualitatifdualalternatif';

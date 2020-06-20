@@ -17,6 +17,7 @@ import RisikoInherenRatioIndikator from "./RisikoInherenRatioIndikator";
 import Masterversion from "./Masterversion";
 import Parameterversion from "./Parameterversion";
 import Ratioindikatorformula from "./Ratioindikatorformula";
+import Parameterkualitatifdualalternatif from './Parameterkualitatifdualalternatif'
 
 const reducers = combineReducers({
   routing: routerReducer,
@@ -36,7 +37,8 @@ const reducers = combineReducers({
   risikoinherenratioindikator: RisikoInherenRatioIndikator,
   masterversion: Masterversion,
   parameterversion: Parameterversion,
-  ratioindikatorformula: Ratioindikatorformula
+  ratioindikatorformula: Ratioindikatorformula,
+  parameterkualitatifdualalternatif: Parameterkualitatifdualalternatif,
 });
 
 export default reducers;

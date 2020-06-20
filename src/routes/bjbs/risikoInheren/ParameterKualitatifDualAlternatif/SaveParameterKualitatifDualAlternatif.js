@@ -1,4 +1,4 @@
-import React, {useState, useRef} from "react";
+import React from "react";
 import {Button, Input, Form, Select, InputNumber} from "antd";
 // import {Button, Input, Form, Select, InputNumber, Spin} from "antd";
 import connect from "react-redux/es/connect/connect";
@@ -11,12 +11,11 @@ import {
   addParameterKuantitatif,
   resetAddParameterKualitatif,
   fetchAllIngredients,
-  addParameterKualitatif,
+  addParameterKualitatifDualAlternatif,
   fetchAllMasterVersion,
   getAllFaktorParameterDataOption
 } from "../../../../appRedux/actions/index";
 import SweetAlerts from "react-bootstrap-sweetalert";
-import {Link} from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import {
   PlusCircleFilled,
@@ -29,8 +28,7 @@ const Option = Select.Option;
 const optionsLevel = [
     {label:"Level Kedua (2)", value:2},
     {label:"Level Ketiga (3)", value:3},
-    {label:"Level Keempat (4)", value:4},
-    {label:"Level Kelima (5)", value:5}
+    {label:"Level Keempat (4)", value:4}
 ];
 
 const operatorOption = [
@@ -50,34 +48,28 @@ class SaveParameterKualitatifDualAlternatif extends React.Component {
             dataoptionslevel : optionsLevel,
             basic: false,
             dataoptionsrisk : [],
-            dataoptionsratioindikatorkualitatif : [],
             dataoptionsingredientsdata : [],
             dataoptionsratioindikator : [],
             ratioindikatorcalculation: [],
             dataoptionsmasterversion: [],
             dataoptionsparameterfaktor: [],
             //state value
-            paramparameter:'',
-            paramlow:'',
-            paramlowtomoderate:'',
-            parammoderate:'',
-            parammoderatetohigh:'',
-            paramhigh:'',
-            parambobot:'',
-            parampenomoran:'',
             paramlevel:'',
             paramindukparameter:'',
             paramrisk_id:'',
             paramjenisnilai:'',
-            paramindikatorpembilang:'',
-            paramindikatorpenyebut:'',
             numChildren: 0,
             paramparameterfaktor: '',
+            initialratioindikator: {
+              ratio_indikator_id: '',
+              seq: 0,
+              operations: ''
+            }
         }
     }
 
     componentDidMount(){
-        this.props.getAllRisks({token:this.props.token, page:'', jenis:'', nama:'', keterangan:''});
+        this.props.getAllRisks({token:this.props.token, page:'', jenis:'PR', nama:'', keterangan:''});
         this.props.getAllPeringkatRisiko({page:'', token:this.props.token, description:'', name:'', jenis_nilai:''});
         this.props.jenisNilaiParam({token:this.props.token});
         this.props.getAllRatioIndikatorForParamterKualitatif({token:this.props.token, jenis: "PR"});
@@ -100,13 +92,13 @@ class SaveParameterKualitatifDualAlternatif extends React.Component {
             dataoptionsparameterfaktor : nextProps.getallparameterfaktor
         });
 
-        switch(nextProps.addparameterkualitatifresult.statusCode){
+        switch(nextProps.addparameterkualitatifdualalternatifresult.statusCode){
           case 200:
           case 201:
           case 400:
             this.props.clickAddSuccessButton(
-              nextProps.addparameterkualitatifresult.statusCode,
-              nextProps.addparameterkualitatifresult.message
+              nextProps.addparameterkualitatifdualalternatifresult.statusCode,
+              nextProps.addparameterkualitatifdualalternatifresult.message
             );
             // reset all state
             this.props.resetAddParameterKualitatif();
@@ -126,7 +118,7 @@ class SaveParameterKualitatifDualAlternatif extends React.Component {
       // data for calculation
       let dataBody = {};
       dataBody.ratio_indikator_id = "";
-      dataBody.seq = this.state.numChildren;
+      dataBody.seq = this.state.numChildren + 1;
       dataBody.operations = "+";
       this.state.ratioindikatorcalculation.push(dataBody);
       dataBody = {};
@@ -237,21 +229,10 @@ class SaveParameterKualitatifDualAlternatif extends React.Component {
             dataoptionsrisk,
             dataoptionslevel,
             basic,
-            paramparameter,
-            paramlow,
-            paramlowtomoderate,
-            parammoderate,
-            parammoderatetohigh,
-            paramhigh,
-            parambobot,
-            parampenomoran,
             paramlevel,
             paramindukparameter,
             paramrisk_id,
             paramjenisnilai,
-            paramindikatorpenyebut,
-            paramindikatorpembilang,
-            dataoptionsratioindikatorkualitatif,
             dataoptionsingredientsdata,
             dataoptionsratioindikator,
             numChildren,
@@ -259,7 +240,7 @@ class SaveParameterKualitatifDualAlternatif extends React.Component {
             paramparameterfaktor,
             dataoptionsparameterfaktor
         } = this.state;
-        const {token, addPropstate} = this.props;
+        const {addPropstate} = this.props;
         const {getFieldDecorator} = this.props.form;
 
         // handle children of element for counting
@@ -284,6 +265,7 @@ class SaveParameterKualitatifDualAlternatif extends React.Component {
 
                     // if any ratio indikator formula for level 2 or more
                     let ratioIndikatorFormula = [];
+                    ratioIndikatorFormula.push(this.state.initialratioindikator);
                     // check if any ratio indikator calculation
                     if(this.state.ratioindikatorcalculation.length > 0){
                       // loop al ratio indikator calculation
@@ -298,36 +280,33 @@ class SaveParameterKualitatifDualAlternatif extends React.Component {
                           values.masterversiondata = this.state.masterversionlist;
                           values.ratio_indikator_formula = ratioIndikatorFormula;
                           console.log(values);
-                          // this.props.addParameterKualitatif(values.token, {
-                          //   risk_id: values.risk_id,
-                          //   name: values.name,
-                          //   level: values.level,
-                          //   induk_id: values.peringkatrisiko,
-                          //   penomoran: values.penomoran,
-                          //   pr_low: values.low,
-                          //   pr_lowtomod: values.lowtomoderate,
-                          //   pr_mod: values.moderate,
-                          //   pr_modtohigh: values.moderatetohigh,
-                          //   pr_high: values.high,
-                          //   bobot: values.bobot,
-                          //   id_indikator_pembilang: 0,
-                          //   id_indikator_penyebut: 0,
-                          //   jenis_nilai_id: 4
-                          // });
+                          console.log(this.props.token);
+                          // this.setState({
+                          //   basic: true
+                          // })
+                          this.props.addParameterKualitatifDualAlternatif(this.props.token, {
+                            risk_id: values.risk_id,
+                            name: values.name,
+                            level: values.level,
+                            induk_id: values.induk_id,
+                            penomoran: values.penomoran,
+                            pr_low: values.low,
+                            pr_lowtomod: values.lowtomoderate,
+                            pr_mod: values.moderate,
+                            pr_modtohigh: values.moderatetohigh,
+                            pr_high: values.high,
+                            bobot: values.bobot,
+                            id_indikator_pembilang: 0,
+                            id_indikator_penyebut: 0,
+                            parameter_faktor_id: values.parameter_faktor_id,
+                            jenis_nilai_id: 21,
+                            jenis: 'PR',
+                            master_version_list: values.master_version_list,
+                            ratio_indikator_formula: values.ratio_indikator_formula
+                          });
                         }
                     });
                 }}>
-                    <FormItem {...formItemLayout}>
-                        {getFieldDecorator('token', {
-                            initialValue:token,
-                            rules: [{
-                                required: true, message: 'Please input token field.',
-                            }],
-                        })(
-                            <Input id="token" type="hidden" placeholder="Input Token"/>
-                        )}
-                    </FormItem>
-
                     <FormItem {...formItemLayout} label="Risk">
                         {getFieldDecorator('risk_id', {
                             initialValue: addPropstate ? addPropstate.pkrisk_id : '',
@@ -384,11 +363,8 @@ class SaveParameterKualitatifDualAlternatif extends React.Component {
                                 required: true, message: 'Please input penomoran field.'
                             }],
                         })(
-                            <InputNumber id="penomoran" placeholder="Input Penomoran"
+                            <Input id="penomoran" placeholder="Input Penomoran"
                                          className="w-100"
-                                         min={0}
-                                         max={99}
-                                         maxLength={2}
                                          onChange={(value)=>{
                                              this.setState({
                                                  parampenomoran:value,
@@ -802,7 +778,8 @@ const mapStateToProps = ({
   parameterkualitatif,
   ingredients,
   masterversion,
-  parameterfaktor
+  parameterfaktor,
+  parameterkualitatifdualalternatif
 }) => {
     const {token} = auth;
     const {getallrisks} = jenisrisiko;
@@ -814,6 +791,7 @@ const mapStateToProps = ({
     const {ingredientsdata} = ingredients;
     const {masterversionsdata} = masterversion;
     const {getallparameterfaktor} = parameterfaktor;
+    const {addparameterkualitatifdualalternatifresult} = parameterkualitatifdualalternatif;
     return {
       token,
       getallrisks,
@@ -826,7 +804,8 @@ const mapStateToProps = ({
       ingredientsdata,
       masterversionsdata,
       addparameterkualitatifresult,
-      getallparameterfaktor
+      getallparameterfaktor,
+      addparameterkualitatifdualalternatifresult
     }
 };
 
@@ -839,7 +818,7 @@ export default connect(mapStateToProps, {
   addParameterKuantitatif,
   resetAddParameterKualitatif,
   fetchAllIngredients,
-  addParameterKualitatif,
+  addParameterKualitatifDualAlternatif,
   fetchAllMasterVersion,
   getAllFaktorParameterDataOption
 })(WrappedSaveParameterKualitatifDualAlternatif);
