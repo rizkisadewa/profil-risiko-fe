@@ -592,8 +592,6 @@ function TableParameterKualitatifDualAlternatif ({
                           ratioindikatorformula: text.ratio_indikator_formula
                       }
                     ]);
-
-                    console.log(text);
                   }}>Edit</span>
                   <Divider type="vertical"/>
                   <span className="gx-link" onClick={() => {

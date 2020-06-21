@@ -11,7 +11,8 @@ import {
   resetUpdateParameterKualitatif,
   fetchAllIngredients,
   addParameterKualitatif,
-  updateParameterKualitatif
+  kpmrUpdateParameterKualitatif,
+  fetchAllMasterVersion,
 } from "../../../../appRedux/actions/index";
 import SweetAlerts from "react-bootstrap-sweetalert";
 import {Link} from "react-router-dom";
@@ -32,6 +33,7 @@ class EditKpmrParameterKualitatif extends React.Component{
             dataoptionsratioindikatorkualitatif : [],
             dataoptionsingredientsdata : [],
             datavalue: [],
+            dataoptionsmasterversion: [],
             //state value
             paramparameter:'',
             paramlow:'',
@@ -51,21 +53,23 @@ class EditKpmrParameterKualitatif extends React.Component{
     }
 
     componentDidMount(){
-        this.props.getAllRisks({token:this.props.token, page:'', jenis:'', nama:'', keterangan:''});
+        this.props.getAllRisks({token:this.props.token, page:'', jenis:'KPMR', nama:'', keterangan:''});
         this.props.getAllPeringkatRisiko({page:'', token:this.props.token, description:'', name:'', jenis_nilai:''});
         this.props.jenisNilaiParam({token:this.props.token});
-        this.props.getAllRatioIndikatorForParamterKualitatif({token:this.props.token, jenis: "PR"});
+        this.props.getAllRatioIndikatorForParamterKualitatif({token:this.props.token, jenis: "KPMR"});
         this.props.fetchAllIngredients({token: this.props.token, searchData: {
-          jenis: "PR",
+          jenis: "KPMR",
           jenis_nilai_id: 1
         }});
+        this.props.fetchAllMasterVersion({token: this.props.token});
     }
 
     componentWillReceiveProps(nextProps){
         this.setState({
             dataoptionsrisk : nextProps.getallrisks,
             dataoptionsratioindikatorkualitatif: nextProps.getallratioindikatorkualitatif,
-            dataoptionsingredientsdata: nextProps.ingredientsdata
+            dataoptionsingredientsdata: nextProps.ingredientsdata,
+            dataoptionsmasterversion : nextProps.masterversionsdata,
         });
 
         switch(nextProps.updateparameterkualitatifresult.statusCode){
@@ -117,7 +121,8 @@ class EditKpmrParameterKualitatif extends React.Component{
             paramindikatorpembilang,
             dataoptionsratioindikatorkualitatif,
             dataoptionsingredientsdata,
-            datavalue
+            datavalue,
+            dataoptionsmasterversion
         } = this.state;
         const {token, fetchdata} = this.props;
         const {getFieldDecorator} = this.props.form;
@@ -299,6 +304,35 @@ class EditKpmrParameterKualitatif extends React.Component{
                                              formatter={value => `${value}%`}
                                              parser={value => value.replace('%', '')}
                                 />
+                            )}
+                        </FormItem>
+
+                        <FormItem {...formItemLayout} label="Master Versi">
+                            {getFieldDecorator('master_version_list', {
+                                initialValue: prop.masterversionlist,
+                                rules: [{
+                                    required: true, message: 'Please input master version.',
+                                }],
+                            })(
+                              <Select id="master_version_list"
+                                      showSearch
+                                      mode="multiple"
+                                      placeholder="Select Jenis Penilaian"
+                                      optionFilterProp="children"
+                                      onChange={this.handleChangeMultipleSelect}
+                                      style={paramjenisnilai === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
+                                      filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                              >
+                                  {
+                                      dataoptionsmasterversion.map((prop, index) => {
+                                          var value = prop.id;
+                                          var label = prop.version_name;
+                                          return (
+                                              <Option value={value} key={index}>{label}</Option>
+                                          )
+                                      })
+                                  }
+                              </Select>
                             )}
                         </FormItem>
 
@@ -514,7 +548,7 @@ class EditKpmrParameterKualitatif extends React.Component{
                                });
                                console.log("Data value : ");
                                console.log(datavalue);
-                               this.props.updateParameterKualitatif({
+                               this.props.kpmrUpdateParameterKualitatif({
                                  id: fetchdata[0].id,
                                  token: token,
                                  altered: datavalue
@@ -549,16 +583,18 @@ const mapStateToProps = ({
   masterparameter,
   ratioindikator,
   parameterkuantitatif,
-  parameterkualitatif,
-  ingredients
+  kpmrparameterkualitatif,
+  ingredients,
+  masterversion,
 }) => {
     const {token} = auth;
     const {getallrisks} = jenisrisiko;
     const {getallperingkatrisiko} = peringkatrisiko;
     const {jenisnilaiparam} = masterparameter;
     const {getallratioindikator, getallratioindikatorkualitatif} = ratioindikator;
-    const {parameterkualitatifdata, updateparameterkualitatifresult} = parameterkualitatif;
+    const {parameterkualitatifdata, updateparameterkualitatifresult} = kpmrparameterkualitatif;
     const {ingredientsdata} = ingredients;
+    const {masterversionsdata} = masterversion;
     return {
       token,
       getallrisks,
@@ -568,7 +604,8 @@ const mapStateToProps = ({
       updateparameterkualitatifresult,
       getallratioindikatorkualitatif,
       parameterkualitatifdata,
-      ingredientsdata
+      ingredientsdata,
+      masterversionsdata
     }
 };
 
@@ -581,6 +618,7 @@ export default connect(mapStateToProps, {
   resetUpdateParameterKualitatif,
   fetchAllIngredients,
   addParameterKualitatif,
-  updateParameterKualitatif
+  kpmrUpdateParameterKualitatif,
+  fetchAllMasterVersion,
 })(WrappedEditKpmrParameterKualitatif);
 export {optionsLevel};

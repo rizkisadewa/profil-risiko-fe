@@ -1,48 +1,48 @@
 import {
-  FETCH_ALL_PARAMETER_KUALITATIF_DUAL_ALTERNATIF_REQUEST,
-  FETCH_ALL_PARAMETER_KUALITATIF_DUAL_ALTERNATIF_SUCCESS,
-  FETCH_ALL_PARAMETER_KUALITATIF_DUAL_ALTERNATIF_FAILURE,
-  COUNT_PARAMETER_KUALIATIF_DUAL_ALTERNATIF,
-  ADD_PARAMETER_KUALITATIF_DUAL_ALTERNATIF,
-  DELETE_PARAMETER_KUALITATIF_DUAL_ALTERNATIF,
-  UPDATE_PARAMETER_KUALITATIF_DUAL_ALTERNATIF
+  KPMR_FETCH_ALL_PARAMETER_KUALITATIF_REQUEST,
+  KPMR_FETCH_ALL_PARAMETER_KUALITATIF_SUCCESS,
+  KPMR_FETCH_ALL_PARAMETER_KUALITATIF_FAILURE,
+  KPMR_COUNT_PARAMETER_KUALIATIF,
+  KPMR_ADD_PARAMETER_KUALITATIF,
+  KPMR_DELETE_PARAMETER_KUALITATIF,
+  KPMR_UPDATE_PARAMETER_KUALITATIF
 } from "../../constants/ActionTypes";
 import axios from 'util/Api';
 import { backendUrl } from 'util/Api';
 
-export const fetchAllParameterKualitatifDualAlternatifRequest = () => {
+export const kpmrFetchAllParameterKualitatifRequest = () => {
   return {
-    type: FETCH_ALL_PARAMETER_KUALITATIF_DUAL_ALTERNATIF_REQUEST
+    type : KPMR_FETCH_ALL_PARAMETER_KUALITATIF_REQUEST
   }
 }
 
-export const fetchAllParameterKualitatifDualAlternatifSuccess = parameterkualitatifdualalternatif => {
+export const kpmrFetchAllParameterKualitatifSuccess = parameterkualitatif => {
   return {
-    type: FETCH_ALL_PARAMETER_KUALITATIF_DUAL_ALTERNATIF_SUCCESS,
-    payload: parameterkualitatifdualalternatif
+    type: KPMR_FETCH_ALL_PARAMETER_KUALITATIF_SUCCESS,
+    payload: parameterkualitatif
   }
 }
 
-export const fetchAllParameterKualitatifDualAlternatifFailure = error => {
+export const kpmrFetchAllParameterKualitatifFailure = error => {
   return {
-    type: FETCH_ALL_PARAMETER_KUALITATIF_DUAL_ALTERNATIF_FAILURE,
+    type: KPMR_FETCH_ALL_PARAMETER_KUALITATIF_FAILURE,
     payload: error
   }
 }
 
-// fetch all parameter kualiatatif dual alternatif
-export const fetchAllParameterKualitatifDualAlternatif = ({token, page, searchData}) => {
-  // check if searchData is undefined
+// fetch all parameter kualitatif for KPMR
+export const kpmrFetchAllParameterKualitatif = ({token, page, searchData}) => {
+  // check if search Data is undefined
   if(typeof searchData === 'undefined'){
     return(async (dispatch) => {
-      dispatch(fetchAllParameterKualitatifDualAlternatifRequest());
+      dispatch(kpmrFetchAllParameterKualitatifRequest());
 
       try {
 
         // execute axios validate status < 500
         await axios({
           method: "GET",
-          url: `/api/parameter-kualitatif-general?page=${page}`,
+          url: `/api/parameter-kualitatif-general?page=${page}&is_relate_to_rin=true`,
           baseURL: backendUrl,
           headers: {
             Authorization: `Bearer ${token}`
@@ -54,33 +54,33 @@ export const fetchAllParameterKualitatifDualAlternatif = ({token, page, searchDa
           // if success then execute and send to payload
           const responseData = response.data;
           if(responseData.statusCode === 200 || responseData.statusCode === 201){
-            dispatch(fetchAllParameterKualitatifDualAlternatifSuccess(responseData.data.rows));
+            dispatch(kpmrFetchAllParameterKualitatifSuccess(responseData.data.rows));
             dispatch({
-              type: COUNT_PARAMETER_KUALIATIF_DUAL_ALTERNATIF,
+              type: KPMR_COUNT_PARAMETER_KUALIATIF,
               payload: responseData.data.rows.length
             });
           } else {
-            dispatch(fetchAllParameterKualitatifDualAlternatifFailure(responseData.message));
+            dispatch(kpmrFetchAllParameterKualitatifFailure(responseData.message));
             dispatch({
-              type: COUNT_PARAMETER_KUALIATIF_DUAL_ALTERNATIF,
+              type: KPMR_COUNT_PARAMETER_KUALIATIF,
               payload: 0
-            })
+            });
           }
         }).catch((error) => {
-          // if error , dispatch error
+          // if error send to the reducer of fetch failure
           const errorMsg = error.message;
-          dispatch(fetchAllParameterKualitatifDualAlternatifFailure(errorMsg));
+          dispatch(kpmrFetchAllParameterKualitatifFailure(errorMsg));
         })
 
       } catch (error) {
-        // if success dispatch the fecth failure
+        // if error send to the reducer of fetch failure
         const errorMsg = error.message;
-        dispatch(fetchAllParameterKualitatifDualAlternatifFailure(errorMsg));
+        dispatch(kpmrFetchAllParameterKualitatifFailure(errorMsg));
       }
-    })
+    });
   } else {
     return(async (dispatch) => {
-      dispatch(fetchAllParameterKualitatifDualAlternatifRequest());
+      dispatch(kpmrFetchAllParameterKualitatifRequest());
 
       try {
         var searchParameters = '';
@@ -146,7 +146,7 @@ export const fetchAllParameterKualitatifDualAlternatif = ({token, page, searchDa
         // execute axios validate status < 500
         await axios({
           method: "GET",
-          url: `/api/parameter-kualitatif-general?page=${page}${searchParameters}`,
+          url: `/api/parameter-kualitatif-general?page=${page}&is_relate_to_rin=true${searchParameters}`,
           baseURL: backendUrl,
           headers: {
             Authorization: `Bearer ${token}`
@@ -158,40 +158,41 @@ export const fetchAllParameterKualitatifDualAlternatif = ({token, page, searchDa
           // if success then execute and send to payload
           const responseData = response.data;
           if(responseData.statusCode === 200 || responseData.statusCode === 201){
-            dispatch(fetchAllParameterKualitatifDualAlternatifSuccess(responseData.data.rows));
+            dispatch(kpmrFetchAllParameterKualitatifSuccess(responseData.data.rows));
             dispatch({
-              type: COUNT_PARAMETER_KUALIATIF_DUAL_ALTERNATIF,
+              type: KPMR_COUNT_PARAMETER_KUALIATIF,
               payload: responseData.data.rows.length
             });
           } else {
-            dispatch(fetchAllParameterKualitatifDualAlternatifFailure(responseData.message));
+            dispatch(kpmrFetchAllParameterKualitatifFailure(responseData.message));
             dispatch({
-              type: COUNT_PARAMETER_KUALIATIF_DUAL_ALTERNATIF,
+              type: KPMR_COUNT_PARAMETER_KUALIATIF,
               payload: 0
-            })
+            });
           }
         }).catch((error) => {
-          // if error , dispatch error
+          // if error send to the reducer of fetch failure
           const errorMsg = error.message;
-          dispatch(fetchAllParameterKualitatifDualAlternatifFailure(errorMsg));
-        });
+          dispatch(kpmrFetchAllParameterKualitatifFailure(errorMsg));
+        })
+
 
       } catch (error) {
-        // if success dispatch the fecth failure
+        // if error send to the reducer of fetch failure
         const errorMsg = error.message;
-        dispatch(fetchAllParameterKualitatifDualAlternatifFailure(errorMsg));
+        dispatch(kpmrFetchAllParameterKualitatifFailure(errorMsg));
       }
-    })
+    });
   }
 }
 
-// count the date for pagination need
-export const countAllParameterKualitatifDualAlternatif = (token) => {
+// count the data for pagination need
+export const kpmrCountAllParameterKualitatif = (token) => {
   return async(dispatch) => {
     try {
       await axios({
         method: "GET",
-        url: `/api/parameter-kualitatif-general?jenis_nilai_id=21&jenis='PR'`,
+        url: `/api/parameter-kualitatif-general?jenis='KPMR'`,
         baseURL: backendUrl,
         headers: {
           Authorization: `Bearer ${token}`
@@ -204,32 +205,33 @@ export const countAllParameterKualitatifDualAlternatif = (token) => {
         const responseData = response.data;
         if(responseData.statusCode === 200 || responseData.statusCode === 201){
           dispatch({
-            type: COUNT_PARAMETER_KUALIATIF_DUAL_ALTERNATIF,
-            payload: responseData.data.rows.length
+            type: KPMR_COUNT_PARAMETER_KUALIATIF,
+            payload: response.data.rows.length
           });
         } else {
           dispatch({
-            type: COUNT_PARAMETER_KUALIATIF_DUAL_ALTERNATIF,
+            type: KPMR_COUNT_PARAMETER_KUALIATIF,
             payload: 0
-          })
+          });
         }
       }).catch((error) => {
-        // if error , dispatch error
+        // if error send to the reducer of fetch failure
         const errorMsg = error.message;
-        dispatch(fetchAllParameterKualitatifDualAlternatifFailure(errorMsg));
-      });
+        dispatch(kpmrFetchAllParameterKualitatifFailure(errorMsg));
+      })
+
     } catch (error) {
-      // if success dispatch the fecth failure
+      // if error
       const errorMsg = error.message;
-      dispatch(fetchAllParameterKualitatifDualAlternatifFailure(errorMsg));
+      dispatch(kpmrFetchAllParameterKualitatifFailure(errorMsg));
     }
   }
 }
 
-// add parameter kualitatif dual alternatif
-export const addParameterKualitatifDualAlternatif = (token, newData) => {
+// add parameter kualitatif for KPMR
+export const kpmrAddParameterKualitatif = (token, newData) => {
   return async (dispatch) => {
-    dispatch(fetchAllParameterKualitatifDualAlternatifRequest());
+    dispatch(kpmrFetchAllParameterKualitatifRequest());
 
     try {
       await axios({
@@ -248,33 +250,38 @@ export const addParameterKualitatifDualAlternatif = (token, newData) => {
         const responseData = response.data;
         if(responseData.statusCode === 200 || responseData.statusCode === 201){
           dispatch({
-            type: ADD_PARAMETER_KUALITATIF_DUAL_ALTERNATIF,
+            type: KPMR_ADD_PARAMETER_KUALITATIF,
             payload: responseData
           });
         }
+      }).catch((error) => {
+        // if error send to the reducer of fetch failure
+        const errorMsg = error.message;
+        dispatch(kpmrFetchAllParameterKualitatifFailure(errorMsg));
       })
 
+
     } catch (error) {
-      // if success dispatch the fecth failure
+      // if error
       const errorMsg = error.message;
-      dispatch(fetchAllParameterKualitatifDualAlternatifFailure(errorMsg));
+      dispatch(kpmrFetchAllParameterKualitatifFailure(errorMsg));
     }
   }
 }
 
-export const resetAddParameterKualitatifDualAlternatif = () => {
+export const resetKpmrAddParameterKualitatif = () => {
   return async(dispatch) => {
     dispatch({
-      type: ADD_PARAMETER_KUALITATIF_DUAL_ALTERNATIF,
+      type: KPMR_ADD_PARAMETER_KUALITATIF,
       payload: []
     })
   }
 }
 
-// update parameter kualitatif dual alternatif
-export const updateParameterKualitatifDualAlternatif = ({id, token, altered}) => {
+// update parameter kualitatif for KPMR
+export const kpmrUpdateParameterKualitatif = ({id, token, altered}) => {
   return async (dispatch) => {
-    dispatch(fetchAllParameterKualitatifDualAlternatifRequest());
+    dispatch(kpmrFetchAllParameterKualitatifRequest());
 
     try {
       const rawResponse = await axios({
@@ -292,34 +299,33 @@ export const updateParameterKualitatifDualAlternatif = ({id, token, altered}) =>
 
       const response = rawResponse.data;
       dispatch({
-        type: UPDATE_PARAMETER_KUALITATIF_DUAL_ALTERNATIF,
+        type: KPMR_UPDATE_PARAMETER_KUALITATIF,
         payload: response
       });
 
     } catch (error) {
-      // if success dispatch the fecth failure
+      // if error
       const errorMsg = error.message;
-      dispatch(fetchAllParameterKualitatifDualAlternatifFailure(errorMsg));
+      dispatch(kpmrFetchAllParameterKualitatifFailure(errorMsg));
     }
   }
 }
 
-export const resetUpdateParameterKualitatifDualAlternatif = () => {
+export const resetKpmrUpdateParameterKualitatif = () => {
   return (dispatch) => {
     dispatch({
-      type: UPDATE_PARAMETER_KUALITATIF_DUAL_ALTERNATIF,
+      type: KPMR_UPDATE_PARAMETER_KUALITATIF,
       payload: []
     })
   }
 }
 
-// delete parameter kualitatif dual alternatif
-export const deleteParameterKualitatifDualAlternatif = (token, id) => {
+// delete parameter kualitatif for KPMR
+export const kpmrDeleteParameterKualitatif = (token, id) => {
   return async (dispatch) => {
-    dispatch(fetchAllParameterKualitatifDualAlternatifRequest());
+    dispatch(kpmrFetchAllParameterKualitatifRequest());
 
     try {
-
       await axios({
         method: "DELETE",
         url: '/api/parameter-kualitatif-general/'+id,
@@ -333,27 +339,26 @@ export const deleteParameterKualitatifDualAlternatif = (token, id) => {
       }).then((response) => {
         const responseData = response.data;
         dispatch({
-          type: DELETE_PARAMETER_KUALITATIF_DUAL_ALTERNATIF,
+          type: KPMR_DELETE_PARAMETER_KUALITATIF,
           payload: responseData
-        });
+        })
       }).catch((error) => {
-        // if success dispatch the fecth failure
+        // if error
         const errorMsg = error.message;
-        dispatch(fetchAllParameterKualitatifDualAlternatifFailure(errorMsg));
-      });
-
+        dispatch(kpmrFetchAllParameterKualitatifFailure(errorMsg));
+      })
     } catch (error) {
-      // if success dispatch the fecth failure
+      // if error
       const errorMsg = error.message;
-      dispatch(fetchAllParameterKualitatifDualAlternatifFailure(errorMsg));
+      dispatch(kpmrFetchAllParameterKualitatifFailure(errorMsg));
     }
   }
 }
 
-export const resetDeleteParameterKualitatifDualAlternatif = () => {
-  return (dispatch) => {
+export const resetKpmrDeleteParameterKualitatif = () => {
+  return async (dispatch) => {
     dispatch({
-      type: DELETE_PARAMETER_KUALITATIF_DUAL_ALTERNATIF,
+      type: KPMR_DELETE_PARAMETER_KUALITATIF,
       payload: []
     })
   }

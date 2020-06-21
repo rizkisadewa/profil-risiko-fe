@@ -15,9 +15,10 @@ import moment from "moment";
 import {
   fetchAllParameterKualitatif,
   countAllParameterKualitatif,
-  deleteParameterKualitatif,
-  resetDeleteParameterKualitatif
-} from "../../../../appRedux/actions/Parameterkualitatif";
+  kpmrDeleteParameterKualitatif,
+  resetDeleteParameterKualitatif,
+  kpmrFetchAllParameterKualitatif
+} from "../../../../appRedux/actions/index";
 import MySnackbarContentWrapper from "../../../../components/Snackbar/SnackBar";
 
 function TableKpmrParameterKualitatif ({
@@ -25,9 +26,10 @@ function TableKpmrParameterKualitatif ({
   parameterKualitatifData,
   fetchAllParameterKualitatif,
   countAllParameterKualitatif,
-  deleteParameterKualitatif,
+  kpmrDeleteParameterKualitatif,
   resetDeleteParameterKualitatif,
-  deleteResponse
+  deleteResponse,
+  kpmrFetchAllParameterKualitatif
 }){
 
   // state
@@ -201,11 +203,18 @@ function TableKpmrParameterKualitatif ({
         sorter: (a, b) => a.risk_name.localeCompare(b.risk_id),
         sortOrder: sortedInfo.columnKey === 'risk_name' && sortedInfo.order
     },{
-        title:"Indikator",
+        title:"Parameter",
         dataIndex:"name",
         key:"name",
         sorter: (a, b) => a.name.localeCompare(b.name),
         sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order
+    },{
+        title:"Induk Parameter",
+        dataIndex:"parameter_induk",
+        key:"parameter_induk",
+        ...getColumnSearchProps('parameter_induk'),
+        sorter: (a, b) => a.parameter_induk.localeCompare(b.parameter_induk),
+        sortOrder: sortedInfo.columnKey === 'parameter_induk' && sortedInfo.order
     }, {
         title: 'Peringkat Risiko Parameter Kualitatif',
         children: [
@@ -264,6 +273,13 @@ function TableKpmrParameterKualitatif ({
                 <span className="gx-link" onClick={() => {
                   setEid(text.id);
                   seteditbutton(true);
+
+                  // sorting value for selected master version in parameter version
+                  let masterversionlistdata = [];
+                  for(let i=0;i<text.master_version_list.length;i++){
+                    masterversionlistdata.push(parseInt(text.master_version_list[i].version_id));
+                  }
+
                   setFetchdata([
                     ...fetchdata,
                     {
@@ -287,7 +303,8 @@ function TableKpmrParameterKualitatif ({
                       level:text.level,
                       induk_id:text.induk_id,
                       risk_id:text.risk_id,
-                      id_jenis_nilai:text.id_jenis_nilai
+                      id_jenis_nilai:text.id_jenis_nilai,
+                      masterversionlist: masterversionlistdata,
                     }
                   ]);
                 }}>Edit</span>
@@ -463,7 +480,7 @@ function TableKpmrParameterKualitatif ({
   // delete button
   const handleDeleteButton = (id) => {
     setWarning(false);
-    deleteParameterKualitatif(authData.token, id);
+    kpmrDeleteParameterKualitatif(authData.token, id);
   }
 
   const clickDeleteSuccessButton = (status, message) => {
@@ -476,13 +493,13 @@ function TableKpmrParameterKualitatif ({
 
   // use Effect
   React.useEffect(() => {
-    fetchAllParameterKualitatif({
+    kpmrFetchAllParameterKualitatif({
       token: authData.token,
-      page: 1
+      page: 1,
+      searchData: {
+        jenis: "KPMR"
+      }
     });
-
-    // log state from redux
-    console.log(parameterKualitatifData);
 
     countAllParameterKualitatif(authData.token);
 
@@ -580,16 +597,17 @@ function TableKpmrParameterKualitatif ({
 const mapStateToProps = state => {
   return {
     authData: state.auth,
-    parameterKualitatifData: state.parameterkualitatif,
-    deleteResponse: state.parameterkualitatif.deleteparameterkualitatifresult
+    parameterKualitatifData: state.kpmrparameterkualitatif,
+    deleteResponse: state.kpmrparameterkualitatif.deleteparameterkualitatifresult
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
     fetchAllParameterKualitatif: (token, page, searchData) => dispatch(fetchAllParameterKualitatif(token, page, searchData)),
+    kpmrFetchAllParameterKualitatif: (token, page, searchData) => dispatch(kpmrFetchAllParameterKualitatif(token, page, searchData)),
     countAllParameterKualitatif: (token) => dispatch(countAllParameterKualitatif(token)),
-    deleteParameterKualitatif: (token, id) => dispatch(deleteParameterKualitatif(token, id)),
+    kpmrDeleteParameterKualitatif: (token, id) => dispatch(kpmrDeleteParameterKualitatif(token, id)),
     resetDeleteParameterKualitatif: () => dispatch(resetDeleteParameterKualitatif())
   }
 }
