@@ -9,6 +9,11 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const {TextArea} = Input;
 
+const optionsJenis = [
+    {label:"Risiko Inheren", value:"PR"},
+    {label:"KPMR", value:"KPMR"}
+];
+
 class EditRatioIndikator extends React.Component{
     constructor(props) {
         super(props);
@@ -18,7 +23,9 @@ class EditRatioIndikator extends React.Component{
             statusput:'',
             propsvalue : [],
             propsid : props.eid,
-            dataoptions : []
+            dataoptions : [],
+            jenis: '',
+            jenisoptions: optionsJenis,
         }
     }
 
@@ -55,7 +62,7 @@ class EditRatioIndikator extends React.Component{
             },
         };
 
-        const {ewarning, datavalue, propsvalue, dataoptions} = this.state;
+        const {ewarning, datavalue, propsvalue, dataoptions, jenisoptions, jenis} = this.state;
         const {fetchdata, token} = this.props;
         const {getFieldDecorator} = this.props.form;
         return (
@@ -116,12 +123,33 @@ class EditRatioIndikator extends React.Component{
 
                                         <FormItem {...formItemLayout} label="Jenis">
                                             {getFieldDecorator('jenis', {
-                                                initialValue: propsvalue.jenis,
+                                                initialValue:propsvalue.jenis,
                                                 rules: [{
-                                                    required: true, message: 'Please input jenis field.',
+                                                    required: true, message: 'Please input level field.',
                                                 }],
                                             })(
-                                                <Input id="jenis" placeholder="Input jenis"/>
+                                              <Select id="jenis"
+                                                      showSearch
+                                                      placeholder="Select jenis"
+                                                      optionFilterProp="children"
+                                                      onChange={(value)=>{
+                                                          this.setState({
+                                                              jenis:value,
+                                                          });
+                                                      }}
+                                                      style={jenis === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
+                                                      filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
+                                                  <Option value="" disabled>Select level</Option>
+                                                  {
+                                                      jenisoptions.map((prop, index) => {
+                                                          var value = prop.value;
+                                                          var label = prop.label;
+                                                          return (
+                                                              <Option value={value} key={index}>{label}</Option>
+                                                          )
+                                                      })
+                                                  }
+                                              </Select>
                                             )}
                                         </FormItem>
 

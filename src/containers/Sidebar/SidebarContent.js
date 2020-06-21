@@ -80,6 +80,9 @@ class SidebarContent extends Component {
                   <SubMenu key="risikoinheren" className={this.getNavStyleSubMenuClass(navStyle)}
                            title={<span> <i className="icon icon-auth-screen"/>
                          <IntlMessages id="sidebar.risikoinheren"/></span>}>
+
+                      {/* RISIKO INHEREN */}
+                      {/*
                       <Menu.Item key="bjbs/risikoinheren/parameterfaktor">
                           <Link to="/bjbs/risikoinheren/parameterfaktor">
                               <i className="icon icon-badge"/>
@@ -92,6 +95,7 @@ class SidebarContent extends Component {
                               <IntlMessages id="sidebar.risikoinheren.ratioindikator"/>
                           </Link>
                       </Menu.Item>
+                      */}
 
                       {/*
                       <Menu.Item key="bjbs/risikoinheren/parametermanual">
@@ -132,12 +136,14 @@ class SidebarContent extends Component {
                              <IntlMessages id="sidebar.kpmr.parameterfaktor"/>
                          </Link>
                      </Menu.Item>
+                     {/*
                      <Menu.Item key="bjbs/kpmr/ratioindikator">
                         <Link to="/bjbs/kpmr/ratioindikator">
                             <i className="icon icon-crm"/>
                             <IntlMessages id="sidebar.kpmr.ratioindikator"/>
                         </Link>
                      </Menu.Item>
+                     */}
                      <Menu.Item key="bjbs/kpmr/parameterkualitatif">
                         <Link to="/bjbs/kpmr/parameterkualitatif">
                             <i className="icon icon-feedback"/>
@@ -316,14 +322,14 @@ class SidebarContent extends Component {
                           </Link>
                       </Menu.Item>
                       {/* Master Ratio Indikator */}
-                      {/*
+
                       <Menu.Item key="bjbs/masterdata/ratioindikator">
                           <Link to="/bjbs/masterdata/ratioindikator">
                               <i className="icon icon-map-popup-info"/>
                               <IntlMessages id="sidebar.masterdata.ratioindikator"/>
                           </Link>
                       </Menu.Item>
-                      */}
+
                   </SubMenu>
 
                   {/* Profile User */}

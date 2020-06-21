@@ -7,12 +7,19 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const {TextArea} = Input;
 
+const optionsJenis = [
+    {label:"Risiko Inheren", value:"PR"},
+    {label:"KPMR", value:"KPMR"}
+];
+
 class SaveRatioIndikator extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
             statuspost: '',
-            dataoptions : []
+            dataoptions : [],
+            jenisoptions: optionsJenis,
+            jenis: ''
         }
     }
 
@@ -44,7 +51,7 @@ class SaveRatioIndikator extends React.Component{
             },
         };
 
-        const {dataoptions} = this.state;
+        const {dataoptions, jenisoptions, jenis} = this.state;
         const {token} = this.props;
         const {getFieldDecorator} = this.props.form;
         return (
@@ -87,14 +94,35 @@ class SaveRatioIndikator extends React.Component{
                             <TextArea id="description" placeholder="Input description"/>
                         )}
                     </FormItem>
-
+                    
                     <FormItem {...formItemLayout} label="Jenis">
                         {getFieldDecorator('jenis', {
                             rules: [{
-                                required: true, message: 'Please input jenis field.',
+                                required: true, message: 'Please input level field.',
                             }],
                         })(
-                            <Input id="jenis" placeholder="Input jenis"/>
+                          <Select id="jenis"
+                                  showSearch
+                                  placeholder="Select jenis"
+                                  optionFilterProp="children"
+                                  onChange={(value)=>{
+                                      this.setState({
+                                          jenis:value,
+                                      });
+                                  }}
+                                  style={jenis === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
+                                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
+                              <Option value="" disabled>Select level</Option>
+                              {
+                                  jenisoptions.map((prop, index) => {
+                                      var value = prop.value;
+                                      var label = prop.label;
+                                      return (
+                                          <Option value={value} key={index}>{label}</Option>
+                                      )
+                                  })
+                              }
+                          </Select>
                         )}
                     </FormItem>
 

@@ -16,10 +16,83 @@ import {
 } from "../../constants/ActionTypes";
 import axios from 'util/Api'
 
-export const getAllRatioIndikatortable = ({page, token, jenis}) => {
-    return (dispatch) => {
+export const getAllRatioIndikatortable = ({page, token, searchData}) => {
+    if(typeof searchData === 'undefined'){
+      return (dispatch) => {
+          dispatch({type: FETCH_START});
+          axios.get('api/ratio-indikator-table?page='+page,{
+              headers: {
+                  Authorization: "Bearer "+token
+              }
+          }).then(({data}) => {
+              if (data.data){
+                  console.log(data.data);
+                  console.log("a1");
+                  dispatch({type: GET_ALL_RATIO_INDIKATOR_TABLE, payload: data.data.rows});
+                  dispatch({type: STATUS_ALL_RATIO_INDIKATOR_TABLE, payload: data.statusCode});
+                  dispatch({type: COUNT_RATIO_INDIKATOR, payload: data.data.rows.length});
+              } else {
+                  console.log("a2");
+                  dispatch({type: FETCH_ERROR, payload: data.error});
+              }
+          }).catch(function (error) {
+              dispatch({type: FETCH_ERROR, payload: error.message});
+              console.log("Error****:", error.message);
+          });
+      }
+    } else {
+      return (dispatch) => {
         dispatch({type: FETCH_START});
-        axios.get('api/ratio-indikator-table?page='+page+'&jenis='+jenis,{
+
+        var searchParameters = '';
+
+        let paramColumn = [
+          "jenis",
+          "jenis_nilai",
+          "name",
+          "description",
+          "created_by",
+          "id_jenis_nilai"
+        ];
+
+        let searchCounter = 1;
+
+        let paramValue = [
+          searchData.jenis,
+          searchData.jenis_nilai,
+          searchData.name,
+          searchData.description,
+          searchData.created_by,
+          searchData.id_jenis_nilai
+        ];
+
+        console.log("Param Value : ");
+        console.log(paramValue);
+        console.log(searchData);
+
+        // looping all column
+        for(let i=0;i<paramColumn.length;i++){
+          // process only for not undefined
+          console.log("Param Column ke-"+i);
+          console.log(" Tipe : "+typeof paramColumn[i]+", Value : "+paramColumn[i]);
+          // process only for not undefined
+          console.log("Param Value ke-"+i);
+          console.log(" Tipe : "+typeof paramValue[i]+", Value : "+paramValue[i]);
+          if(typeof paramValue[i] !== 'undefined'){
+            // conditon for number greater than 0
+            if(paramValue[i] !== ""){
+              searchCounter += 1;
+
+              if(searchCounter > 1) {
+                searchParameters += '&';
+              }
+              searchParameters += `${paramColumn[i]}=${paramValue[i]}`;
+
+            }
+          }
+        }
+
+        axios.get(`api/ratio-indikator-table?page=${page}${searchParameters}`,{
             headers: {
                 Authorization: "Bearer "+token
             }
@@ -27,6 +100,7 @@ export const getAllRatioIndikatortable = ({page, token, jenis}) => {
             if (data.data){
                 dispatch({type: GET_ALL_RATIO_INDIKATOR_TABLE, payload: data.data.rows});
                 dispatch({type: STATUS_ALL_RATIO_INDIKATOR_TABLE, payload: data.statusCode});
+                dispatch({type: COUNT_RATIO_INDIKATOR, payload: data.data.rows.length});
             } else {
                 dispatch({type: FETCH_ERROR, payload: data.error});
             }
@@ -34,6 +108,8 @@ export const getAllRatioIndikatortable = ({page, token, jenis}) => {
             dispatch({type: FETCH_ERROR, payload: error.message});
             console.log("Error****:", error.message);
         });
+
+      }
     }
 };
 
