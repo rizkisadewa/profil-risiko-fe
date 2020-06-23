@@ -19,6 +19,7 @@ import Parameterversion from "./Parameterversion";
 import Ratioindikatorformula from "./Ratioindikatorformula";
 import Parameterkualitatifdualalternatif from './Parameterkualitatifdualalternatif';
 import Kpmrparameterkualitatif from './Kpmrparameterkualitatif';
+import Risikoinhereninputkuantitatif from './Risikoinhereninputkuantitatif';
 
 const reducers = combineReducers({
   routing: routerReducer,
@@ -41,6 +42,7 @@ const reducers = combineReducers({
   ratioindikatorformula: Ratioindikatorformula,
   parameterkualitatifdualalternatif: Parameterkualitatifdualalternatif,
   kpmrparameterkualitatif: Kpmrparameterkualitatif,
+  risikoinhereninputkuantitatif : Risikoinhereninputkuantitatif
 });
 
 export default reducers;

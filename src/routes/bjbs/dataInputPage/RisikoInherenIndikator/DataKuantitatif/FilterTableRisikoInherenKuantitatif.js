@@ -4,7 +4,10 @@ import {Button, Card, Input, Spin, Select, Form} from "antd";
 import { DatePicker } from 'antd';
 // import moment from 'moment';
 import connect from "react-redux/es/connect/connect";
-import {getAllRisks} from "../../../../../appRedux/actions/index";
+import {
+  getAllRisks,
+  fetchAllMasterVersion,
+} from "../../../../../appRedux/actions/index";
 import SaveRisikoInherenKuantitatif from "./SaveRisikoInherenKuantitatif";
 
 
@@ -18,22 +21,27 @@ class FilterTableRisikoInherenKuantitatif extends React.Component{
         this.state = {
             dataoptions : [],
             loading:false,
-            isTable:false,
+            isInput:false,
             fetchdata:[],
+            dataoptionsmasterversion: [],
             ismonth:'',
             isyear:'',
-            stringmonth:''
+            stringmonth:'',
+            risk_name: '',
+            version_name: ''
         }
     }
 
     componentDidMount(){
-        this.props.getAllRisks({token:this.props.token, page:'', jenis:'', nama:'', keterangan:''});
+        this.props.getAllRisks({token:this.props.token, page:'', jenis:'PR', nama:'', keterangan:''});
+        this.props.fetchAllMasterVersion({token: this.props.token});
     }
 
     componentWillReceiveProps(nextProps) {
         // this.handleProp(nextProps);
         this.setState({
             dataoptions: nextProps.getallrisks,
+            dataoptionsmasterversion: nextProps.masterversionsdata
         });
     }
 
@@ -41,7 +49,7 @@ class FilterTableRisikoInherenKuantitatif extends React.Component{
         if(this.state.loading){
             setTimeout(() => {
                 this.setState({
-                    isTable:true,
+                    isInput:true,
                     loading:false
                 })
             },300)
@@ -108,9 +116,21 @@ class FilterTableRisikoInherenKuantitatif extends React.Component{
 
     clickCancelFilterButton = () => {
         this.setState({
-            isTable: false,
+            isInput: false,
         })
     };
+
+    catchRiskName = (value, i) =>{
+      this.setState({
+          risk_name: i.props.children,
+      });
+    }
+
+    catchVersionName = (value, i) =>{
+      this.setState({
+          version_name: i.props.children,
+      });
+    }
 
     render() {
         const formItemLayout = {
@@ -121,12 +141,21 @@ class FilterTableRisikoInherenKuantitatif extends React.Component{
         };
         const monthFormat = 'MMMM YYYY';
         const {getFieldDecorator} = this.props.form;
-        const {dataoptions, loading, isTable, fetchdata, ismonth, isyear, stringmonth} = this.state;
+        const {
+          dataoptions,
+          loading,
+          isInput,
+          fetchdata,
+          ismonth,
+          isyear,
+          stringmonth,
+          dataoptionsmasterversion
+        } = this.state;
         const {token} = this.props;
         return (
             <>
                 {
-                    !isTable ?
+                    !isInput ?
                         (<Card title={<div style={{textAlign: "center"}}>
                             <img src={require("assets/images/logobjbs-old.png")} className="gx-logo-size" alt="bjbs"
                                  title="bjbs"/><br/>
@@ -137,14 +166,20 @@ class FilterTableRisikoInherenKuantitatif extends React.Component{
                                     <Form onSubmit={(e) => {
                                         e.preventDefault();
                                         this.props.form.validateFields((err, values) => {
+
                                             if (!err) {
+                                                // console.log(this.state.version_name);
+
                                                 this.setState({
                                                     loading: true,
                                                     fetchdata: [{
                                                         isyear: isyear,
                                                         ismonth: ismonth,
                                                         stringmonth: stringmonth,
-                                                        risks: values.risks
+                                                        risks: values.risks,
+                                                        risk_name: this.state.risk_name,
+                                                        version_id: values.version_id,
+                                                        version_name: this.state.version_name
                                                     }]
                                                 });
                                             }
@@ -176,6 +211,7 @@ class FilterTableRisikoInherenKuantitatif extends React.Component{
                                                         style={{width: '40%', textAlignLast: 'center'}}
                                                         showSearch
                                                         allowClear
+                                                        onChange={this.catchRiskName}
                                                         placeholder="Select risk"
                                                         optionFilterProp="children"
                                                         filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
@@ -183,6 +219,34 @@ class FilterTableRisikoInherenKuantitatif extends React.Component{
                                                         dataoptions.map((prop, index) => {
                                                             var value = prop.id;
                                                             var label = prop.nama;
+                                                            return (
+                                                                <Option key={index} value={value}>{label}</Option>
+                                                            )
+                                                        })
+                                                    }
+                                                </Select>
+                                            )}
+                                        </FormItem>
+
+                                        <FormItem {...formItemLayout}>
+                                            <div>Choose Version</div>
+                                            {getFieldDecorator('version_id', {
+                                                rules: [{
+                                                    required: true, message: 'Please choose risks.',
+                                                }],
+                                            })(
+                                                <Select id="version_id"
+                                                        style={{width: '40%', textAlignLast: 'center'}}
+                                                        showSearch
+                                                        allowClear
+                                                        placeholder="Select version"
+                                                        onChange={this.catchVersionName}
+                                                        optionFilterProp="children"
+                                                        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
+                                                    {
+                                                        dataoptionsmasterversion.map((prop, index) => {
+                                                            var value = prop.id;
+                                                            var label = prop.version_name;
                                                             return (
                                                                 <Option key={index} value={value}>{label}</Option>
                                                             )
@@ -204,8 +268,7 @@ class FilterTableRisikoInherenKuantitatif extends React.Component{
                                         </FormItem>
 
                                         <FormItem  {...formItemLayout}>
-                                            <Button type="primary" htmlType="submit" style={{width: '40%'}}>Show
-                                                Table</Button>
+                                            <Button type="primary" htmlType="submit" style={{width: '40%'}}>Input Data</Button>
                                         </FormItem>
                                     </Form>
                                 </Spin>
@@ -219,10 +282,22 @@ class FilterTableRisikoInherenKuantitatif extends React.Component{
 
 const WrappedFilterTableRisikoInherenKuantitatif = Form.create()(FilterTableRisikoInherenKuantitatif);
 
-const mapStateToProps = ({auth,jenisrisiko}) => {
+const mapStateToProps = ({
+  auth,
+  jenisrisiko,
+  masterversion,
+}) => {
     const {token} = auth;
     const {getallrisks} = jenisrisiko;
-    return {token,getallrisks}
+    const {masterversionsdata} = masterversion;
+    return {
+      token,
+      getallrisks,
+      masterversionsdata
+    }
 };
 
-export default connect(mapStateToProps, {getAllRisks})(WrappedFilterTableRisikoInherenKuantitatif);
+export default connect(mapStateToProps, {
+  getAllRisks,
+  fetchAllMasterVersion
+})(WrappedFilterTableRisikoInherenKuantitatif);

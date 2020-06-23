@@ -48,7 +48,7 @@ function TableParameterKualitatif ({
   const [addbutton, setaddbutton] = React.useState(false);
   const [editbutton, seteditbutton] = React.useState(false);
   const [eid, setEid] = React.useState("");
-  const [fetchdata, setFetchdata] = React.useState([]);
+  const [fetchdata, setFetchData] = React.useState([]);
   const [paging, setPaging] = React.useState(1);
   // handling add / edit dialog
   const [changed, setChanged] = React.useState();
@@ -264,7 +264,16 @@ function TableParameterKualitatif ({
                 <span className="gx-link" onClick={() => {
                   setEid(text.id);
                   seteditbutton(true);
-                  setFetchdata([
+
+                  console.log(text);
+
+                  // sorting value for selected master version in parameter version
+                  let masterversionlistdata = [];
+                  for(let i=0;i<text.master_version_list.length;i++){
+                    masterversionlistdata.push(parseInt(text.master_version_list[i].version_id));
+                  }
+
+                  setFetchData([
                     ...fetchdata,
                     {
                       id:text.id,
@@ -287,9 +296,11 @@ function TableParameterKualitatif ({
                       level:text.level,
                       induk_id:text.induk_id,
                       risk_id:text.risk_id,
-                      id_jenis_nilai:text.id_jenis_nilai
+                      id_jenis_nilai:text.id_jenis_nilai,
+                      masterversionlist: masterversionlistdata,
                     }
                   ]);
+
                 }}>Edit</span>
                 <Divider type="vertical"/>
                 <span className="gx-link" onClick={() => {
@@ -478,11 +489,11 @@ function TableParameterKualitatif ({
   React.useEffect(() => {
     fetchAllParameterKualitatif({
       token: authData.token,
-      page: 1
+      page: 1,
+      searchData: {
+        jenis_nilai_id : 4
+      }
     });
-
-    // log state from redux
-    console.log(parameterKualitatifData);
 
     countAllParameterKualitatif(authData.token);
 

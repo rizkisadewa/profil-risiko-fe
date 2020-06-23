@@ -17,3 +17,4 @@ export * from './Parameterversion';
 export * from './Ratioindikatorformula';
 export * from './Parameterkualitatifdualalternatif';
 export * from './Kpmrparameterkualitatif';
+export * from './Risikoinhereninputkuantitatif';

@@ -40,7 +40,7 @@ export const fetchAllParameterKualitatif = ({token, page, searchData}) => {
         // axios using validate status < 500
         await axios({
           method: "GET",
-          url: `api/parameter-kualitatif?page=${page}`,
+          url: `api/parameter-kualitatif-general?page=${page}`,
           baseURL: backendUrl,
           headers: {
             Authorization: `Bearer ${token}`
@@ -78,19 +78,35 @@ export const fetchAllParameterKualitatif = ({token, page, searchData}) => {
         var searchParameters = '';
 
         let paramColumn = [
-          "risk_id", "name", "penomoran", "urutan_sub", "level", "induk_id", "bobot", "jenis_nilai_id", "ratio_manual", "pr_low_name", "pr_lowtomod_name",
-          "pr_mod", "pr_modtohigh", "pr_high", "version", "bulan", "tahun", "id_indikator_penyebut", "id_indikator_pembilang"
+          "risk_id",
+          "name",
+          "level",
+          "induk_id",
+          "penomoran",
+          "urutan_sub",
+          "bobot",
+          "version",
+          "bulan",
+          "tahun",
+          "jenis",
+          "jenis_nilai_id",
         ];
 
-        let searchCounter = 0;
+        let searchCounter = 1;
 
         let paramValue = [
-          searchData.risk_id, searchData.name, searchData.penomoran, searchData.urutan_sub,
-          searchData.level, searchData.induk_id, searchData.bobot, searchData.jenis_nilai_id,
-          searchData.ratio_manual, searchData.pr_low_name, searchData.pr_lowtomod_name,
-          searchData.pr_mod, searchData.pr_modtohigh, searchData.pr_high, searchData.version,
-          searchData.bulan, searchData.tahun, searchData.id_indikator_penyebut,
-          searchData.id_indikator_pembilang
+          searchData.risk_id,
+          searchData.name,
+          searchData.level,
+          searchData.induk_id,
+          searchData.penomoran,
+          searchData.urutan_sub,
+          searchData.bobot,
+          searchData.version,
+          searchData.bulan,
+          searchData.tahun,
+          searchData.jenis,
+          searchData.jenis_nilai_id,
         ];
 
         console.log("Param Value : ");
@@ -123,7 +139,7 @@ export const fetchAllParameterKualitatif = ({token, page, searchData}) => {
         // get total
         await axios({
           method: "GET",
-          url: `api/parameter-kualitatif?${searchParameters}`,
+          url: `api/parameter-kualitatif-general?jenis=PR&is_relate_to_rin=true${searchParameters}`,
           baseURL: backendUrl,
           headers: {
             Authorization: `Bearer ${token}`
@@ -136,8 +152,10 @@ export const fetchAllParameterKualitatif = ({token, page, searchData}) => {
           const count = response.data.data.rows;
           if(response.data.statusCode === 200 || response.data.statusCode === 201){
             dispatch({type: COUNT_PARAMETER_KUALITATIF, payload: count.length});
+
           } else {
             dispatch({type: COUNT_PARAMETER_KUALITATIF, payload: 0});
+
           }
 
         }).catch((error) => {
@@ -149,7 +167,7 @@ export const fetchAllParameterKualitatif = ({token, page, searchData}) => {
         // get data per page
         await axios({
           method: "GET",
-          url: `api/parameter-kualitatif?page=${page}${parameters}`,
+          url: `api/parameter-kualitatif-general?page=${page}&jenis=PR&is_relate_to_rin=true${parameters}`,
           baseURL: backendUrl,
           headers: {
             Authorization: `Bearer ${token}`
@@ -188,7 +206,7 @@ export const countAllParameterKualitatif = (token) => {
       // axios using validate status < 500
       await axios({
         method: "GET",
-        url: 'api/parameter-kualitatif',
+        url: 'api/parameter-kualitatif-general?jenis=PR&jenis_nilai_id=4',
         baseURL: backendUrl,
         headers: {
           Authorization: `Bearer ${token}`
@@ -235,7 +253,7 @@ export const addParameterKualitatif = (token, newParameterKualitatif) => {
     try {
       const rawResponse = await axios({
           method: "POST",
-          url: 'api/parameter-kualitatif',
+          url: '/api/parameter-kualitatif-general',
           baseURL: backendUrl,
           headers: {
             Authorization : `Bearer ${token}`
@@ -276,7 +294,7 @@ export const updateParameterKualitatif = ({id, token , altered}) => {
     try {
       const rawResponse = await axios({
         method: "PUT",
-        url: 'api/parameter-kualitatif/'+id,
+        url: 'api/parameter-kualitatif-general/'+id,
         baseURL: backendUrl,
         headers : {
           Authorization: `Bearer ${token}`

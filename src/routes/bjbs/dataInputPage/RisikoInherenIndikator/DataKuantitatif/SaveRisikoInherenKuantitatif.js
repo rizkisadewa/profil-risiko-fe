@@ -1,191 +1,68 @@
 import React from "react";
-import {Button, Input, Form, Select, Card } from "antd";
+import {Button, Input, Form, Card } from "antd";
 // import {Button, Input, Form, Select, InputNumber, Spin} from "antd";
 import connect from "react-redux/es/connect/connect";
 import {
-  getAllRisks,
-  getAllRatioIndikator,
-  getAllPeringkatRisiko,
-  jenisNilaiParam,
-  getAllRatioIndikatorForParamterKualitatif,
-  addParameterKuantitatif,
-  resetAddParameterKualitatif,
-  fetchAllIngredients,
-  addParameterKualitatif,
-  fetchAllMasterVersion,
-  getAllFaktorParameterDataOption
+  fetchAllRisikoInherenInputKuantitatif,
+  addRisikoInherenInputKuantitatif,
+  resetAddRisikoInherenInputKuantitatif
 } from "../../../../../appRedux/actions/index";
+import {NotificationContainer, NotificationManager} from "react-notifications";
 import SweetAlerts from "react-bootstrap-sweetalert";
-import Grid from "@material-ui/core/Grid";
 
 const FormItem = Form.Item;
-const Option = Select.Option;
-
-const operatorOption = [
-    {label:"Tambah (+)", value:"+"}
-];
-
 
 class SaveRisikoInherenKuantitatif extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             basic: false,
-            dataoptionsratioindikator : [],
-            ratioindikatorcalculation: [],
-            dataoptionsparameterfaktor: [],
+            datarisikoinhereninputkuantitatif : [],
             paramrisk_id : props.fetchdata ? props.fetchdata[0].risks : 0,
             parambulan : props.fetchdata ? props.fetchdata[0].ismonth : 0,
             paramtahun : props.fetchdata ? props.fetchdata[0].isyear : 0,
-            //state value
-            numChildren: 0,
+            version_id : props.fetchdata ? props.fetchdata[0].version_id : 0,
+            version_name: props.fetchdata ? props.fetchdata[0].version_name : '',
+            risk_name : props.fetchdata ? props.fetchdata[0].risk_name : '',
+
         }
     }
 
     componentDidMount(){
-        this.props.getAllRisks({token:this.props.token, page:'', jenis:'', nama:'', keterangan:''});
-        this.props.getAllPeringkatRisiko({page:'', token:this.props.token, description:'', name:'', jenis_nilai:''});
-        this.props.jenisNilaiParam({token:this.props.token});
-        this.props.getAllRatioIndikatorForParamterKualitatif({token:this.props.token, jenis: "PR"});
-        this.props.fetchAllIngredients({token: this.props.token, searchData: {
-          jenis: "PR",
-          jenis_nilai_id: 21
-        }});
-        this.props.getAllRatioIndikator({token:this.props.token});
-        this.props.fetchAllMasterVersion({token: this.props.token});
-        this.props.getAllFaktorParameterDataOption({token: this.props.token});
+      this.props.fetchAllRisikoInherenInputKuantitatif({token: this.props.token, page: 1, searchData: {
+        bulan: this.state.parambulan,
+        tahun: this.state.paramtahun,
+        jenis: 'PR',
+        version_id: this.state.version_id
+      }})
     }
 
     componentWillReceiveProps(nextProps){
         this.setState({
-            dataoptionsrisk : nextProps.getallrisks,
-            dataoptionsratioindikator : nextProps.getallratioindikator,
-            dataoptionsratioindikatorkualitatif: nextProps.getallratioindikatorkualitatif,
-            dataoptionsingredientsdata: nextProps.ingredientsdata,
-            dataoptionsmasterversion : nextProps.masterversionsdata,
-            dataoptionsparameterfaktor : nextProps.getallparameterfaktor
+          datarisikoinhereninputkuantitatif: nextProps.risikoinhereninputkuantitatifdata
         });
 
-        switch(nextProps.addparameterkualitatifresult.statusCode){
+        switch(nextProps.addrisikoinhereninputkuantitatifresult.statusCode){
           case 200:
           case 201:
-          case 400:
-            this.props.clickAddSuccessButton(
-              nextProps.addparameterkualitatifresult.statusCode,
-              nextProps.addparameterkualitatifresult.message
-            );
+            NotificationManager.success(nextProps.addrisikoinhereninputkuantitatifresult.message, "Success !!");
             // reset all state
-            this.props.resetAddParameterKualitatif();
+            this.props.resetAddRisikoInherenInputKuantitatif();
+            break;
+          case 400:
+            NotificationManager.error(nextProps.addrisikoinhereninputkuantitatifresult.message, "Success !!");
+            // reset all state
+            this.props.resetAddRisikoInherenInputKuantitatif();
             break;
           default:
             break;
         }
     }
 
-    onAddChild = () => {
 
-      this.setState(prevState => ({
-        ...prevState,
-        numChildren: this.state.numChildren+1
-      }));
-
-      // data for calculation
-      let dataBody = {};
-      dataBody.ratio_indikator_id = "";
-      dataBody.seq = this.state.numChildren;
-      dataBody.operations = "+";
-      this.state.ratioindikatorcalculation.push(dataBody);
-      dataBody = {};
-      console.log(this.state.ratioindikatorcalculation)
-    }
-
-    onRemoveChild = () => {
-      if(this.state.numChildren > 0){
-        this.setState(prevState => ({
-          ...prevState,
-          numChildren: this.state.numChildren - 1
-        }));
-
-        // data for calculation
-        this.state.ratioindikatorcalculation.pop();
-      }
-    }
-
-    // ==== ON CHANGE INIT RATIO INDIKATOR ====
-    onAddInitRIVariableType = (value) => {
-      this.setState(prevState => ({
-        initialratioindikator: {
-          ...prevState.initialratioindikator,
-          operations: value
-        }
-      }));
-    }
-
-    onAddInitRIIdIndikator = (value) => {
-      this.setState(prevState => ({
-        initialratioindikator: {
-          ...prevState.initialratioindikator,
-          ratio_indikator_id: value
-        }
-      }));
-    }
-
-    // ==== /ON CHANGE INIT RATIO INDIKATOR ====
-
-    handleChangeOperator = (value, i) => {
-
-        let index = parseInt(i._owner.index);
-        // update value in object
-        // this.state.ratioindikatorcalculation[index].operations = value;
-
-        const newArray = Array.from(this.state.ratioindikatorcalculation);
-        newArray[index].operations = "+";
-
-        this.setState(prevState => ({
-          ...prevState,
-          ratioindikatorcalculations: newArray
-        }));
-        console.log(this.state.ratioindikatorcalculations);
-
-    }
-
-    handleChangeRatioIndikator = (value, i) => {
-        let index = parseInt(i._owner.index);
-        // update value in object
-        // this.state.ratioindikatorcalculation[index].ratio_indikator_id = value;
-
-        const newArray = Array.from(this.state.ratioindikatorcalculation);
-        newArray[index].ratio_indikator_id = value;
-
-        this.setState(prevState => ({
-          ...prevState,
-          ratioindikatorcalculations: newArray
-        }));
-
-        console.log(this.state.ratioindikatorcalculations);
-
-    }
-
-    // function array master list
-    handleChangeMultipleSelect = (value, label) => {
-      let masterversionelement = {};
-      let masterlistarray = [];
-
-      for(let i=0;i<value.length;i++){
-        masterversionelement.id = label[i].props.value;
-        masterversionelement.version_name = label[i].props.children;
-        masterlistarray.push(masterversionelement);
-        masterversionelement = {};
-      }
-
-      this.setState(prevState => ({
-        ...prevState,
-        masterversionlist: masterlistarray
-      }));
-
-      console.log("Master version list array")
-      console.log(this.state.masterversionlist);
-    }
+    onClickCancel = () => {
+        this.props.clickCancelFilterButton();
+    };
 
     render() {
         const formItemLayout = {
@@ -244,100 +121,85 @@ class SaveRisikoInherenKuantitatif extends React.Component {
 
         const {
             basic,
-            dataoptionsratioindikator,
-            numChildren
+            datarisikoinhereninputkuantitatif
         } = this.state;
         const {getFieldDecorator} = this.props.form;
 
-        // handle children of element for counting
-        const children = [];
-
-        const dataDummy = [
-          {
-            id: 1321,
-            risk_id: 45,
-            name: "Agunan yang diambil alih",
-            bulan: 6,
-            tahun: 2020,
-            parameter_faktor: "K 20 - Sandi LBUSB kode 218 atau cross check ke P3 -- AYDA",
-            value: "13,847"
-          },
-          {
-            id: 1322,
-            risk_id: 45,
-            name: "Total Pembiayaan Non Bank",
-            bulan: 6,
-            tahun: 2020,
-            parameter_faktor: "Hasil Penjumlahan dari Kolektibilitas",
-            value: "20,628,243,896"
-          }
-        ]
-
-        //looping all children
-        for (var i = 0; i < numChildren; i++) {
-          children.push(
-            <ChildComponent
-              indikatordata={dataoptionsratioindikator}
-              key={i}
-              id_operator_arithmetic={"operator_arithmetic_"+i}
-              handleChangeRatioIndikator={this.handleChangeRatioIndikator}
-              handleChangeOperator={this.handleChangeOperator}
-              id_ratio_indikator={"ratio_indikator_"+i} />);
-        };
+        // const dataDummy = [
+        //   {
+        //     id: 1321,
+        //     risk_id: 45,
+        //     name: "Agunan yang diambil alih",
+        //     bulan: 6,
+        //     tahun: 2020,
+        //     parameter_faktor: "K 20 - Sandi LBUSB kode 218 atau cross check ke P3 -- AYDA",
+        //     value: "13,847"
+        //   },
+        //   {
+        //     id: 1322,
+        //     risk_id: 45,
+        //     name: "Total Pembiayaan Non Bank",
+        //     bulan: 6,
+        //     tahun: 2020,
+        //     parameter_faktor: "Hasil Penjumlahan dari Kolektibilitas",
+        //     value: "20,628,243,896"
+        //   }
+        // ]
 
         return (
-          <Card title={"Data Risiko Inheren Kuantitatif "+monthText+" "+this.state.paramtahun}>
+          <Card title={`Data Risiko Inheren Kuantitatif - ${this.state.risk_name} : ${monthText} ${this.state.paramtahun} (${this.state.version_name})`}>
             <>
                 <Form onSubmit={(e)=>{
                     e.preventDefault();
 
-                    // if any ratio indikator formula for level 2 or more
-                    let ratioIndikatorFormula = [];
-                    // check if any ratio indikator calculation
-                    if(this.state.ratioindikatorcalculation.length > 0){
-                      // loop al ratio indikator calculation
-                      for(let i=0;i<this.state.ratioindikatorcalculation.length;i++){
-                        ratioIndikatorFormula.push(this.state.ratioindikatorcalculation[i]);
-                      }
-                    }
-
                     this.props.form.validateFields((err, values) => {
                         if (!err) {
-                          console.log("Values save parameter kualitatif : ");
-                          values.masterversiondata = this.state.masterversionlist;
-                          values.ratio_indikator_formula = ratioIndikatorFormula;
-                          console.log(values);
-                          // this.props.addParameterKualitatif(values.token, {
-                          //   risk_id: values.risk_id,
-                          //   name: values.name,
-                          //   level: values.level,
-                          //   induk_id: values.peringkatrisiko,
-                          //   penomoran: values.penomoran,
-                          //   pr_low: values.low,
-                          //   pr_lowtomod: values.lowtomoderate,
-                          //   pr_mod: values.moderate,
-                          //   pr_modtohigh: values.moderatetohigh,
-                          //   pr_high: values.high,
-                          //   bobot: values.bobot,
-                          //   id_indikator_pembilang: 0,
-                          //   id_indikator_penyebut: 0,
-                          //   jenis_nilai_id: 4
-                          // });
+                          let listOfRatioIndikatorId = Object.getOwnPropertyNames(values);
+                          let listOfValues = Object.values(values);
+
+                          // make the object to submit
+                          let toSubmitBody = {};
+                          let toSubmitData = {};
+                          let ratio_indikator_data = [];
+
+                          // looping to parsing ratio_indikator_data
+                          for(let i=0;i<listOfValues.length;i++){
+                            toSubmitBody.id_indikator = parseInt(listOfRatioIndikatorId[i]);
+                            toSubmitBody.value = parseInt(listOfValues[i]);
+                            ratio_indikator_data.push(toSubmitBody);
+                            toSubmitBody = {};
+                          }
+
+                          // compile all the data
+                          toSubmitData.id_jenis_nilai = 1;
+                          toSubmitData.bulan = parseInt(this.state.parambulan);
+                          toSubmitData.tahun = parseInt(this.state.paramtahun);
+                          toSubmitData.parameter_version_id = this.state.version_id;
+                          toSubmitData.data_ratio_indikator = ratio_indikator_data;
+
+                          this.props.addRisikoInherenInputKuantitatif(this.props.token, toSubmitData)
                         }
                     });
                 }}>
 
                     {
-                      dataDummy.map((prop, index) => {
+                      datarisikoinhereninputkuantitatif.map((prop, index) => {
                         return (
-                          <FormItem {...formItemLayout} label={prop.name}>
-                              {getFieldDecorator(prop.name, {
-                                  initialValue: prop.value,
+                          <FormItem {...formItemLayout} label={prop.ratio_indikator.name}>
+                              {getFieldDecorator(`${prop.ratio_indikator.id}`, {
+                                  initialValue: parseInt(prop.value),
                                   rules: [{
                                       required: true, message: 'Please input name field.',
                                   }],
                               })(
-                                  <Input id={prop.name} placeholder="Input Indikator"
+                                  <Input id={index} placeholder="Input Indikator"
+                                    onChange={(e,value) =>{
+                                        // this.setState({
+                                        //     paramparameter:e.target.value,
+                                        // });
+                                        console.log(e)
+                                        console.log(e.target.value)
+                                    }}
                                          />
                               )}
                           </FormItem>
@@ -347,7 +209,7 @@ class SaveRisikoInherenKuantitatif extends React.Component {
                     }
 
                     <FormItem style={{ float : "right", paddingRight : "1rem" }}>
-                        <Button onClick={this.props.clickCancelAddButton}>Cancel</Button>
+                        <Button onClick={this.onClickCancel}>Cancel</Button>
                         <Button type="primary" htmlType="submit">Save</Button>
                     </FormItem>
 
@@ -362,110 +224,33 @@ class SaveRisikoInherenKuantitatif extends React.Component {
 
                 </Form>
             </>
+            <NotificationContainer/>
           </Card>
         );
     }
 
 }
 
-const ChildComponent = props => (
-  <>
-    <Grid container spacing={1}>
-      <Grid item xs={12} md={12} lg={2}>
-        <Select id={props.id_operator_arithmetic}
-                showSearch
-                placeholder="Select Operator Arithmetic"
-                optionFilterProp="children"
-                style={{marginBottom: 10}}
-                onChange={props.handleChangeOperator}
-                defaultValue="+"
-        >
-            {
-                operatorOption.map((prop, index) => {
-                    var value = prop.value;
-                    var label = prop.label;
-                    return (
-                        <Option key={props.key} value={value} disabled>{label}</Option>
-                    )
-                })
-            }
-        </Select>
-      </Grid>
-      <Grid item xs={12} md={12} lg={10}>
-        <Select id={props.id_ratio_indikator}
-                showSearch
-                placeholder="Select Ratio Indikator"
-                optionFilterProp="children"
-                style={{marginBottom: 10}}
-                onChange={props.handleChangeRatioIndikator}
-        >
-            <Option value="" disabled>Select Ratio Indikator</Option>
-            {
-                props.indikatordata.map((prop, index) => {
-                    var value = prop.id;
-                    var label = prop.name;
-                    return (
-                        <Option key={props.key} value={value}>{label}</Option>
-                    )
-                })
-            }
-        </Select>
-      </Grid>
-    </Grid>
-  </>
-
-)
-
 const WrappedSaveRisikoInherenKuantitatif = Form.create()(SaveRisikoInherenKuantitatif);
 
 const mapStateToProps = ({
   auth,
-  jenisrisiko,
-  peringkatrisiko,
-  masterparameter,
-  ratioindikator,
-  parameterkuantitatif,
-  parameterkualitatif,
-  ingredients,
-  masterversion,
-  parameterfaktor
+  risikoinhereninputkuantitatif
 }) => {
     const {token} = auth;
-    const {getallrisks} = jenisrisiko;
-    const {getallperingkatrisiko} = peringkatrisiko;
-    const {jenisnilaiparam} = masterparameter;
-    const {getallratioindikator, getallratioindikatorkualitatif} = ratioindikator;
-    const {addparameterkuantitatifresult} = parameterkuantitatif;
-    const {parameterkualitatifdata, addparameterkualitatifresult} = parameterkualitatif;
-    const {ingredientsdata} = ingredients;
-    const {masterversionsdata} = masterversion;
-    const {getallparameterfaktor} = parameterfaktor;
+    const {
+      risikoinhereninputkuantitatifdata,
+      addrisikoinhereninputkuantitatifresult
+    } = risikoinhereninputkuantitatif;
     return {
       token,
-      getallrisks,
-      getallperingkatrisiko,
-      jenisnilaiparam,
-      getallratioindikator,
-      addparameterkuantitatifresult,
-      getallratioindikatorkualitatif,
-      parameterkualitatifdata,
-      ingredientsdata,
-      masterversionsdata,
-      addparameterkualitatifresult,
-      getallparameterfaktor
+      risikoinhereninputkuantitatifdata,
+      addrisikoinhereninputkuantitatifresult
     }
 };
 
 export default connect(mapStateToProps, {
-  getAllRisks,
-  getAllRatioIndikator,
-  getAllPeringkatRisiko,
-  jenisNilaiParam,
-  getAllRatioIndikatorForParamterKualitatif,
-  addParameterKuantitatif,
-  resetAddParameterKualitatif,
-  fetchAllIngredients,
-  addParameterKualitatif,
-  fetchAllMasterVersion,
-  getAllFaktorParameterDataOption
+  fetchAllRisikoInherenInputKuantitatif,
+  addRisikoInherenInputKuantitatif,
+  resetAddRisikoInherenInputKuantitatif
 })(WrappedSaveRisikoInherenKuantitatif);

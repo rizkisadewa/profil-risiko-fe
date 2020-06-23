@@ -10,6 +10,7 @@ import {
   addParameterKuantitatif,
   resetAddParameterKualitatif,
   fetchAllIngredients,
+  fetchAllMasterVersion,
   addParameterKualitatif
 } from "../../../../appRedux/actions/index";
 import SweetAlerts from "react-bootstrap-sweetalert";
@@ -21,8 +22,7 @@ const Option = Select.Option;
 const optionsLevel = [
     {label:"Level Kedua (2)", value:2},
     {label:"Level Ketiga (3)", value:3},
-    {label:"Level Keempat (4)", value:4},
-    {label:"Level Kelima (5)", value:5}
+    {label:"Level Keempat (4)", value:4}
 ];
 
 class SaveParameterKualitatif extends React.Component{
@@ -34,10 +34,12 @@ class SaveParameterKualitatif extends React.Component{
             dataoptionsrisk : [],
             dataoptionsratioindikatorkualitatif : [],
             dataoptionsingredientsdata : [],
+            dataoptionsmasterversion: [],
             //state value
             paramparameter:'',
             paramlow:'',
             paramlowtomoderate:'',
+            paramjenisnilai:'',
             parammoderate:'',
             parammoderatetohigh:'',
             paramhigh:'',
@@ -46,14 +48,13 @@ class SaveParameterKualitatif extends React.Component{
             paramlevel:'',
             paramindukparameter:'',
             paramrisk_id:'',
-            paramjenisnilai:'',
             paramindikatorpembilang:'',
             paramindikatorpenyebut:''
         }
     }
 
     componentDidMount(){
-        this.props.getAllRisks({token:this.props.token, page:'', jenis:'', nama:'', keterangan:''});
+        this.props.getAllRisks({token:this.props.token, page:'', jenis:'PR', nama:'', keterangan:''});
         this.props.getAllPeringkatRisiko({page:'', token:this.props.token, description:'', name:'', jenis_nilai:''});
         this.props.jenisNilaiParam({token:this.props.token});
         this.props.getAllRatioIndikatorForParamterKualitatif({token:this.props.token, jenis: "PR"});
@@ -61,6 +62,7 @@ class SaveParameterKualitatif extends React.Component{
           jenis: "PR",
           jenis_nilai_id: 4
         }});
+        this.props.fetchAllMasterVersion({token: this.props.token});
     }
 
     componentWillReceiveProps(nextProps){
@@ -68,7 +70,8 @@ class SaveParameterKualitatif extends React.Component{
             dataoptionsrisk : nextProps.getallrisks,
             dataoptionsratioindikator : nextProps.getallratioindikator,
             dataoptionsratioindikatorkualitatif: nextProps.getallratioindikatorkualitatif,
-            dataoptionsingredientsdata: nextProps.ingredientsdata
+            dataoptionsingredientsdata: nextProps.ingredientsdata,
+            dataoptionsmasterversion : nextProps.masterversionsdata,
         });
 
         switch(nextProps.addparameterkualitatifresult.statusCode){
@@ -118,7 +121,8 @@ class SaveParameterKualitatif extends React.Component{
             paramindikatorpenyebut,
             paramindikatorpembilang,
             dataoptionsratioindikatorkualitatif,
-            dataoptionsingredientsdata
+            dataoptionsingredientsdata,
+            dataoptionsmasterversion
         } = this.state;
         const {token, addPropstate} = this.props;
         const {getFieldDecorator} = this.props.form;
@@ -145,7 +149,9 @@ class SaveParameterKualitatif extends React.Component{
                             bobot: values.bobot,
                             id_indikator_pembilang: 0,
                             id_indikator_penyebut: 0,
-                            jenis_nilai_id: 4
+                            jenis_nilai_id: 4,
+                            jenis: 'PR',
+                            master_version_list: values.master_version_list
                           });
                         }
                     });
@@ -193,14 +199,14 @@ class SaveParameterKualitatif extends React.Component{
                         )}
                     </FormItem>
 
-                    <FormItem {...formItemLayout} label="Indikator">
+                    <FormItem {...formItemLayout} label="Name">
                         {getFieldDecorator('name', {
                             initialValue: addPropstate ? addPropstate.pkparameter : '',
                             rules: [{
                                 required: true, message: 'Please input name field.',
                             }],
                         })(
-                            <Input id="name" placeholder="Input Indikator"
+                            <Input id="name" placeholder="Input Name"
                                    onChange={(e,value) =>{
                                        this.setState({
                                            paramparameter:e.target.value,
@@ -321,6 +327,34 @@ class SaveParameterKualitatif extends React.Component{
                                          formatter={value => `${value}%`}
                                          parser={value => value.replace('%', '')}
                             />
+                        )}
+                    </FormItem>
+
+                    <FormItem {...formItemLayout} label="Master Versi">
+                        {getFieldDecorator('master_version_list', {
+                            rules: [{
+                                required: true, message: 'Please input master version.',
+                            }],
+                        })(
+                          <Select id="master_version_list"
+                                  showSearch
+                                  mode="multiple"
+                                  placeholder="Select Jenis Penilaian"
+                                  optionFilterProp="children"
+                                  onChange={this.handleChangeMultipleSelect}
+                                  style={paramjenisnilai === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
+                                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                          >
+                              {
+                                  dataoptionsmasterversion.map((prop, index) => {
+                                      var value = prop.id;
+                                      var label = prop.version_name;
+                                      return (
+                                          <Option value={value} key={index}>{label}</Option>
+                                      )
+                                  })
+                              }
+                          </Select>
                         )}
                     </FormItem>
 
@@ -539,7 +573,8 @@ const mapStateToProps = ({
   ratioindikator,
   parameterkuantitatif,
   parameterkualitatif,
-  ingredients
+  ingredients,
+  masterversion
 }) => {
     const {token} = auth;
     const {getallrisks} = jenisrisiko;
@@ -548,6 +583,7 @@ const mapStateToProps = ({
     const {getallratioindikator, getallratioindikatorkualitatif} = ratioindikator;
     const {addparameterkuantitatifresult} = parameterkuantitatif;
     const {parameterkualitatifdata, addparameterkualitatifresult} = parameterkualitatif;
+    const {masterversionsdata} = masterversion;
     const {ingredientsdata} = ingredients;
     return {
       token,
@@ -559,7 +595,8 @@ const mapStateToProps = ({
       getallratioindikatorkualitatif,
       parameterkualitatifdata,
       ingredientsdata,
-      addparameterkualitatifresult
+      addparameterkualitatifresult,
+      masterversionsdata
     }
 };
 
@@ -571,6 +608,7 @@ export default connect(mapStateToProps, {
   addParameterKuantitatif,
   resetAddParameterKualitatif,
   fetchAllIngredients,
+  fetchAllMasterVersion,
   addParameterKualitatif
 })(WrappedSaveParameterKualitatif);
 export {optionsLevel};
