@@ -1,36 +1,54 @@
 import React from "react";
-import {Button, Modal, Radio} from "antd";
+import {Button, Modal, Table} from "antd";
 
-const RadioGroup = Radio.Group;
+const columns = [
+  {
+    title: 'Ratio Indikator',
+    dataIndex: 'label',
+  }
+];
 
-class AnswerOptions extends React.Component {
+const AnswerOptions = (props) => {
 
-  render() {
-    return (
-      <>
-      <Modal
-        visible={this.props.visible}
-        title="Silahkan pilih jawabannya di bawah ini : "
-        onOk={this.props.handleOk}
-        onCancel={this.props.handleCancel}
-        width={950}
-        wrapClassName="vertical-center-modal"
-        footer={[
-          <Button key="back" onClick={this.props.handleCancel}>Kembali</Button>,
-          <Button key="submit" type="primary" loading={this.props.loading} onClick={this.props.handleOk}>
-            Pilih Jawaban
-          </Button>
-        ]}
-      >
+  return (
+
+
+    <Modal
+      visible={props.visible}
+      title="Silahkan pilih jawabannya di bawah ini : "
+      onOk={props.handleOk}
+      onCancel={props.handleCancel}
+      width={950}
+      wrapClassName="vertical-center-modal"
+      footer={[
+        <Button key="back" onClick={props.handleCancel}>Kembali</Button>,
+        <Button key="submit" type="primary" loading={props.loading} onClick={props.handleOk}>
+          Pilih Jawaban
+        </Button>
+      ]}
+    >
+      {/*
       <RadioGroup
         options={this.props.dataoptions}
         onChange={this.props.onChange}
         value={this.props.value}
       />
-      </Modal>
-      </>
-    );
-  }
+      */}
+      <div>
+        <Table
+          rowSelection={{
+            type: 'radio',
+            onChange: props.onChange
+          }}
+          columns={columns}
+          dataSource={props.dataoptions}
+          pagination={false}
+        />
+      </div>
+
+    </Modal>
+
+  );
 }
 
 export default AnswerOptions;

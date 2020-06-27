@@ -59,7 +59,7 @@ class EditKpmrParameterKualitatif extends React.Component{
         this.props.getAllRatioIndikatorForParamterKualitatif({token:this.props.token, jenis: "KPMR"});
         this.props.fetchAllIngredients({token: this.props.token, searchData: {
           jenis: "KPMR",
-          jenis_nilai_id: 1
+          jenis_nilai_id: 4
         }});
         this.props.fetchAllMasterVersion({token: this.props.token});
     }

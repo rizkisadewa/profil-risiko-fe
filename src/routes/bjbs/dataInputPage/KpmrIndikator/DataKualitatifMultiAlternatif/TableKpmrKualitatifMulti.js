@@ -13,7 +13,10 @@ import {
   deleteParameterManual
 } from "../../../../../appRedux/actions/Parametermanual";
 import {
-  fetchAllMasterVersion
+  fetchAllMasterVersion,
+  fetchAllRisikoInherenInputKualitatif,
+  addRisikoInherenInputKualitatif,
+  resetAddRisikoInherenInputKualitatif
 } from "../../../../../appRedux/actions/index";
 
 import {connect} from "react-redux";
@@ -42,22 +45,21 @@ class TableKpmrKualitatifMulti extends  React.Component{
             loading: false,
             visible: false,
             inputdataoptions: [],
-            answervalue: 0
+            answervalue: 0,
+            risikoinhereninputkualitatifdata: []
         }
     }
 
     componentDidMount(){
-        this.props.getAllParameterManualTable({page:this.state.paging, token:this.props.token, name:this.state.paramname,
-            risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-            pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
-            bobot:this.state.parambobot
-        });
-        this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname,
-            risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-            pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
-            bobot:this.state.parambobot
-        });
         this.props.fetchAllMasterVersion({token: this.props.token});
+        this.props.fetchAllRisikoInherenInputKualitatif({token: this.props.token, searchData: {
+          jenis: 'KPMR',
+          version_id: this.state.version_id,
+          jenis_nilai_id: 4,
+          bulan: this.state.parambulan,
+          tahun: this.state.paramtahun,
+          risk_id: this.state.paramrisk_id
+        }});
     }
 
     componentWillReceiveProps(nextProps) {
@@ -65,42 +67,24 @@ class TableKpmrKualitatifMulti extends  React.Component{
         this.setState({
             statusallparametermanualtable : nextProps.statusallparametermanualtable,
             statusallparametermanual : nextProps.statusallparametermanual,
-            masterversionsdata: nextProps.masterversionsdata
+            masterversionsdata: nextProps.masterversionsdata,
+            risikoinhereninputkualitatifdata: nextProps.risikoinhereninputkualitatifdata
         });
 
-        // console.log(nextProps.deleteparameterfaktor);
-        if (nextProps.statusallparametermanualtable === 200 && nextProps.statusallparametermanual === 200){
-            if (nextProps.countallparametermanual){
-                if (nextProps.statusallparametermanualtable.rows) {
-                    this.setState({
-                        loading: false,
-                        lengthdata: nextProps.countallparametermanual,
-                        deletestatus: '',
-                        datatable: [],
-                    });
-                } else {
-                    this.setState({
-                        loading: false,
-                        lengthdata: nextProps.countallparametermanual,
-                        deletestatus: '',
-                        datatable: nextProps.getallparametermanualtable,
-                    });
-                }
-            } else {
-                this.setState({
-                    loading:false,
-                    lengthdata:0,
-                    deletestatus : '',
-                    datatable : [],
-                });
-            }
-        }
+        // notif
+        switch (nextProps.addrisikoinhereninputkualitatifresult.statusCode) {
+          case 200:
+          case 201:
+          case 400:
+            this.clickAddSuccessButton(
+              nextProps.addrisikoinhereninputkualitatifresult.statusCode,
+              nextProps.addrisikoinhereninputkualitatifresult.message
+            );
+            // reset all state
+            this.props.resetAddRisikoInherenInputKualitatif();
+            break;
+          default:
 
-        if(nextProps.deleteparametermanual === 200){
-            this.setState({
-                loading:false,
-                deletestatus: nextProps.deleteparametermanual
-            });
         }
     }
 
@@ -143,14 +127,17 @@ class TableKpmrKualitatifMulti extends  React.Component{
         this.onChangePagination(this.state.paging);
     };
 
-    clickAddSuccessButton = (status) => {
+    clickAddSuccessButton = (status, message) => {
         this.setState({
-            addbutton: false,
+            visible: false,
+            inputdataoptions: []
         });
-
         if (status === 201 || status === 200){
             this.onRefresh();
-            NotificationManager.success("Data has saved.", "Success !!");
+            NotificationManager.success("Data has saved.", `${message}`);
+        } else {
+            this.onRefresh();
+            NotificationManager.error("Data has saved.", `${message}`);
         }
     };
 
@@ -165,18 +152,6 @@ class TableKpmrKualitatifMulti extends  React.Component{
             addbutton: false
         })
         this.onRefresh();
-    };
-
-    clickAddSuccessButton = (status) => {
-        // this.props.getAllFaktorParameterTable({page:this.state.paging, token:this.props.token});
-        this.setState({
-            addbutton: false
-        });
-
-        if (status === 201 || status === 200){
-            this.onRefresh();
-            NotificationManager.success("Data has saved.", "Success !!");
-        }
     };
 
     onChangePagination = page => {
@@ -197,20 +172,22 @@ class TableKpmrKualitatifMulti extends  React.Component{
     };
 
     onRefresh = () => {
-        this.setState({
-            loading:true,
-            paging:1
-        });
-        this.props.getAllParameterManualTable({page:1, token:this.props.token, name:this.state.paramname,
-            risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-            pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
-            bobot:this.state.parambobot
-        });
-        this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname,
-            risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-            pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
-            bobot:this.state.parambobot
-        });
+      this.setState({
+          loading:true,
+          paging:1
+      });
+      this.props.fetchAllRisikoInherenInputKualitatif({token: this.props.token, searchData: {
+        jenis: 'KPMR',
+        version_id: this.state.version_id,
+        jenis_nilai_id: 4,
+        bulan: this.state.parambulan,
+        tahun: this.state.paramtahun,
+        risk_id: this.state.paramrisk_id
+      }});
+      this.setState({
+          loading:false,
+          paging:1
+      });
     };
 
     // modal handling for answer
@@ -219,21 +196,35 @@ class TableKpmrKualitatifMulti extends  React.Component{
         visible: true,
       });
     };
+
     handleOk = () => {
-      this.setState({loading: true});
-      setTimeout(() => {
-        this.setState({loading: false, visible: false});
-      }, 3000);
+      console.log("===== DATA INPUT TO BE SUBMIT : ");
+
+      this.props.addRisikoInherenInputKualitatif(this.props.token, {
+        ingredients_id: this.state.ingredients_id,
+        ratio_indikators_id: parseInt(this.state.answervalue),
+        parameter_version_id: this.state.version_id,
+        value: parseInt(this.state.answervalue),
+        bulan: this.state.parambulan,
+        tahun: parseInt(this.state.paramtahun)
+      });
     };
+
+
     handleCancel = () => {
-      this.setState({visible: false});
+      this.setState({
+        visible: false,
+        inputdataoptions: []
+      });
     };
 
     // handle radio button
-    onChangeAnswer = (e) => {
-      console.log('radio1 checked', e.target.value);
+    onChangeAnswer = (selectedRowKeys, selectedRows) => {
+      // console.log('radio1 checked', e.target.value);
+      // console.log(this.state.lastanswervalue);
+      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
       this.setState({
-        answervalue: e.target.value,
+        answervalue: selectedRows[0].value,
       });
     };
 
@@ -248,69 +239,70 @@ class TableKpmrKualitatifMulti extends  React.Component{
           loading,
           addbutton,
           paging,
-          lengthdata
+          lengthdata,
+          risikoinhereninputkualitatifdata
         } = this.state;
         sortedInfo = sortedInfo || {};
 
-        const dataDummy = [
-          {
-            id: 1321,
-            risk_id: 45,
-            name: "Karakteristik aktivitas bisnis yang berdampak pada risiko benchmark suku bunga dalam banking book dan karakteristik nasabah utama Bank",
-            bulan: 6,
-            tahun: 2020,
-            value: "M",
-            risk_name : "Risiko Kredit",
-            pr_low_name : "Deposito spesial nisbah ≤ 20% dari total deposito non bank",
-            pr_lowtomod_name : "Deposito spesial nisbah > 20% sd 40% dari total deposito non bank",
-            pr_mod_name : "Deposito spesial nisbah > 40% sd 60% dari total deposito non bank",
-            pr_modtohigh_name : "Deposito spesial nisbah > 60% sd 80% dari total deposito non bank",
-            pr_high_name : "Deposito spesial nisbah > 80% dari total deposito non bank",
-            pr_low : 248,
-            pr_lowtomod : 249,
-            pr_mod : 250,
-            pr_modtohigh : 251,
-            pr_high : 255,
-          },
-          {
-            id: 1322,
-            risk_id: 45,
-            name: "Posisi pasar Bank dalam industri",
-            bulan: 6,
-            tahun: 2020,
-            value: "LTM",
-            risk_name : "Risiko Kredit",
-            pr_low_name : "Pertumbuhan Dana Murah > Pertumbuhan Perbankan kompetitor",
-            pr_lowtomod_name : "Pertumbuhan Dana Murah = Pertumbuhan Perbankan Kompetitor",
-            pr_mod_name : "Pertumbuhan Dana Murah < Pertumbuhan Perbankan Kompetitor",
-            pr_modtohigh_name : "Dana Murah Bank mengalami penurunan namun masih lebih baik dibandingkan penurunan perbankan kompetitor",
-            pr_high_name : "Dana Murah Bank mengalami penurunan dan berada di bawah penurunan perbankan nasional",
-            pr_low : 248,
-            pr_lowtomod : 249,
-            pr_mod : 250,
-            pr_modtohigh : 251,
-            pr_high : 255,
-          },
-          {
-            id: 1323,
-            risk_id: 45,
-            name: "Karakteristik Nasabah yang sensitif terhadap risiko suku bunga",
-            bulan: 6,
-            tahun: 2020,
-            value: "TBA",
-            risk_name : "Risiko Kredit",
-            pr_low_name : "Pertumbuhan Dana Murah > Pertumbuhan Perbankan kompetitor",
-            pr_lowtomod_name : "Pertumbuhan Dana Murah = Pertumbuhan Perbankan Kompetitor",
-            pr_mod_name : "Pertumbuhan Dana Murah < Pertumbuhan Perbankan Kompetitor",
-            pr_modtohigh_name : "Dana Murah Bank mengalami penurunan namun masih lebih baik dibandingkan penurunan perbankan kompetitor",
-            pr_high_name : "Dana Murah Bank mengalami penurunan dan berada di bawah penurunan perbankan nasional",
-            pr_low : 248,
-            pr_lowtomod : 249,
-            pr_mod : 250,
-            pr_modtohigh : 251,
-            pr_high : 255,
-          }
-        ]
+        // const dataDummy = [
+        //   {
+        //     id: 1321,
+        //     risk_id: 45,
+        //     name: "Karakteristik aktivitas bisnis yang berdampak pada risiko benchmark suku bunga dalam banking book dan karakteristik nasabah utama Bank",
+        //     bulan: 6,
+        //     tahun: 2020,
+        //     value: "M",
+        //     risk_name : "Risiko Kredit",
+        //     pr_low_name : "Deposito spesial nisbah ≤ 20% dari total deposito non bank",
+        //     pr_lowtomod_name : "Deposito spesial nisbah > 20% sd 40% dari total deposito non bank",
+        //     pr_mod_name : "Deposito spesial nisbah > 40% sd 60% dari total deposito non bank",
+        //     pr_modtohigh_name : "Deposito spesial nisbah > 60% sd 80% dari total deposito non bank",
+        //     pr_high_name : "Deposito spesial nisbah > 80% dari total deposito non bank",
+        //     pr_low : 248,
+        //     pr_lowtomod : 249,
+        //     pr_mod : 250,
+        //     pr_modtohigh : 251,
+        //     pr_high : 255,
+        //   },
+        //   {
+        //     id: 1322,
+        //     risk_id: 45,
+        //     name: "Posisi pasar Bank dalam industri",
+        //     bulan: 6,
+        //     tahun: 2020,
+        //     value: "LTM",
+        //     risk_name : "Risiko Kredit",
+        //     pr_low_name : "Pertumbuhan Dana Murah > Pertumbuhan Perbankan kompetitor",
+        //     pr_lowtomod_name : "Pertumbuhan Dana Murah = Pertumbuhan Perbankan Kompetitor",
+        //     pr_mod_name : "Pertumbuhan Dana Murah < Pertumbuhan Perbankan Kompetitor",
+        //     pr_modtohigh_name : "Dana Murah Bank mengalami penurunan namun masih lebih baik dibandingkan penurunan perbankan kompetitor",
+        //     pr_high_name : "Dana Murah Bank mengalami penurunan dan berada di bawah penurunan perbankan nasional",
+        //     pr_low : 248,
+        //     pr_lowtomod : 249,
+        //     pr_mod : 250,
+        //     pr_modtohigh : 251,
+        //     pr_high : 255,
+        //   },
+        //   {
+        //     id: 1323,
+        //     risk_id: 45,
+        //     name: "Karakteristik Nasabah yang sensitif terhadap risiko suku bunga",
+        //     bulan: 6,
+        //     tahun: 2020,
+        //     value: "TBA",
+        //     risk_name : "Risiko Kredit",
+        //     pr_low_name : "Pertumbuhan Dana Murah > Pertumbuhan Perbankan kompetitor",
+        //     pr_lowtomod_name : "Pertumbuhan Dana Murah = Pertumbuhan Perbankan Kompetitor",
+        //     pr_mod_name : "Pertumbuhan Dana Murah < Pertumbuhan Perbankan Kompetitor",
+        //     pr_modtohigh_name : "Dana Murah Bank mengalami penurunan namun masih lebih baik dibandingkan penurunan perbankan kompetitor",
+        //     pr_high_name : "Dana Murah Bank mengalami penurunan dan berada di bawah penurunan perbankan nasional",
+        //     pr_low : 248,
+        //     pr_lowtomod : 249,
+        //     pr_mod : 250,
+        //     pr_modtohigh : 251,
+        //     pr_high : 255,
+        //   }
+        // ]
 
         const columns = [
         {
@@ -327,8 +319,8 @@ class TableKpmrKualitatifMulti extends  React.Component{
             sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order
         }, {
             title:"Nilai",
-            dataIndex:"value",
-            key:"value",
+            dataIndex:"risk_rate",
+            key:"risk_rate",
             sorter:(a, b) => a.value.localeCompare(b.value),
             sortOrder:sortedInfo.columnKey === 'tahun' && sortedInfo.order,
             render: value => (
@@ -338,7 +330,13 @@ class TableKpmrKualitatifMulti extends  React.Component{
                     color={value === 'H' ? 'red' : value === "MTH" ? 'orange' : value === "M" ? "yellow" : value === "LTM" ? 'green' : value === "L" ? "blue" : "black" }
                     key={value}
                   >
-                    {value}
+                    {
+                       value === 'H' ? 'Unsatisfactory' :
+                       value === "MTH" ? 'Marginal' :
+                       value === "M" ? "Fair" :
+                       value === "LTM" ? 'Satisfactory' :
+                       value === "L" ? "Strong" : "TBA"
+                     }
                   </Tag>
                 }
               </>
@@ -353,6 +351,12 @@ class TableKpmrKualitatifMulti extends  React.Component{
                       console.log("***ON CLICK IN TABLE : ");
                       console.log(text);
                       this.setState({
+                        inputdataoptions: []
+                      })
+
+                      this.setState({
+                        answervalue: text.value.toString(),
+                        ingredients_id: text.ingredients_id,
                         inputdataoptions: [
                           {label: text.pr_low_name, value: text.pr_low},
                           {label: text.pr_lowtomod_name, value: text.pr_lowtomod},
@@ -360,7 +364,8 @@ class TableKpmrKualitatifMulti extends  React.Component{
                           {label: text.pr_modtohigh_name, value: text.pr_modtohigh},
                           {label: text.pr_high_name, value: text.pr_high}
                         ]
-                      })
+                      });
+                      console.log(this.state.inputdataoptions);
                     }}>Input Nilai</span>
                 </span>
             )
@@ -416,11 +421,10 @@ class TableKpmrKualitatifMulti extends  React.Component{
                             <Grid container spacing={1}>
                               <Grid item xs={12} md={12} lg={12}>
                                 <Button className="ant-btn ant-btn-danger" onClick={this.onClickCancel}>Back Filter</Button>
-                                <Button className="ant-btn ant-btn-primary" onClick={this.clickAddButton}>Add</Button>
                               </Grid>
                             </Grid>
                             <Spin tip="Loading..." spinning={loading}>
-                                <Table dataSource={dataDummy} className="gx-table-responsive" onChange={this.handleChange} rowKey="id" columns={columns}
+                                <Table dataSource={risikoinhereninputkualitatifdata} className="gx-table-responsive" onChange={this.handleChange} rowKey="id" columns={columns}
                                        pagination={false}/>
                                 <div className="table-operations" style={{ paddingTop : '1rem', float : 'right' }}>
                                     {
@@ -472,7 +476,12 @@ class TableKpmrKualitatifMulti extends  React.Component{
     }
 }
 
-const mapStateToProps = ({auth, parametermanual, masterversion}) => {
+const mapStateToProps = ({
+  auth,
+  parametermanual,
+  masterversion,
+  risikoinhereninputkualitatif
+}) => {
     const {token} = auth;
     const {
       getallparametermanualtable,
@@ -483,6 +492,10 @@ const mapStateToProps = ({auth, parametermanual, masterversion}) => {
       deleteparametermanual
     } = parametermanual;
     const {masterversionsdata} = masterversion;
+    const {
+      risikoinhereninputkualitatifdata,
+      addrisikoinhereninputkualitatifresult
+    } = risikoinhereninputkualitatif;
     return {
       token,
       getallparametermanualtable,
@@ -491,7 +504,9 @@ const mapStateToProps = ({auth, parametermanual, masterversion}) => {
       countallparametermanual,
       statusallparametermanual,
       deleteparametermanual,
-      masterversionsdata
+      masterversionsdata,
+      risikoinhereninputkualitatifdata,
+      addrisikoinhereninputkualitatifresult
     };
 };
 
@@ -499,5 +514,8 @@ export default connect(mapStateToProps, {
   getAllParameterManualTable,
   countAllParameterManual,
   deleteParameterManual,
-  fetchAllMasterVersion
+  fetchAllMasterVersion,
+  fetchAllRisikoInherenInputKualitatif,
+  addRisikoInherenInputKualitatif,
+  resetAddRisikoInherenInputKualitatif
 })(TableKpmrKualitatifMulti);

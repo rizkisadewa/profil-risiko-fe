@@ -33,7 +33,7 @@ class FilterTableKpmrKualitatifMulti extends React.Component{
     }
 
     componentDidMount(){
-        this.props.getAllRisks({token:this.props.token, page:'', jenis:'PR', nama:'', keterangan:''});
+        this.props.getAllRisks({token:this.props.token, page:'', jenis:'KPMR', nama:'', keterangan:''});
         this.props.fetchAllMasterVersion({token: this.props.token});
     }
 

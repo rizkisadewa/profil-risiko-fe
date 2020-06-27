@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Card, Table, Spin, Pagination, Tag, } from "antd";
+import {Button, Card, Table, Spin, Pagination, Tag} from "antd";
 import SweetAlert from "react-bootstrap-sweetalert";
 import {NotificationContainer, NotificationManager} from "react-notifications";
 import IntlMessages from "util/IntlMessages";
@@ -211,16 +211,6 @@ class TableRisikoInherenKualitatifMulti extends  React.Component{
 
     handleOk = () => {
       console.log("===== DATA INPUT TO BE SUBMIT : ");
-      // this.setState({
-      //   toBeSaved:{
-      //     ingredients_id: this.state.ingredients_id,
-      //     ratio_indikators_id: parseInt(this.state.answervalue),
-      //     parameter_version_id: this.state.version_id,
-      //     value: parseInt(this.state.answervalue),
-      //     bulan: this.state.parambulan,
-      //     tahun: parseInt(this.state.paramtahun)
-      //   }
-      // });
 
       this.props.addRisikoInherenInputKualitatif(this.props.token, {
         ingredients_id: this.state.ingredients_id,
@@ -231,11 +221,6 @@ class TableRisikoInherenKualitatifMulti extends  React.Component{
         tahun: parseInt(this.state.paramtahun)
       });
 
-      console.log(this.state.toBeSaved);
-      // this.setState({loading: true});
-      // setTimeout(() => {
-      //   this.setState({loading: false, visible: false});
-      // }, 3000);
     };
     handleCancel = () => {
       this.setState({
@@ -245,11 +230,12 @@ class TableRisikoInherenKualitatifMulti extends  React.Component{
     };
 
     // handle radio button
-    onChangeAnswer = (e) => {
-      console.log('radio1 checked', e.target.value);
-      console.log(this.state.lastanswervalue);
+    onChangeAnswer = (selectedRowKeys, selectedRows) => {
+      // console.log('radio1 checked', e.target.value);
+      // console.log(this.state.lastanswervalue);
+      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
       this.setState({
-        answervalue: e.target.value,
+        answervalue: selectedRows[0].value,
       });
     };
 
