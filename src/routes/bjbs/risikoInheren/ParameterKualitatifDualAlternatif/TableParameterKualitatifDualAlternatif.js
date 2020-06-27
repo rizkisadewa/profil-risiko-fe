@@ -21,7 +21,8 @@ import {
   fetchAllParameterKualitatifDualAlternatif,
   countAllParameterKualitatifDualAlternatif,
   deleteParameterKualitatifDualAlternatif,
-  resetDeleteParameterKualitatifDualAlternatif
+  resetDeleteParameterKualitatifDualAlternatif,
+  getAllRatioIndikatorForParamterKualitatif
 } from "../../../../appRedux/actions/index";
 import MySnackbarContentWrapper from "../../../../components/Snackbar/SnackBar";
 
@@ -177,8 +178,14 @@ function TableParameterKualitatifDualAlternatif ({
           token: authData.token,
           page: 1,
           searchData: {
-            jenis_nilai_id: 21
+            jenis_nilai_id: 21,
+            jenis: 'PR'
           }
+        });
+        getAllRatioIndikatorForParamterKualitatif({
+          token: authData.token,
+          jenis: 'PR',
+          id_jenis_nilai: 21
         })
         countAllParameterKualitatifDualAlternatif(authData.token);
 
@@ -585,7 +592,7 @@ function TableParameterKualitatifDualAlternatif ({
                           level:text.level,
                           indukparameter:text.indukparameter,
                           risk_id: parseInt(text.risk_id),
-                          jenis_nilai_id:parseInt(text.jenis_nilai_id),
+                          id_jenis_nilai:parseInt(text.id_jenis_nilai),
                           induk_id: parseInt(text.induk_id),
                           parameter_faktor_id: parseInt(text.parameter_faktor_id),
                           masterversionlist: masterversionlistdata,
@@ -725,7 +732,8 @@ const mapDispatchToProps = dispatch => {
     countAllParameterKualitatifDualAlternatif: (token) => dispatch(countAllParameterKualitatifDualAlternatif(token)),
     fetchAllParameterKualitatifDualAlternatif: (token, page, searchData) => dispatch(fetchAllParameterKualitatifDualAlternatif(token, page, searchData)),
     deleteParameterKualitatifDualAlternatif: (token, id) => dispatch(deleteParameterKualitatifDualAlternatif(token, id)),
-    resetDeleteParameterKualitatifDualAlternatif: () => dispatch(resetDeleteParameterKualitatifDualAlternatif())
+    resetDeleteParameterKualitatifDualAlternatif: () => dispatch(resetDeleteParameterKualitatifDualAlternatif()),
+    getAllRatioIndikatorForParamterKualitatif: (token, jenis, id_jenis_nilai) => dispatch(getAllRatioIndikatorForParamterKualitatif(token, jenis, id_jenis_nilai)),
   }
 }
 

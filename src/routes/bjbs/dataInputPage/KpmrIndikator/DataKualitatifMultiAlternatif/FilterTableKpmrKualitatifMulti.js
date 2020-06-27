@@ -8,17 +8,18 @@ import {
   getAllRisks,
   fetchAllMasterVersion,
 } from "../../../../../appRedux/actions/index";
-import SaveRisikoInherenKuantitatif from "./SaveRisikoInherenKuantitatif";
+import TableKpmrKualitatifMulti from './TableKpmrKualitatifMulti';
 
 
 const {MonthPicker} = DatePicker;
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-class FilterTableRisikoInherenKuantitatif extends React.Component{
+class FilterTableKpmrKualitatifMulti extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
+            dataoptions : [],
             loading:false,
             isInput:false,
             fetchdata:[],
@@ -39,6 +40,7 @@ class FilterTableRisikoInherenKuantitatif extends React.Component{
     componentWillReceiveProps(nextProps) {
         // this.handleProp(nextProps);
         this.setState({
+            dataoptions: nextProps.getallrisks,
             dataoptionsmasterversion: nextProps.masterversionsdata
         });
     }
@@ -140,6 +142,7 @@ class FilterTableRisikoInherenKuantitatif extends React.Component{
         const monthFormat = 'MMMM YYYY';
         const {getFieldDecorator} = this.props.form;
         const {
+          dataoptions,
           loading,
           isInput,
           fetchdata,
@@ -156,7 +159,7 @@ class FilterTableRisikoInherenKuantitatif extends React.Component{
                         (<Card title={<div style={{textAlign: "center"}}>
                             <img src={require("assets/images/logobjbs-old.png")} className="gx-logo-size" alt="bjbs"
                                  title="bjbs"/><br/>
-                            <label>Filter Risiko Inheren Data Kuantitatif</label>
+                            <label>Filter KPMR Data Kualitatif Multi Alternatif</label>
                         </div>}>
                             <div style={{textAlign: "center"}}>
                                 <Spin spinning={loading} tip="Loading...">
@@ -197,7 +200,6 @@ class FilterTableRisikoInherenKuantitatif extends React.Component{
                                             )}
                                         </FormItem>
 
-                                        {/*
                                         <FormItem {...formItemLayout}>
                                             <div>Choose Risks</div>
                                             {getFieldDecorator('risks', {
@@ -225,7 +227,6 @@ class FilterTableRisikoInherenKuantitatif extends React.Component{
                                                 </Select>
                                             )}
                                         </FormItem>
-                                        */}
 
                                         <FormItem {...formItemLayout}>
                                             <div>Choose Version</div>
@@ -272,14 +273,14 @@ class FilterTableRisikoInherenKuantitatif extends React.Component{
                                     </Form>
                                 </Spin>
                             </div>
-                        </Card>) : <SaveRisikoInherenKuantitatif fetchdata={fetchdata} clickCancelFilterButton={this.clickCancelFilterButton}/>
+                        </Card>) : <TableKpmrKualitatifMulti fetchdata={fetchdata} clickCancelFilterButton={this.clickCancelFilterButton}/>
                 }
             </>
         );
     }
 }
 
-const WrappedFilterTableRisikoInherenKuantitatif = Form.create()(FilterTableRisikoInherenKuantitatif);
+const WrappedFilterTableKpmrKualitatifMulti = Form.create()(FilterTableKpmrKualitatifMulti);
 
 const mapStateToProps = ({
   auth,
@@ -299,4 +300,4 @@ const mapStateToProps = ({
 export default connect(mapStateToProps, {
   getAllRisks,
   fetchAllMasterVersion
-})(WrappedFilterTableRisikoInherenKuantitatif);
+})(WrappedFilterTableKpmrKualitatifMulti);

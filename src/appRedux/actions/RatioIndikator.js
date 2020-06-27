@@ -14,7 +14,8 @@ import {
     STATUS_ALL_RATIO_INDIKATOR_TABLE,
     GET_ALL_RATIO_INDIKATOR_KUALITATIF
 } from "../../constants/ActionTypes";
-import axios from 'util/Api'
+import axios from 'util/Api';
+import { backendUrl } from "util/Api";
 
 export const getAllRatioIndikatortable = ({page, token, searchData}) => {
     if(typeof searchData === 'undefined'){
@@ -113,10 +114,10 @@ export const getAllRatioIndikatortable = ({page, token, searchData}) => {
     }
 };
 
-export const getAllRatioIndikatorForParamterKualitatif = ({token, jenis}) => {
+export const getAllRatioIndikatorForParamterKualitatif = ({token, jenis, id_jenis_nilai}) => {
     return (dispatch) => {
         dispatch({type: FETCH_START});
-        axios.get(`api/ratio-indikator-table?jenis=${jenis}&id_jenis_nilai=4`,{
+        axios.get(`api/ratio-indikator-table?jenis=${jenis}&id_jenis_nilai=${id_jenis_nilai}`,{
             headers: {
                 Authorization: "Bearer "+token
             }
@@ -201,67 +202,100 @@ export const getRatioIndikator = ({id, token}) => {
     }
 };
 
-export const updateRatioIndikator = ({id, name, description, token, jenis, id_jenis_nilai}) => {
-    return (dispatch) => {
+export const updateRatioIndikator = ({id, name, description, token, jenis, id_jenis_nilai, master_version_list}) => {
+    return async (dispatch) => {
         dispatch({type: FETCH_START});
-        axios.put('api/ratio-indikator/'+id,{
-            name: name,
-            description: description,
-            jenis:jenis,
-            id_jenis_nilai:id_jenis_nilai
-        },{
-            headers: {
-                Authorization: "Bearer "+token
+        // axios.put('api/ratio-indikator/'+id,{
+        //     name: name,
+        //     description: description,
+        //     jenis:jenis,
+        //     id_jenis_nilai:id_jenis_nilai
+        // },{
+        //     headers: {
+        //         Authorization: "Bearer "+token
+        //     }
+        // }).then(({data}) => {
+        //     if (data.data){
+        //         dispatch({type: PUT_RATIO_INDIKATOR, payload: data.data});
+        //         dispatch({type: STATUS_PUT_RATIO_INDIKATOR, payload: data.statusCode});
+        //     } else {
+        //         dispatch({type: FETCH_ERROR, payload: data.error});
+        //     }
+        // }).catch(function (error) {
+        //     if (error.response) {
+        //         if (error.response.data.data){
+        //             dispatch({type: PUT_RATIO_INDIKATOR, payload: error.response.data.data});
+        //         } else {
+        //             dispatch({type: FETCH_ERROR, payload: error.response.data.message});
+        //             console.log("Error****:", error.response.data.message);
+        //         }
+        //     }
+        // });
+
+        try {
+          const rawResponse = await axios({
+            method: "PUT",
+            url: '/api/ratio-indikator/'+id,
+            baseURL: backendUrl,
+            headers : {
+              Authorization: `Bearer ${token}`
+            },
+            data: {
+              name: name,
+              description: description,
+              jenis:jenis,
+              id_jenis_nilai:id_jenis_nilai,
+              master_version_list : master_version_list
+            },
+            validateStatus: function(status) {
+              return status < 500; // Reject only if the status code is greater than or equal to 500
             }
-        }).then(({data}) => {
-            if (data.data){
-                dispatch({type: PUT_RATIO_INDIKATOR, payload: data.data});
-                dispatch({type: STATUS_PUT_RATIO_INDIKATOR, payload: data.statusCode});
-            } else {
-                dispatch({type: FETCH_ERROR, payload: data.error});
-            }
-        }).catch(function (error) {
-            if (error.response) {
-                if (error.response.data.data){
-                    dispatch({type: PUT_RATIO_INDIKATOR, payload: error.response.data.data});
-                } else {
-                    dispatch({type: FETCH_ERROR, payload: error.response.data.message});
-                    console.log("Error****:", error.response.data.message);
-                }
-            }
-        });
+          });
+
+          const response = rawResponse.data;
+
+          dispatch({type: PUT_RATIO_INDIKATOR, payload: response.data});
+          dispatch({type: STATUS_PUT_RATIO_INDIKATOR, payload: response.statusCode});
+
+        } catch (error) {
+          dispatch({type: FETCH_ERROR, payload: error.response.data.message});
+          console.log("Error****:", error.response.data.message);
+        }
     }
 };
 
-export const postRatioIndikator = ({name, description, jenis, id_jenis_nilai, token}) => {
-    return (dispatch) => {
+export const postRatioIndikator = ({name, description, jenis, id_jenis_nilai, token, master_version_list}) => {
+    return async (dispatch) => {
         dispatch({type: FETCH_START});
-        axios.post('api/ratio-indikator',{
-            name: name,
-            description: description,
-            jenis:jenis,
-            id_jenis_nilai:id_jenis_nilai
-        },{
+
+        try {
+          const rawResponse = await axios({
+            method: "POST",
+            url: '/api/ratio-indikator',
+            baseURL: backendUrl,
             headers: {
-                Authorization: "Bearer "+token
+              Authorization : `Bearer ${token}`
+            },
+            data: {
+              name: name,
+              description: description,
+              jenis:jenis,
+              id_jenis_nilai:id_jenis_nilai,
+              master_version_list: master_version_list
+            },
+            validateStatus: function(status) {
+              return status < 500; // Reject only if the status code is greater than or equal to 500
             }
-        }).then(({data}) => {
-            if (data.data){
-                dispatch({type: POST_RATIO_INDIKATOR, payload: data.data});
-                dispatch({type: STATUS_POST_RATIO_INDIKATOR, payload: data.statusCode});
-            } else {
-                dispatch({type: FETCH_ERROR, payload: data.error});
-            }
-        }).catch(function (error) {
-            if (error.response) {
-                if (error.response.data.data){
-                    dispatch({type: POST_RATIO_INDIKATOR, payload: error.response.data.data});
-                } else {
-                    dispatch({type: FETCH_ERROR, payload: error.response.data.message});
-                    console.log("Error****:", error.response.data.message);
-                }
-            }
-        });
+          });
+
+          const response = rawResponse.data;
+          dispatch({type: POST_RATIO_INDIKATOR, payload: response.data});
+          dispatch({type: STATUS_POST_RATIO_INDIKATOR, payload: response.statusCode});
+
+        } catch (error){
+          dispatch({type: FETCH_ERROR, payload: error.response.data.message});
+          console.log("Error****:", error.response.data.message);
+        }
     }
 };
 

@@ -2,7 +2,13 @@ import React from "react";
 import {Button, Input, Form, Spin, Select} from "antd";
 import connect from "react-redux/es/connect/connect";
 import IntlMessages from "util/IntlMessages";
-import {updateRatioIndikator, resetPutRatioIndikator, getRatioIndikator, jenisNilaiParam} from "../../../../appRedux/actions/index";
+import {
+  updateRatioIndikator,
+  resetPutRatioIndikator,
+  fetchAllMasterVersion,
+  getRatioIndikator,
+  jenisNilaiParam
+} from "../../../../appRedux/actions/index";
 import SweetAlerts from "react-bootstrap-sweetalert";
 
 const FormItem = Form.Item;
@@ -22,15 +28,18 @@ class EditRatioIndikator extends React.Component{
             datavalue:[],
             statusput:'',
             propsvalue : [],
+            dataoptionsmasterversion: [],
             propsid : props.eid,
             dataoptions : [],
             jenis: '',
             jenisoptions: optionsJenis,
+            paramjenisnilai:'',
         }
     }
 
     componentWillMount(){
         this.props.getRatioIndikator({id:this.props.eid, token:this.props.token});
+        this.props.fetchAllMasterVersion({token: this.props.token});
     }
 
     componentDidMount(){
@@ -41,7 +50,8 @@ class EditRatioIndikator extends React.Component{
         this.setState({
             statusput : nextProps.statusputratioindikator,
             propsvalue : nextProps.getratioindikator,
-            dataoptions : nextProps.jenisnilaiparam
+            dataoptions : nextProps.jenisnilaiparam,
+            dataoptionsmasterversion : nextProps.masterversionsdata,
         });
 
         if (nextProps.statusputratioindikator === 200 || nextProps.statusputratioindikator === 201){
@@ -62,7 +72,16 @@ class EditRatioIndikator extends React.Component{
             },
         };
 
-        const {ewarning, datavalue, propsvalue, dataoptions, jenisoptions, jenis} = this.state;
+        const {
+          ewarning,
+          datavalue,
+          propsvalue,
+          dataoptions,
+          jenisoptions,
+          jenis,
+          paramjenisnilai,
+          dataoptionsmasterversion
+        } = this.state;
         const {fetchdata, token} = this.props;
         const {getFieldDecorator} = this.props.form;
         return (
@@ -179,6 +198,35 @@ class EditRatioIndikator extends React.Component{
                                             )}
                                         </FormItem>
 
+                                        <FormItem {...formItemLayout} label="Master Versi">
+                                            {getFieldDecorator('master_version_list', {
+                                                initialValue: prop.masterversionlist,
+                                                rules: [{
+                                                    required: true, message: 'Please input master version.',
+                                                }],
+                                            })(
+                                              <Select id="master_version_list"
+                                                      showSearch
+                                                      mode="multiple"
+                                                      placeholder="Select Jenis Penilaian"
+                                                      optionFilterProp="children"
+                                                      onChange={this.handleChangeMultipleSelect}
+                                                      style={paramjenisnilai === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
+                                                      filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                                              >
+                                                  {
+                                                      dataoptionsmasterversion.map((prop, index) => {
+                                                          var value = prop.id;
+                                                          var label = prop.version_name;
+                                                          return (
+                                                              <Option value={value} key={index}>{label}</Option>
+                                                          )
+                                                      })
+                                                  }
+                                              </Select>
+                                            )}
+                                        </FormItem>
+
                                         <FormItem {...formItemLayout}>
                                             {getFieldDecorator('id', {
                                                 initialValue: propsvalue.id,
@@ -230,11 +278,18 @@ class EditRatioIndikator extends React.Component{
 
 const WrapperEditRatioIndikator = Form.create()(EditRatioIndikator);
 
-const mapStateToProps = ({auth, ratioindikator, masterparameter}) => {
+const mapStateToProps = ({auth, ratioindikator, masterparameter, masterversion}) => {
     const {token} = auth;
     const {statusputratioindikator,getratioindikator} = ratioindikator;
     const {jenisnilaiparam} = masterparameter;
-    return {token, statusputratioindikator, getratioindikator, jenisnilaiparam};
+    const {masterversionsdata} = masterversion;
+    return {token, statusputratioindikator, masterversionsdata, getratioindikator, jenisnilaiparam};
 };
 
-export default connect(mapStateToProps, {updateRatioIndikator, resetPutRatioIndikator, getRatioIndikator, jenisNilaiParam})(WrapperEditRatioIndikator);
+export default connect(mapStateToProps, {
+  updateRatioIndikator,
+  resetPutRatioIndikator,
+  getRatioIndikator,
+  jenisNilaiParam,
+  fetchAllMasterVersion
+})(WrapperEditRatioIndikator);

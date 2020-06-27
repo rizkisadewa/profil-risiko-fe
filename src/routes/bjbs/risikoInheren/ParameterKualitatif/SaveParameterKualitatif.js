@@ -11,7 +11,8 @@ import {
   resetAddParameterKualitatif,
   fetchAllIngredients,
   fetchAllMasterVersion,
-  addParameterKualitatif
+  addParameterKualitatif,
+  getAllFaktorParameterDataOption
 } from "../../../../appRedux/actions/index";
 import SweetAlerts from "react-bootstrap-sweetalert";
 import {Link} from "react-router-dom";
@@ -35,6 +36,7 @@ class SaveParameterKualitatif extends React.Component{
             dataoptionsratioindikatorkualitatif : [],
             dataoptionsingredientsdata : [],
             dataoptionsmasterversion: [],
+            dataoptionsparameterfaktor: [],
             //state value
             paramparameter:'',
             paramlow:'',
@@ -49,7 +51,8 @@ class SaveParameterKualitatif extends React.Component{
             paramindukparameter:'',
             paramrisk_id:'',
             paramindikatorpembilang:'',
-            paramindikatorpenyebut:''
+            paramindikatorpenyebut:'',
+            paramparameterfaktor: ''
         }
     }
 
@@ -57,12 +60,13 @@ class SaveParameterKualitatif extends React.Component{
         this.props.getAllRisks({token:this.props.token, page:'', jenis:'PR', nama:'', keterangan:''});
         this.props.getAllPeringkatRisiko({page:'', token:this.props.token, description:'', name:'', jenis_nilai:''});
         this.props.jenisNilaiParam({token:this.props.token});
-        this.props.getAllRatioIndikatorForParamterKualitatif({token:this.props.token, jenis: "PR"});
+        this.props.getAllRatioIndikatorForParamterKualitatif({token:this.props.token, jenis: "PR", id_jenis_nilai: 4});
         this.props.fetchAllIngredients({token: this.props.token, searchData: {
           jenis: "PR",
           jenis_nilai_id: 4
         }});
         this.props.fetchAllMasterVersion({token: this.props.token});
+        this.props.getAllFaktorParameterDataOption({token: this.props.token});
     }
 
     componentWillReceiveProps(nextProps){
@@ -72,6 +76,7 @@ class SaveParameterKualitatif extends React.Component{
             dataoptionsratioindikatorkualitatif: nextProps.getallratioindikatorkualitatif,
             dataoptionsingredientsdata: nextProps.ingredientsdata,
             dataoptionsmasterversion : nextProps.masterversionsdata,
+            dataoptionsparameterfaktor : nextProps.getallparameterfaktor
         });
 
         switch(nextProps.addparameterkualitatifresult.statusCode){
@@ -122,7 +127,9 @@ class SaveParameterKualitatif extends React.Component{
             paramindikatorpembilang,
             dataoptionsratioindikatorkualitatif,
             dataoptionsingredientsdata,
-            dataoptionsmasterversion
+            dataoptionsmasterversion,
+            dataoptionsparameterfaktor,
+            paramparameterfaktor
         } = this.state;
         const {token, addPropstate} = this.props;
         const {getFieldDecorator} = this.props.form;
@@ -147,6 +154,7 @@ class SaveParameterKualitatif extends React.Component{
                             pr_modtohigh: values.moderatetohigh,
                             pr_high: values.high,
                             bobot: values.bobot,
+                            parameter_faktor_id: values.parameter_faktor_id,
                             id_indikator_pembilang: 0,
                             id_indikator_penyebut: 0,
                             jenis_nilai_id: 4,
@@ -182,6 +190,7 @@ class SaveParameterKualitatif extends React.Component{
                                         this.setState({
                                             paramrisk_id:value,
                                         });
+                                        this.props.getAllFaktorParameterDataOption({token: this.props.token, risk_id: value});
                                     }}
                                     style={paramrisk_id === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
                                     filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
@@ -222,11 +231,8 @@ class SaveParameterKualitatif extends React.Component{
                                 required: true, message: 'Please input penomoran field.'
                             }],
                         })(
-                            <InputNumber id="penomoran" placeholder="Input Penomoran"
+                            <Input id="penomoran" placeholder="Input Penomoran"
                                          className="w-100"
-                                         min={0}
-                                         max={99}
-                                         maxLength={2}
                                          onChange={(value)=>{
                                              this.setState({
                                                  parampenomoran:value,
@@ -261,6 +267,38 @@ class SaveParameterKualitatif extends React.Component{
                                         var label = prop.label;
                                         return (
                                             <Option value={value} key={index}>{label}</Option>
+                                        )
+                                    })
+                                }
+                            </Select>
+                        )}
+                    </FormItem>
+
+                    <FormItem {...formItemLayout} label="Parameter Faktor">
+                        {getFieldDecorator('parameter_faktor_id', {
+                            initialValue: addPropstate ? addPropstate.pkparameterfaktorid : '',
+                            rules: [{
+                                required: true, message: 'Please input parameter faktor',
+                            }],
+                        })(
+                            <Select id="parameter_faktor_id"
+                                    showSearch
+                                    placeholder="Select parameter faktor"
+                                    optionFilterProp="children"
+                                    onChange={(value)=>{
+                                        this.setState({
+                                            paramparameterfaktor:value,
+                                        });
+                                    }}
+                                    style={paramparameterfaktor === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
+                                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
+                                <Option value="" disabled>Select parameter faktor</Option>
+                                {
+                                    dataoptionsparameterfaktor.map((prop, index) => {
+                                        var value = prop.id;
+                                        var label = prop.name;
+                                        return (
+                                            <Option key={index} value={value}>{label}</Option>
                                         )
                                     })
                                 }
@@ -574,7 +612,8 @@ const mapStateToProps = ({
   parameterkuantitatif,
   parameterkualitatif,
   ingredients,
-  masterversion
+  masterversion,
+  parameterfaktor
 }) => {
     const {token} = auth;
     const {getallrisks} = jenisrisiko;
@@ -585,6 +624,7 @@ const mapStateToProps = ({
     const {parameterkualitatifdata, addparameterkualitatifresult} = parameterkualitatif;
     const {masterversionsdata} = masterversion;
     const {ingredientsdata} = ingredients;
+    const {getallparameterfaktor} = parameterfaktor;
     return {
       token,
       getallrisks,
@@ -596,7 +636,8 @@ const mapStateToProps = ({
       parameterkualitatifdata,
       ingredientsdata,
       addparameterkualitatifresult,
-      masterversionsdata
+      masterversionsdata,
+      getallparameterfaktor
     }
 };
 
@@ -609,6 +650,7 @@ export default connect(mapStateToProps, {
   resetAddParameterKualitatif,
   fetchAllIngredients,
   fetchAllMasterVersion,
-  addParameterKualitatif
+  addParameterKualitatif,
+  getAllFaktorParameterDataOption
 })(WrappedSaveParameterKualitatif);
 export {optionsLevel};

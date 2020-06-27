@@ -12,7 +12,9 @@ import {
   fetchAllIngredients,
   addParameterKualitatif,
   updateParameterKualitatif,
-  fetchAllMasterVersion
+  fetchAllMasterVersion,
+  getAllFaktorParameterDataOption,
+  fetchAllRatioIndikatorFormula
 } from "../../../../appRedux/actions/index";
 import SweetAlerts from "react-bootstrap-sweetalert";
 import {Link} from "react-router-dom";
@@ -34,6 +36,7 @@ class EditParameterKualitatif extends React.Component{
             dataoptionsingredientsdata : [],
             datavalue: [],
             dataoptionsmasterversion: [],
+            dataoptionsparameterfaktor:[],
             //state value
             paramparameter:'',
             paramlow:'',
@@ -56,12 +59,19 @@ class EditParameterKualitatif extends React.Component{
         this.props.getAllRisks({token:this.props.token, page:'', jenis:'PR', nama:'', keterangan:''});
         this.props.getAllPeringkatRisiko({page:'', token:this.props.token, description:'', name:'', jenis_nilai:''});
         this.props.jenisNilaiParam({token:this.props.token});
-        this.props.getAllRatioIndikatorForParamterKualitatif({token:this.props.token, jenis: "PR"});
+        this.props.getAllRatioIndikatorForParamterKualitatif({token:this.props.token, jenis: "PR", id_jenis_nilai: 4});
         this.props.fetchAllIngredients({token: this.props.token, searchData: {
           jenis: "PR",
           jenis_nilai_id: 1
         }});
         this.props.fetchAllMasterVersion({token: this.props.token});
+        this.props.getAllFaktorParameterDataOption({token: this.props.token});
+        this.props.fetchAllRatioIndikatorFormula({token: this.props.token, searchData: {
+          ingredients_id: this.props.fetchdata[0].id
+        }});
+
+        console.log("===FETCHDATA");
+        console.log(this.props.fetchdata);
     }
 
     componentWillReceiveProps(nextProps){
@@ -70,6 +80,7 @@ class EditParameterKualitatif extends React.Component{
             dataoptionsratioindikatorkualitatif: nextProps.getallratioindikatorkualitatif,
             dataoptionsingredientsdata: nextProps.ingredientsdata,
             dataoptionsmasterversion : nextProps.masterversionsdata,
+            dataoptionsparameterfaktor: nextProps.getallparameterfaktor,
         });
 
         switch(nextProps.updateparameterkualitatifresult.statusCode){
@@ -123,6 +134,7 @@ class EditParameterKualitatif extends React.Component{
             dataoptionsingredientsdata,
             datavalue,
             dataoptionsmasterversion,
+            dataoptionsparameterfaktor
         } = this.state;
         const {token, fetchdata} = this.props;
         const {getFieldDecorator} = this.props.form;
@@ -199,11 +211,8 @@ class EditParameterKualitatif extends React.Component{
                                     required: true, message: 'Please input penomoran field.'
                                 }],
                             })(
-                                <InputNumber id="penomoran" placeholder="Input Penomoran"
+                                <Input id="penomoran" placeholder="Input Penomoran"
                                              className="w-100"
-                                             min={0}
-                                             max={99}
-                                             maxLength={2}
                                              onChange={(value)=>{
                                                  this.setState({
                                                      parampenomoran:value,
@@ -245,9 +254,41 @@ class EditParameterKualitatif extends React.Component{
                             )}
                         </FormItem>
 
+                        <FormItem {...formItemLayout} label="Parameter Faktor">
+                            {getFieldDecorator('parameter_faktor_id', {
+                                initialValue: parseInt(prop.parameter_faktor_id),
+                                rules: [{
+                                    required: true, message: 'Please input induk/parameter field.',
+                                }],
+                            })(
+                                <Select id="parameter_faktor_id"
+                                        showSearch
+                                        placeholder="Select parameter faktor"
+                                        optionFilterProp="children"
+                                        onChange={(value)=>{
+                                            this.setState({
+                                                paramindukparameter:value,
+                                            });
+                                        }}
+                                        style={paramindukparameter === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
+                                        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
+                                    <Option value="" disabled>Select induk/parameter</Option>
+                                    {
+                                        dataoptionsparameterfaktor.map((prop, index) => {
+                                            var value = prop.id;
+                                            var label = prop.name;
+                                            return (
+                                                <Option key={index} value={value}>{label}</Option>
+                                            )
+                                        })
+                                    }
+                                </Select>
+                            )}
+                        </FormItem>
+
                         <FormItem {...formItemLayout} label="Induk/Parameter">
                             {getFieldDecorator('induk_id', {
-                                initialValue: prop.induk_id,
+                                initialValue: parseInt(prop.induk_id),
                                 rules: [{
                                     required: true, message: 'Please input induk/parameter field.',
                                 }],
@@ -263,7 +304,7 @@ class EditParameterKualitatif extends React.Component{
                                         }}
                                         style={paramindukparameter === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
                                         filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
-                                    <Option value={prop.induk_id} disabled>`Level - ${prop.level} - ${prop.name}`</Option>
+                                    <Option value="" disabled>Select induk/parameter</Option>
                                     {
                                         dataoptionsingredientsdata.map((prop, index) => {
                                             var value = prop.id;
@@ -585,7 +626,8 @@ const mapStateToProps = ({
   parameterkuantitatif,
   parameterkualitatif,
   ingredients,
-  masterversion
+  masterversion,
+  parameterfaktor,
 }) => {
     const {token} = auth;
     const {getallrisks} = jenisrisiko;
@@ -595,6 +637,7 @@ const mapStateToProps = ({
     const {parameterkualitatifdata, updateparameterkualitatifresult} = parameterkualitatif;
     const {ingredientsdata} = ingredients;
     const {masterversionsdata} = masterversion;
+    const {getallparameterfaktor} = parameterfaktor;
     return {
       token,
       getallrisks,
@@ -605,7 +648,8 @@ const mapStateToProps = ({
       getallratioindikatorkualitatif,
       parameterkualitatifdata,
       ingredientsdata,
-      masterversionsdata
+      masterversionsdata,
+      getallparameterfaktor
     }
 };
 
@@ -619,6 +663,8 @@ export default connect(mapStateToProps, {
   fetchAllIngredients,
   addParameterKualitatif,
   updateParameterKualitatif,
-  fetchAllMasterVersion
+  fetchAllMasterVersion,
+  getAllFaktorParameterDataOption,
+  fetchAllRatioIndikatorFormula
 })(WrappedEditParameterKualitatif);
 export {optionsLevel};

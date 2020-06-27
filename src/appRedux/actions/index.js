@@ -18,3 +18,5 @@ export * from './Ratioindikatorformula';
 export * from './Parameterkualitatifdualalternatif';
 export * from './Kpmrparameterkualitatif';
 export * from './Risikoinhereninputkuantitatif';
+export * from './Risikoinhereninputkualitatif';
+export * from './Risikoinhereninputkualitatifdual';

@@ -191,7 +191,7 @@ export const countAllParameterKualitatifDualAlternatif = (token) => {
     try {
       await axios({
         method: "GET",
-        url: `/api/parameter-kualitatif-general?jenis_nilai_id=21&jenis='PR'`,
+        url: `/api/parameter-kualitatif-general?jenis_nilai_id=21&jenis=PR`,
         baseURL: backendUrl,
         headers: {
           Authorization: `Bearer ${token}`

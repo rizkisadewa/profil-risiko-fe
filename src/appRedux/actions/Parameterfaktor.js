@@ -19,6 +19,7 @@ import {
   deleteParameterversion,
   resetDeleteParameterversion
 } from "./Parameterversion";
+import { backendUrl } from 'util/Api';
 
 export const getAllFaktorParameterTable = ({page, token, searchData}) => {
   if(typeof searchData === 'undefined'){
@@ -294,60 +295,94 @@ export const getFaktorParameter = ({id, token}) => {
 };
 
 export const updateFaktorParameter = ({id, risk_id, penomoran, name, level, bobot, token, master_version_list, history_parameter_version}) => {
-    return (dispatch) => {
+    return async (dispatch) => {
         dispatch({type: FETCH_START});
 
-        console.log("***DATA FROM FE");
-        console.log(master_version_list);
-        console.log(history_parameter_version);
+        try {
+          console.log("***DATA FROM FE");
+          console.log(master_version_list);
+          console.log(history_parameter_version);
 
-        // deleting all history
-        if(history_parameter_version.length > 0){
-          // checking if any history parameter version
-          for(let i=0;i<history_parameter_version.length;i++){
-            dispatch(deleteParameterversion(token, history_parameter_version[i].id));
+          // deleting all history
+          if(history_parameter_version.length > 0){
+            // checking if any history parameter version
+            for(let i=0;i<history_parameter_version.length;i++){
+              dispatch(deleteParameterversion(token, history_parameter_version[i].id));
+            }
           }
-        }
 
-        // adding new parameter version
-        if(master_version_list.length > 0){
-          // checking if any master list to be added
-          for(let j=0;j<master_version_list.length;j++){
-            dispatch(addParameterversion(token, {
-              ingredients_id: id,
-              version_id: master_version_list[j]
-            }));
-            dispatch(resetAddParameterversion());
+          // adding new parameter version
+          if(master_version_list.length > 0){
+            // checking if any master list to be added
+            for(let j=0;j<master_version_list.length;j++){
+              dispatch(addParameterversion(token, {
+                ingredients_id: id,
+                version_id: master_version_list[j]
+              }));
+              dispatch(resetAddParameterversion());
+            }
           }
-        }
 
-        axios.put('api/parameter-faktor/'+id,{
-            risk_id: risk_id,
-            penomoran: penomoran,
-            name: name,
-            level: level,
-            bobot: bobot
-        },{
-            headers: {
-                Authorization: "Bearer "+token
+
+
+          // axios.put('api/parameter-faktor/'+id,{
+          //     risk_id: risk_id,
+          //     penomoran: penomoran,
+          //     name: name,
+          //     level: level,
+          //     bobot: bobot
+          // },{
+          //     headers: {
+          //         Authorization: "Bearer "+token
+          //     }
+          // }).then(({data}) => {
+          //     if (data.data){
+          //         dispatch({type: PUT_PARAMETER_FAKTOR, payload: data.data});
+          //         dispatch({type: STATUS_PUT_PARAMETER_FAKTOR, payload: data.statusCode});
+          //     } else {
+          //         dispatch({type: FETCH_ERROR, payload: data.error});
+          //     }
+          // }).catch(function (error) {
+          //     if (error.response) {
+          //         if (error.response.data.data){
+          //             dispatch({type: PUT_PARAMETER_FAKTOR, payload: error.response.data.data});
+          //         } else {
+          //             dispatch({type: FETCH_ERROR, payload: error.response.data.message});
+          //             console.log("Error****:", error.response.data.message);
+          //         }
+          //     }
+          // });
+
+          const rawResponse = await axios({
+            method: "PUT",
+            url : 'api/parameter-faktor/'+id,
+            baseURL: backendUrl,
+            headers : {
+              Authorization: `Bearer ${token}`
+            },
+            data: {
+                risk_id: risk_id,
+                penomoran: penomoran,
+                name: name,
+                level: level,
+                bobot: bobot
+            },
+            validateStatus: function(status) {
+              return status < 500; // Reject only if the status code is greater than or equal to 500
             }
-        }).then(({data}) => {
-            if (data.data){
-                dispatch({type: PUT_PARAMETER_FAKTOR, payload: data.data});
-                dispatch({type: STATUS_PUT_PARAMETER_FAKTOR, payload: data.statusCode});
-            } else {
-                dispatch({type: FETCH_ERROR, payload: data.error});
-            }
-        }).catch(function (error) {
-            if (error.response) {
-                if (error.response.data.data){
-                    dispatch({type: PUT_PARAMETER_FAKTOR, payload: error.response.data.data});
-                } else {
-                    dispatch({type: FETCH_ERROR, payload: error.response.data.message});
-                    console.log("Error****:", error.response.data.message);
-                }
-            }
-        });
+          });
+
+          const response = rawResponse.data;
+          dispatch({
+            type: PUT_PARAMETER_FAKTOR,
+            payload: response}
+          );
+
+        } catch (error) {
+          const errorMsg = error.message;
+          dispatch({type: FETCH_ERROR, payload: errorMsg});
+          console.log("Error****:", errorMsg);
+        }
     }
 };
 

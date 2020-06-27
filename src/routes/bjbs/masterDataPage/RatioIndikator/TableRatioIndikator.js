@@ -33,7 +33,7 @@ class TableRatioIndikator extends React.Component{
             lengthdata:0,
             deletestatus:'',
             paramjenis:'',
-            edjenis:''
+            edjenis:'',
         }
     }
 
@@ -248,6 +248,8 @@ class TableRatioIndikator extends React.Component{
         this.setState({
             addbutton: false,
         });
+        console.log("Success button ratio indikator : ");
+        console.log(status);
 
         if (status === 201 || status === 200){
             this.onRefresh();
@@ -331,15 +333,39 @@ class TableRatioIndikator extends React.Component{
             render: (text, record) => (
                 <span>
                     <span className="gx-link" onClick={()=>{
+                        // sorting value for selected master version in parameter version
+                        let masterversionlistdata = [];
+                        if(typeof text.ratio_indikator_version !== 'undefined'){
+                          for(let i=0;i<text.ratio_indikator_version.length;i++){
+                            masterversionlistdata.push(parseInt(text.ratio_indikator_version[i].version_id));
+                          }
+                        }
+
+                        console.log("====> data to be edited : ");
+                        console.log(text);
+
                         this.setState({
                             eid : text.id,
                             editbutton: true,
                             fetchdata : [{
-                                id:text.id,
-                                name:text.name,
-                                description:text.description,
-                                jenis:text.jenis,
-                                id_jenis_nilai:text.id_jenis_nilai,
+                              id:parseInt(text.id),
+                              risk:text.risk,
+                              parameter:text.parameter,
+                              name: text.name,
+                              pr_low:parseInt(text.pr_low),
+                              pr_lowtomod:parseInt(text.pr_lowtomod),
+                              pr_mod:parseInt(text.pr_mod),
+                              pr_modtohigh:parseInt(text.pr_modtohigh),
+                              pr_high:parseInt(text.pr_high),
+                              bobot:parseInt(text.bobot),
+                              penomoran:parseInt(text.penomoran),
+                              level:text.level,
+                              indukparameter:text.indukparameter,
+                              risk_id: parseInt(text.risk_id),
+                              id_jenis_nilai:parseInt(text.id_jenis_nilai),
+                              induk_id: parseInt(text.induk_id),
+                              parameter_faktor_id: parseInt(text.parameter_faktor_id),
+                              masterversionlist: masterversionlistdata
                             }]
                         })
                     }}>Edit</span>

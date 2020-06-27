@@ -71,7 +71,7 @@ class EditParameterKualitatifDualAlternatif extends React.Component{
       this.props.getAllRisks({token:this.props.token, page:'', jenis:'PR', nama:'', keterangan:''});
       this.props.getAllPeringkatRisiko({page:'', token:this.props.token, description:'', name:'', jenis_nilai:''});
       this.props.jenisNilaiParam({token:this.props.token});
-      this.props.getAllRatioIndikatorForParamterKualitatif({token:this.props.token, jenis: "PR"});
+      this.props.getAllRatioIndikatorForParamterKualitatif({token:this.props.token, jenis: "PR", id_jenis_nilai: 21});
       this.props.getAllFaktorParameterDataOption({token: this.props.token});
       this.props.fetchAllIngredients({token: this.props.token, searchData: {
         jenis: "PR",
@@ -402,13 +402,13 @@ class EditParameterKualitatifDualAlternatif extends React.Component{
                             </FormItem>
 
                             <FormItem {...formItemLayout} label="Parameter Faktor">
-                                {getFieldDecorator('parameterfaktor', {
+                                {getFieldDecorator('parameter_faktor_id', {
                                     initialValue: parseInt(prop.parameter_faktor_id),
                                     rules: [{
                                         required: true, message: 'Please input induk/parameter field.',
                                     }],
                                 })(
-                                    <Select id="parameterfaktor"
+                                    <Select id="parameter_faktor_id"
                                             showSearch
                                             placeholder="Select parameter faktor"
                                             optionFilterProp="children"

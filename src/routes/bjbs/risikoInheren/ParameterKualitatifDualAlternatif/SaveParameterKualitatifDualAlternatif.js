@@ -69,10 +69,10 @@ class SaveParameterKualitatifDualAlternatif extends React.Component {
     }
 
     componentDidMount(){
+        this.props.getAllRatioIndikatorForParamterKualitatif({token:this.props.token, jenis: "PR", id_jenis_nilai: 21});
         this.props.getAllRisks({token:this.props.token, page:'', jenis:'PR', nama:'', keterangan:''});
         this.props.getAllPeringkatRisiko({page:'', token:this.props.token, description:'', name:'', jenis_nilai:''});
         this.props.jenisNilaiParam({token:this.props.token});
-        this.props.getAllRatioIndikatorForParamterKualitatif({token:this.props.token, jenis: "PR"});
         this.props.fetchAllIngredients({token: this.props.token, searchData: {
           jenis: "PR",
           jenis_nilai_id: 21
@@ -85,8 +85,7 @@ class SaveParameterKualitatifDualAlternatif extends React.Component {
     componentWillReceiveProps(nextProps){
         this.setState({
             dataoptionsrisk : nextProps.getallrisks,
-            dataoptionsratioindikator : nextProps.getallratioindikator,
-            dataoptionsratioindikatorkualitatif: nextProps.getallratioindikatorkualitatif,
+            dataoptionsratioindikator : nextProps.getallratioindikatorkualitatif,
             dataoptionsingredientsdata: nextProps.ingredientsdata,
             dataoptionsmasterversion : nextProps.masterversionsdata,
             dataoptionsparameterfaktor : nextProps.getallparameterfaktor
@@ -238,7 +237,8 @@ class SaveParameterKualitatifDualAlternatif extends React.Component {
             numChildren,
             dataoptionsmasterversion,
             paramparameterfaktor,
-            dataoptionsparameterfaktor
+            dataoptionsparameterfaktor,
+            dataoptionsratioindikatorkualitatif
         } = this.state;
         const {addPropstate} = this.props;
         const {getFieldDecorator} = this.props.form;
@@ -250,7 +250,7 @@ class SaveParameterKualitatifDualAlternatif extends React.Component {
         for (var i = 0; i < numChildren; i++) {
           children.push(
             <ChildComponent
-              indikatordata={dataoptionsratioindikator}
+              indikatordata={dataoptionsratioindikatorkualitatif}
               key={i}
               id_operator_arithmetic={"operator_arithmetic_"+i}
               handleChangeRatioIndikator={this.handleChangeRatioIndikator}

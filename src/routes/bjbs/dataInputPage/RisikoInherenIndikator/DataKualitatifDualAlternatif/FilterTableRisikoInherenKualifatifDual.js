@@ -8,14 +8,14 @@ import {
   getAllRisks,
   fetchAllMasterVersion,
 } from "../../../../../appRedux/actions/index";
-import SaveRisikoInherenKuantitatif from "./SaveRisikoInherenKuantitatif";
+import TableRisikoInherenKualitatifDual from './TableRisikoInherenKualitatifDual';
 
 
 const {MonthPicker} = DatePicker;
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-class FilterTableRisikoInherenKuantitatif extends React.Component{
+class FilterTableRisikoInherenKualifatifDual extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
@@ -156,7 +156,7 @@ class FilterTableRisikoInherenKuantitatif extends React.Component{
                         (<Card title={<div style={{textAlign: "center"}}>
                             <img src={require("assets/images/logobjbs-old.png")} className="gx-logo-size" alt="bjbs"
                                  title="bjbs"/><br/>
-                            <label>Filter Risiko Inheren Data Kuantitatif</label>
+                            <label>Filter Risiko Inheren Data Kualitatif Dual Alternatif</label>
                         </div>}>
                             <div style={{textAlign: "center"}}>
                                 <Spin spinning={loading} tip="Loading...">
@@ -173,8 +173,6 @@ class FilterTableRisikoInherenKuantitatif extends React.Component{
                                                         isyear: isyear,
                                                         ismonth: ismonth,
                                                         stringmonth: stringmonth,
-                                                        risks: values.risks,
-                                                        risk_name: this.state.risk_name,
                                                         version_id: values.version_id,
                                                         version_name: this.state.version_name
                                                     }]
@@ -272,14 +270,14 @@ class FilterTableRisikoInherenKuantitatif extends React.Component{
                                     </Form>
                                 </Spin>
                             </div>
-                        </Card>) : <SaveRisikoInherenKuantitatif fetchdata={fetchdata} clickCancelFilterButton={this.clickCancelFilterButton}/>
+                        </Card>) : <TableRisikoInherenKualitatifDual fetchdata={fetchdata} clickCancelFilterButton={this.clickCancelFilterButton}/>
                 }
             </>
         );
     }
 }
 
-const WrappedFilterTableRisikoInherenKuantitatif = Form.create()(FilterTableRisikoInherenKuantitatif);
+const WrappedFilterTableRisikoInherenKualifatifDual = Form.create()(FilterTableRisikoInherenKualifatifDual);
 
 const mapStateToProps = ({
   auth,
@@ -299,4 +297,4 @@ const mapStateToProps = ({
 export default connect(mapStateToProps, {
   getAllRisks,
   fetchAllMasterVersion
-})(WrappedFilterTableRisikoInherenKuantitatif);
+})(WrappedFilterTableRisikoInherenKualifatifDual);

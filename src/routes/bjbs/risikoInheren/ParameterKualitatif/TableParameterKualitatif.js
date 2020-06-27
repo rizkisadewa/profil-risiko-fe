@@ -297,6 +297,7 @@ function TableParameterKualitatif ({
                       induk_id:text.induk_id,
                       risk_id:text.risk_id,
                       id_jenis_nilai:text.id_jenis_nilai,
+                      parameter_faktor_id: text.parameter_faktor_id,
                       masterversionlist: masterversionlistdata,
                     }
                   ]);
@@ -372,6 +373,9 @@ function TableParameterKualitatif ({
       // NotificationManager.error("Data has not saved.", `${message}`, 1000);
       handleSnackBar("success", `${message}`);
     }
+
+    // reset fetch data
+    setFetchData([]);
 
   }
 

@@ -29,11 +29,12 @@ class SaveRisikoInherenKuantitatif extends React.Component {
     }
 
     componentDidMount(){
-      this.props.fetchAllRisikoInherenInputKuantitatif({token: this.props.token, page: 1, searchData: {
+      this.props.fetchAllRisikoInherenInputKuantitatif({token: this.props.token, searchData: {
         bulan: this.state.parambulan,
         tahun: this.state.paramtahun,
         jenis: 'PR',
-        version_id: this.state.version_id
+        version_id: this.state.version_id,
+        id_jenis_nilai: 1
       }})
     }
 
@@ -116,7 +117,6 @@ class SaveRisikoInherenKuantitatif extends React.Component {
             break;
           default:
             break;
-
         }
 
         const {

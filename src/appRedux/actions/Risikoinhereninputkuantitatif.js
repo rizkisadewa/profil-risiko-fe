@@ -29,11 +29,11 @@ export const fetchAllRisikoInherenInputKuantitatifFailure = error => {
   }
 }
 
-export const fetchAllRisikoInherenInputKuantitatif = ({token, page, searchData}) => {
+export const fetchAllRisikoInherenInputKuantitatif = ({token, searchData}) => {
   if(typeof searchData === 'undefined'){
     return (dispatch) => {
       dispatch(fetchAllRisikoInherenInputKuantitatifRequest());
-      axios.get(`/api/input-data/ratio-indikator?page=${page}`, {
+      axios.get(`/api/input-data/ratio-indikator`, {
         headers: {
           Authorization: "Bearer "+token
         }
@@ -67,16 +67,20 @@ export const fetchAllRisikoInherenInputKuantitatif = ({token, page, searchData})
         "bulan",
         "tahun",
         "jenis",
-        "version_id"
+        "version_id",
+        "id_jenis_nilai",
+        "page"
       ];
 
-      let searchCounter = 1;
+      let searchCounter = 0;
 
       let paramValue = [
         searchData.bulan,
         searchData.tahun,
         searchData.jenis,
-        searchData.version_id
+        searchData.version_id,
+        searchData.id_jenis_nilai,
+        searchData.page
       ];
 
       // looping all column
@@ -103,7 +107,7 @@ export const fetchAllRisikoInherenInputKuantitatif = ({token, page, searchData})
 
 
       // get total
-      axios.get(`/api/input-data/ratio-indikator?page=${page}${searchParameters}`, {
+      axios.get(`/api/input-data/ratio-indikator?${searchParameters}`, {
         headers: {
           Authorization: "Bearer "+token
         }

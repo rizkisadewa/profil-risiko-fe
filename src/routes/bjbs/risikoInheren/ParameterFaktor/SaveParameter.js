@@ -32,7 +32,7 @@ class SaveParameter extends React.PureComponent{
     }
 
     componentDidMount(){
-        this.props.getAllRisks({token:this.props.token, page:'', jenis:'', nama:'', keterangan:''});
+        this.props.getAllRisks({token:this.props.token, page:'', jenis:'PR', nama:'', keterangan:''});
         this.props.fetchAllMasterVersion({token: this.props.token});
     }
 

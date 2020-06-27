@@ -1,7 +1,13 @@
 import React from "react";
 import {Button, Input, Form, Select} from "antd";
 import connect from "react-redux/es/connect/connect";
-import {getAllRatioIndikator, postRatioIndikator, resetPostRatioIndikator, jenisNilaiParam} from "../../../../appRedux/actions/index";
+import {
+  getAllRatioIndikator,
+  postRatioIndikator,
+  resetPostRatioIndikator,
+  jenisNilaiParam,
+  fetchAllMasterVersion
+} from "../../../../appRedux/actions/index";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -18,19 +24,23 @@ class SaveRatioIndikator extends React.Component{
         this.state = {
             statuspost: '',
             dataoptions : [],
+            dataoptionsmasterversion: [],
             jenisoptions: optionsJenis,
-            jenis: ''
+            jenis: '',
+            paramjenisnilai: ''
         }
     }
 
     componentDidMount(){
         this.props.jenisNilaiParam({token:this.props.token});
+        this.props.fetchAllMasterVersion({token: this.props.token});
     }
 
     componentWillReceiveProps(nextProps){
         this.setState({
             statuspost : nextProps.statuspostratioindikator,
-            dataoptions : nextProps.jenisnilaiparam
+            dataoptions : nextProps.jenisnilaiparam,
+            dataoptionsmasterversion : nextProps.masterversionsdata,
         });
 
         if (nextProps.statuspostratioindikator === 201 || nextProps.statuspostratioindikator === 200){
@@ -51,7 +61,13 @@ class SaveRatioIndikator extends React.Component{
             },
         };
 
-        const {dataoptions, jenisoptions, jenis} = this.state;
+        const {
+          dataoptions,
+          jenisoptions,
+          jenis,
+          paramjenisnilai,
+          dataoptionsmasterversion
+        } = this.state;
         const {token} = this.props;
         const {getFieldDecorator} = this.props.form;
         return (
@@ -94,7 +110,7 @@ class SaveRatioIndikator extends React.Component{
                             <TextArea id="description" placeholder="Input description"/>
                         )}
                     </FormItem>
-                    
+
                     <FormItem {...formItemLayout} label="Jenis">
                         {getFieldDecorator('jenis', {
                             rules: [{
@@ -151,6 +167,34 @@ class SaveRatioIndikator extends React.Component{
                         )}
                     </FormItem>
 
+                    <FormItem {...formItemLayout} label="Master Versi">
+                        {getFieldDecorator('master_version_list', {
+                            rules: [{
+                                required: true, message: 'Please input master version.',
+                            }],
+                        })(
+                          <Select id="master_version_list"
+                                  showSearch
+                                  mode="multiple"
+                                  placeholder="Select Jenis Penilaian"
+                                  optionFilterProp="children"
+                                  onChange={this.handleChangeMultipleSelect}
+                                  style={paramjenisnilai === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
+                                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                          >
+                              {
+                                  dataoptionsmasterversion.map((prop, index) => {
+                                      var value = prop.id;
+                                      var label = prop.version_name;
+                                      return (
+                                          <Option value={value} key={index}>{label}</Option>
+                                      )
+                                  })
+                              }
+                          </Select>
+                        )}
+                    </FormItem>
+
                     <FormItem style={{ float : "right", paddingRight : "1rem" }}>
                         <Button onClick={this.props.clickCancelAddButton}>Cancel</Button>
                         <Button type="primary" htmlType="submit">Save</Button>
@@ -164,11 +208,29 @@ class SaveRatioIndikator extends React.Component{
 
 const WrapperRatioIndikator = Form.create()(SaveRatioIndikator);
 
-const mapStateToProps = ({auth, ratioindikator, masterparameter}) => {
+const mapStateToProps = ({
+  auth,
+  ratioindikator,
+  masterparameter,
+  masterversion
+}) => {
     const {token} = auth;
     const {statuspostratioindikator,getallratioindikator} = ratioindikator;
     const {jenisnilaiparam} = masterparameter;
-    return {token, statuspostratioindikator, getallratioindikator, jenisnilaiparam};
+    const {masterversionsdata} = masterversion;
+    return {
+      token,
+      statuspostratioindikator,
+      getallratioindikator,
+      jenisnilaiparam,
+      masterversionsdata
+    };
 };
 
-export default connect(mapStateToProps, {getAllRatioIndikator, postRatioIndikator, resetPostRatioIndikator, jenisNilaiParam})(WrapperRatioIndikator);
+export default connect(mapStateToProps, {
+  getAllRatioIndikator,
+  postRatioIndikator,
+  resetPostRatioIndikator,
+  jenisNilaiParam,
+  fetchAllMasterVersion
+})(WrapperRatioIndikator);

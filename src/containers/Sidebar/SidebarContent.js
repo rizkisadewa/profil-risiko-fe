@@ -82,13 +82,14 @@ class SidebarContent extends Component {
                          <IntlMessages id="sidebar.risikoinheren"/></span>}>
 
                       {/* RISIKO INHEREN */}
-                      {/*
+
                       <Menu.Item key="bjbs/risikoinheren/parameterfaktor">
                           <Link to="/bjbs/risikoinheren/parameterfaktor">
                               <i className="icon icon-badge"/>
                               <IntlMessages id="sidebar.risikoinheren.parameterfaktor"/>
                           </Link>
                       </Menu.Item>
+                      {/*
                       <Menu.Item key="bjbs/risikoinheren/ratioindikator">
                           <Link to="/bjbs/risikoinheren/ratioindikator">
                               <i className="icon icon-crm"/>
@@ -152,6 +153,7 @@ class SidebarContent extends Component {
                      </Menu.Item>
                   </SubMenu>
 
+                  {/* Data Input Risiko Inheren */}
                   <SubMenu key="datainput" className={this.getNavStyleSubMenuClass(navStyle)}
                            title={<span> <i className="icon icon-data-entry"/>
                          <IntlMessages id="sidebar.datainput.risikoinheren"/></span>}>
@@ -161,10 +163,28 @@ class SidebarContent extends Component {
                               <IntlMessages id="sidebar.datainput.risikoinheren.kuantitatif"/>
                           </Link>
                       </Menu.Item>
-                      <Menu.Item key="bjbs/datainput/kpmr/ratioindikator">
-                          <Link to="/bjbs/datainput/kpmr/ratioindikator">
+                      <Menu.Item key="bjbs/datainput/risikoinheren/datakualitatif/multi-alternatif">
+                          <Link to="/bjbs/datainput/risikoinheren/datakualitatif/multi-alternatif">
                               <i className="icon icon-table-general"/>
-                              <IntlMessages id="sidebar.datainput.kpmr.ratioindikator"/>
+                              <IntlMessages id="sidebar.datainput.risikoinheren.kualitatif.multialternatif"/>
+                          </Link>
+                      </Menu.Item>
+                      <Menu.Item key="bjbs/datainput/risikoinheren/datakualitatif/dual-alternatif">
+                          <Link to="/bjbs/datainput/risikoinheren/datakualitatif/dual-alternatif">
+                              <i className="icon icon-table-general"/>
+                              <IntlMessages id="sidebar.datainput.risikoinheren.kualitatif.dualalternatif"/>
+                          </Link>
+                      </Menu.Item>
+                  </SubMenu>
+
+                  {/* Data Input KPMR */}
+                  <SubMenu key="datainput-kpmr" className={this.getNavStyleSubMenuClass(navStyle)}
+                           title={<span> <i className="icon icon-data-entry"/>
+                         <IntlMessages id="sidebar.datainput.kpmr"/></span>}>
+                      <Menu.Item key="bjbs/datainput/kpmr/datakualitatif/multi-alternatif">
+                          <Link to="/bjbs/datainput/kpmr/datakualitatif/multi-alternatif">
+                              <i className="icon icon-table"/>
+                              <IntlMessages id="sidebar.datainput.kpmr.kualitatif"/>
                           </Link>
                       </Menu.Item>
                   </SubMenu>
