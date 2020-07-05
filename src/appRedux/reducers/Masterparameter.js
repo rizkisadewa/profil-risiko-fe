@@ -2,11 +2,11 @@ import {
     JENIS_NILAI_PARAM
 } from "../../constants/ActionTypes";
 
-const initialJenisParam = {
-    jenisnilaiparam: JENIS_NILAI_PARAM
+const initialState = {
+    jenisnilaiparam: []
 };
 
-const masterparameter = (state = initialJenisParam, action) => {
+const masterparameter = (state = initialState, action) => {
     switch (action.type) {
         case JENIS_NILAI_PARAM: {
             return {

@@ -321,8 +321,8 @@ class TableKpmrKualitatifMulti extends  React.Component{
             title:"Nilai",
             dataIndex:"risk_rate",
             key:"risk_rate",
-            sorter:(a, b) => a.value.localeCompare(b.value),
-            sortOrder:sortedInfo.columnKey === 'tahun' && sortedInfo.order,
+            sorter:(a, b) => a.risk_rate.localeCompare(b.risk_rate),
+            sortOrder:sortedInfo.columnKey === 'risk_rate' && sortedInfo.order,
             render: value => (
               <>
                 {

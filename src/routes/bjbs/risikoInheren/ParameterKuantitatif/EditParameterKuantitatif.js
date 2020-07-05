@@ -80,7 +80,7 @@ class EditParameterKuantitatif extends React.Component{
     }
 
     componentDidMount(){
-        this.props.getAllRisks({token:this.props.token, page:'', jenis:'', nama:'', keterangan:''});
+        this.props.getAllRisks({token:this.props.token, page:'', jenis:'PR', nama:'', keterangan:''});
         this.props.getAllPeringkatRisiko({page:'', token:this.props.token, description:'', name:'', jenis_nilai:''});
         this.props.jenisNilaiParam({token:this.props.token});
         this.props.getAllRatioIndikator({token:this.props.token});
@@ -508,13 +508,9 @@ class EditParameterKuantitatif extends React.Component{
                                                       var value = prop.value;
                                                       var label = prop.text;
 
-                                                      if (label === 'Kuantitatif (Naik)' || label === 'Kuantitatif (Turun)'){
-                                                          return (
-                                                              <Option value={value} key={index}>{label}</Option>
-                                                          )
-                                                      } else {
-                                                          return '';
-                                                      }
+                                                      return (
+                                                          <Option value={value} key={index}>{label}</Option>
+                                                      )
                                                   })
                                               }
                                           </Select>
@@ -553,12 +549,10 @@ class EditParameterKuantitatif extends React.Component{
                                   <label style={{ textDecoration: 'underline', fontWeight: 'bold', textAlign: 'center'}}>Peringkat Risiko</label><br/>
                                   <FormItem {...formItemLayout} label="Low">
                                       {getFieldDecorator('pr_low', {
-                                          initialValue: prop.pr_low,
-                                          rules: [{type:"number", message: 'Input must be number type.'}],
+                                          initialValue: Number(prop.pr_low.toFixed(2))
                                       })(
-                                          <InputNumber id="pr_low" placeholder="Input Low"
+                                          <Input id="pr_low" placeholder="Input Low"
                                                        className="w-100"
-                                                       min={0}
                                                        onChange={(value)=>{
                                                            this.setState({
                                                                paramlow:value,
@@ -570,8 +564,7 @@ class EditParameterKuantitatif extends React.Component{
 
                                   <FormItem {...formItemLayout} label="Low to Moderate">
                                       {getFieldDecorator('pr_lowtomod', {
-                                          initialValue: prop.pr_lowtomod,
-                                          rules: [{type:"number", message: 'Input must be number type.'}],
+                                          initialValue: Number(prop.pr_lowtomod.toFixed(2))
                                       })(
                                           <InputNumber id="pr_lowtomod" placeholder="Input Low to Moderate"
                                                        className="w-100"
@@ -587,8 +580,7 @@ class EditParameterKuantitatif extends React.Component{
 
                                   <FormItem {...formItemLayout} label="Moderate">
                                       {getFieldDecorator('pr_mod', {
-                                          initialValue: prop.pr_mod,
-                                          rules: [{type:"number", message: 'Input must be number type.'}],
+                                          initialValue: Number(prop.pr_mod.toFixed())
                                       })(
                                           <InputNumber id="pr_mod" placeholder="Input Moderate"
                                                        className="w-100"
@@ -604,8 +596,7 @@ class EditParameterKuantitatif extends React.Component{
 
                                   <FormItem {...formItemLayout} label="Moderate to High">
                                       {getFieldDecorator('pr_modtohigh', {
-                                          initialValue: prop.pr_modtohigh,
-                                          rules: [{type:"number", message: 'Input must be number type.'}],
+                                          initialValue: Number(prop.pr_modtohigh.toFixed(2))
                                       })(
                                           <InputNumber id="pr_modtohigh" placeholder="Input Moderate to High"
                                                        className="w-100"
@@ -621,8 +612,7 @@ class EditParameterKuantitatif extends React.Component{
 
                                   <FormItem {...formItemLayout} label="High">
                                       {getFieldDecorator('pr_high', {
-                                          initialValue: prop.pr_high,
-                                          rules: [{type:"number", message: 'Input must be number type.'}],
+                                          initialValue: Number(prop.pr_high.toFixed(2))
                                       })(
                                           <InputNumber id="pr_high" placeholder="Input High"
                                                        className="w-100"
@@ -645,7 +635,7 @@ class EditParameterKuantitatif extends React.Component{
                                                 showSearch
                                                 placeholder="Type of variable"
                                                 optionFilterProp="children"
-                                                defaultValue={prop.ratioindikatorformula[0].operations}
+                                                defaultValue={typeof prop.ratioindikatorformula[0] === "undefined" ? '' : prop.ratioindikatorformula[0].operations}
                                                 style={{marginTop: 10, marginBottom: 10}}
                                                 onChange={this.onAddInitRIVariableType}
                                         >
@@ -667,7 +657,7 @@ class EditParameterKuantitatif extends React.Component{
                                               showSearch
                                               placeholder="Select Initial Ratio Indikator"
                                               optionFilterProp="children"
-                                              defaultValue={prop.ratioindikatorformula[0].ratio_indikator_id}
+                                              defaultValue={typeof prop.ratioindikatorformula[0] === "undefined" ? '' : prop.ratioindikatorformula[0].ratio_indikator_id}
                                               style={{marginTop: 10, marginBottom: 10}}
                                               onChange={this.onAddInitRIIdIndikator}
                                       >

@@ -60,6 +60,7 @@ class SidebarContent extends Component {
                           <IntlMessages id="sidebar.home"/></Link>
                   </Menu.Item>
 
+                  {/*
                   <SubMenu key="dashboard" className={this.getNavStyleSubMenuClass(navStyle)}
                            title={<span> <i className="icon icon-dasbhoard"/>
                          <IntlMessages id="sidebar.dashboard"/></span>}>
@@ -76,6 +77,7 @@ class SidebarContent extends Component {
                           <IntlMessages id="sidebar.dashboard.grafikperingkatkonsolidasi"/></Link>
                       </Menu.Item>
                   </SubMenu>
+                  */}
 
                   <SubMenu key="risikoinheren" className={this.getNavStyleSubMenuClass(navStyle)}
                            title={<span> <i className="icon icon-auth-screen"/>
@@ -302,30 +304,6 @@ class SidebarContent extends Component {
                   </SubMenu>
                   */}
 
-                  {/* Laporan */}
-                  <SubMenu key="laporan" className={this.getNavStyleSubMenuClass(navStyle)}
-                           title={<span> <i className="icon icon-data-display"/>
-                         <IntlMessages id="sidebar.laporan"/></span>}>
-                      <Menu.Item key="bjbs/laporan/laporanprofilrisikokeojk">
-                          <Link to="/bjbs/laporan/laporanprofilrisikokeojk">
-                              <i className="icon icon-product-grid"/>
-                              <IntlMessages id="sidebar.laporan.laporanprofilrisikokeojk"/>
-                          </Link>
-                      </Menu.Item>
-                      <Menu.Item key="bjbs/laporan/laporanpertriwulan">
-                          <Link to="/bjbs/laporan/laporanpertriwulan">
-                              <i className="icon icon-select"/>
-                              <IntlMessages id="sidebar.laporan.laporanpertriwulan"/>
-                          </Link>
-                      </Menu.Item>
-                      <Menu.Item key="bjbs/laporan/laporanakhirtahun">
-                          <Link to="/bjbs/laporan/laporanakhirtahun">
-                              <i className="icon icon-tasks"/>
-                              <IntlMessages id="sidebar.laporan.laporanakhirtahun"/>
-                          </Link>
-                      </Menu.Item>
-                  </SubMenu>
-
                   <SubMenu key="masterdata" className={this.getNavStyleSubMenuClass(navStyle)}
                            title={<span> <i className="icon icon-inbox"/>
                          <IntlMessages id="sidebar.masterdata"/></span>}>
@@ -350,6 +328,24 @@ class SidebarContent extends Component {
                           </Link>
                       </Menu.Item>
 
+                  </SubMenu>
+
+                  {/* Laporan */}
+                  <SubMenu key="laporan" className={this.getNavStyleSubMenuClass(navStyle)}
+                           title={<span> <i className="icon icon-data-display"/>
+                         <IntlMessages id="sidebar.laporan"/></span>}>
+                      <Menu.Item key="bjbs/laporan/laporanrisikoinheren">
+                          <Link to="/bjbs/laporan/laporanrisikoinheren">
+                              <i className="icon icon-product-grid"/>
+                              <IntlMessages id="sidebar.laporan.risikoinheren"/>
+                          </Link>
+                      </Menu.Item>
+                      <Menu.Item key="bjbs/laporan/laporankpmr">
+                          <Link to="/bjbs/laporan/laporankpmr">
+                              <i className="icon icon-select"/>
+                              <IntlMessages id="sidebar.laporan.kpmr"/>
+                          </Link>
+                      </Menu.Item>
                   </SubMenu>
 
                   {/* Profile User */}

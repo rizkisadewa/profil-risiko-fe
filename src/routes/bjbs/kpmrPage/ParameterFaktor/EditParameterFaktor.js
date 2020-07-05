@@ -8,7 +8,8 @@ import {
   resetPutFaktorParameter,
   getFaktorParameter,
   fetchAllMasterVersion,
-  fetchAllParameterversion
+  fetchAllParameterversion,
+  jenisNilaiParam
 } from "../../../../appRedux/actions/index";
 import SweetAlerts from "react-bootstrap-sweetalert";
 
@@ -37,7 +38,8 @@ class EditParameterFaktor extends React.Component{
             dataoptionsmasterversion: [],
             dataparameterversion: [],
             fetchdataparameterversion: [],
-            history_parameter_version: []
+            history_parameter_version: [],
+            dataoptionsjenisnilai : []
         }
     }
 
@@ -49,6 +51,7 @@ class EditParameterFaktor extends React.Component{
         this.props.fetchAllParameterversion({token: this.props.token, searchData: {
           ingredients_id : this.props.fetchdata[0].id
         }});
+        this.props.jenisNilaiParam({token:this.props.token});
     }
 
     componentWillReceiveProps(nextProps) {
@@ -60,12 +63,24 @@ class EditParameterFaktor extends React.Component{
             dataoptionsmasterversion: nextProps.masterversionsdata,
             dataparameterversion: nextProps.parameterversiondata,
             history_parameter_version: nextProps.parameterversiondata,
-            fetchdataparameterversion: []
+            fetchdataparameterversion: [],
+            dataoptionsjenisnilai : nextProps.jenisnilaiparam,
         });
 
-        if (nextProps.statusputparameterfaktor === 200 || nextProps.statusputparameterfaktor === 201){
-            this.props.clickEditSuccessButton(nextProps.statusputparameterfaktor);
+        switch (nextProps.putparameterfaktor.statusCode) {
+          case 200:
+          case 201:
+          case 400:
+            //reset all status
+            this.props.clickEditSuccessButton(
+              nextProps.putparameterfaktor.statusCode,
+              nextProps.putparameterfaktor.message
+            );
             this.props.resetPutFaktorParameter();
+            break;
+          default:
+            break;
+
         }
     }
 
@@ -94,7 +109,8 @@ class EditParameterFaktor extends React.Component{
           basic,
           propsvalue,
           paramjenisnilai,
-          dataoptionsmasterversion
+          dataoptionsmasterversion,
+          dataoptionsjenisnilai
         } = this.state;
         const {fetchdata, token} = this.props;
         const {getFieldDecorator} = this.props.form;
@@ -231,6 +247,46 @@ class EditParameterFaktor extends React.Component{
                                         )}
                                     </FormItem>
 
+                                    <FormItem {...formItemLayout} label="Jenis Penilaian">
+                                        {getFieldDecorator('jenis_nilai_id', {
+                                            initialValue: parseInt(prop.jenis_nilai_id),
+                                            rules: [{
+                                                required: true, message: 'Please input jenis penilaian field.',
+                                            }],
+                                        })(
+                                            <Select id="jenis_nilai_id"
+                                                    showSearch
+                                                    placeholder="Select Jenis Penilaian"
+                                                    optionFilterProp="children"
+                                                    onChange={(value)=>{
+                                                        console.log("Value Jenis Penilaian :");
+                                                        console.log(value);
+                                                        this.setState({
+                                                            paramjenisnilai:value
+                                                        });
+                                                    }}
+                                                    style={paramjenisnilai === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
+                                                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                                            >
+                                                <Option value="" disabled>Select jenis penilaian</Option>
+                                                {
+                                                    dataoptionsjenisnilai.map((prop, index) => {
+                                                        var value = prop.value;
+                                                        var label = prop.text;
+
+                                                        if (label === 'Kualitatif (Multi Alternatif)'){
+                                                            return (
+                                                                <Option value={value} key={index}>{label}</Option>
+                                                            )
+                                                        } else {
+                                                            return '';
+                                                        }
+                                                    })
+                                                }
+                                            </Select>
+                                        )}
+                                    </FormItem>
+
                                     <FormItem {...formItemLayout} label="Master Versi">
                                         {getFieldDecorator('master_version_list', {
                                             initialValue: this.state.fetchdataparameterversion,
@@ -324,20 +380,28 @@ const mapStateToProps = ({
   parameterfaktor,
   jenisrisiko,
   masterversion,
-  parameterversion
+  parameterversion,
+  masterparameter
 }) => {
     const {token} = auth;
-    const {statusputparameterfaktor,getparameterfaktor} = parameterfaktor;
+    const {
+      statusputparameterfaktor,
+      getparameterfaktor,
+      putparameterfaktor
+    } = parameterfaktor;
     const {getallrisks} = jenisrisiko;
     const {masterversionsdata} = masterversion;
     const {parameterversiondata} = parameterversion;
+    const {jenisnilaiparam} = masterparameter;
     return {
       token,
       getallrisks,
       statusputparameterfaktor,
       getparameterfaktor,
       masterversionsdata,
-      parameterversiondata
+      parameterversiondata,
+      jenisnilaiparam,
+      putparameterfaktor
     }
 };
 
@@ -347,5 +411,6 @@ export default connect(mapStateToProps, {
   resetPutFaktorParameter,
   getFaktorParameter,
   fetchAllMasterVersion,
-  fetchAllParameterversion
+  fetchAllParameterversion,
+  jenisNilaiParam
 })(WrapperdEditParameterFaktor);

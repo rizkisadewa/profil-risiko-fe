@@ -338,7 +338,7 @@ class TableParameter extends React.Component{
         this.onRefresh();
     }
 
-    clickEditSuccessButton = (status) => {
+    clickEditSuccessButton = (status, message) => {
         // this.props.getAllFaktorParameterTable({page:this.state.paging, token:this.props.token});
         this.setState({
             editbutton: false,
@@ -346,8 +346,11 @@ class TableParameter extends React.Component{
         });
 
         if (status === 201 || status === 200) {
-            this.onRefresh();
-            NotificationManager.success("Data has updated.", "Success !!");
+          this.onRefresh();
+          NotificationManager.success("Data has updated.", `${message}`);
+        } else {
+          this.onRefresh();
+          NotificationManager.error("error", `${message}`);
         }
     }
 
@@ -403,6 +406,16 @@ class TableParameter extends React.Component{
         }});
     }
 
+    handleDelete = (idvalue, token) => {
+      this.setState({
+          warning: false,
+          deletestatus:''
+      })
+      this.props.deleteFaktorParameter({id:idvalue, token:token});
+      this.onRefresh();
+      NotificationManager.success("Data has deleted.", "Success !!");
+    }
+
     render() {
         let {sortedInfo} = this.state;
         const {warning, addbutton, editbutton, eid, fetchdata, datatable, idvalue, paging, loading, lengthdata, dataoptions, valueselect, parambobot, paramname, paramriskname} = this.state;
@@ -439,6 +452,8 @@ class TableParameter extends React.Component{
             render: (text, record) => (
                 <span>
                     <span className="gx-link" onClick={() => {
+                        console.log(text);
+
                         this.setState({
                             eid : text.id,
                             editbutton: true,
@@ -448,7 +463,8 @@ class TableParameter extends React.Component{
                                 name : text.name,
                                 bobot : text.bobot,
                                 level : text.level,
-                                penomoran : text.penomoran
+                                penomoran : text.penomoran,
+                                jenis_nilai_id: parseInt(text.jenis_nilai_id)
                             }]
                         })
                     }}>Edit</span>
@@ -564,12 +580,7 @@ class TableParameter extends React.Component{
                                     cancelBtnBsStyle="default"
                                     title={<IntlMessages id="sweetAlerts.areYouSure"/>}
                                     onConfirm={() => {
-                                        this.setState({
-                                            warning: false,
-                                            deletestatus:''
-                                        })
-                                        this.props.deleteFaktorParameter({id:idvalue, token:token});
-                                        NotificationManager.success("Data has deleted.", "Success !!");
+                                        this.handleDelete(idvalue, token)
                                     }}
                                     onCancel={this.onCancelDelete}
                         >

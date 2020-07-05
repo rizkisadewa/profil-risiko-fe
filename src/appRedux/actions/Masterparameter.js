@@ -1,4 +1,5 @@
-import {FETCH_ERROR,
+import {
+    FETCH_ERROR,
     FETCH_START,
     JENIS_NILAI_PARAM,
 } from "../../constants/ActionTypes";
@@ -20,11 +21,17 @@ export const jenisNilaiParam = ({token}) => {
                 headers: {
                     Authorization: "Bearer "+token
                 }
-            }).then(({data}) => {
-            if (data.data){
-                dispatch({type: JENIS_NILAI_PARAM, payload: data.data.box.jenis_nilai});
-            } else {
-                dispatch({type: FETCH_ERROR, payload: data.error});
+            }).then((response) => {
+
+              let responseData = response.data;
+
+              if (responseData.statusCode === 200 || responseData.statusCode === 201){
+                  console.log("====> RESPONSE JENIS NILAI : ")
+                  console.log(responseData.data.box.jenis_nilai);
+
+                  dispatch({type: JENIS_NILAI_PARAM, payload: responseData.data.box.jenis_nilai});
+              } else {
+                  dispatch({type: FETCH_ERROR, payload: responseData.data.message});
             }
         }).catch(function (error) {
             dispatch({type: FETCH_ERROR, payload: error.message});

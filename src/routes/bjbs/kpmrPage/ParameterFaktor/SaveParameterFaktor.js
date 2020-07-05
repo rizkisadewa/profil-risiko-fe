@@ -3,9 +3,10 @@ import {Button, Input, Form, Select, InputNumber} from "antd";
 import connect from "react-redux/es/connect/connect";
 import {
   getAllRisks,
-  postFaktorParameterForKPMR,
+  postFaktorParameter,
   resetPostFaktorParameter,
-  fetchAllMasterVersion
+  fetchAllMasterVersion,
+  jenisNilaiParam
 } from "../../../../appRedux/actions/index";
 import SweetAlerts from "react-bootstrap-sweetalert";
 
@@ -28,12 +29,14 @@ class SaveParameterFaktor extends React.PureComponent{
             statuspost: '',
             paramjenisnilai:'',
             dataoptionsmasterversion: [],
+            dataoptionsjenisnilai: []
         }
     }
 
     componentDidMount(){
         this.props.getAllRisks({token:this.props.token, page:'', jenis:'KPMR', nama:'', keterangan:''});
         this.props.fetchAllMasterVersion({token: this.props.token});
+        this.props.jenisNilaiParam({token:this.props.token});
     }
 
     componentWillReceiveProps(nextProps) {
@@ -42,6 +45,7 @@ class SaveParameterFaktor extends React.PureComponent{
             dataoptions : nextProps.getallrisks,
             statuspost : nextProps.statuspostparameterfaktor,
             dataoptionsmasterversion : nextProps.masterversionsdata,
+            dataoptionsjenisnilai: nextProps.jenisnilaiparam
         });
 
         if (nextProps.statuspostparameterfaktor === 201 || nextProps.statuspostparameterfaktor === 200){
@@ -67,9 +71,10 @@ class SaveParameterFaktor extends React.PureComponent{
           dataoptionslevel,
           basic,
           paramjenisnilai,
-          dataoptionsmasterversion
+          dataoptionsmasterversion,
+          dataoptionsjenisnilai
         } = this.state;
-        const {token} = this.props;
+        const {token, addPropstate} = this.props;
         const {getFieldDecorator} = this.props.form;
         return (
             <>
@@ -77,7 +82,8 @@ class SaveParameterFaktor extends React.PureComponent{
                     e.preventDefault();
                     this.props.form.validateFields((err, values) => {
                         if (!err) {
-                            this.props.postFaktorParameterForKPMR(values);
+                            values.jenis = 'KPMR';
+                            this.props.postFaktorParameter(values);
                             console.log("****SUBMIT DATA PARAMETER FAKTOR KPMR")
                             console.log(values);
                         }
@@ -188,6 +194,44 @@ class SaveParameterFaktor extends React.PureComponent{
                         )}
                     </FormItem>
 
+                    <FormItem {...formItemLayout} label="Jenis Penilaian">
+                        {getFieldDecorator('jenis_nilai_id', {
+                            initialValue: addPropstate ? addPropstate.pkjenisnilai : '',
+                            rules: [{
+                                required: true, message: 'Please input jenis penilaian field.',
+                            }],
+                        })(
+                            <Select id="jenis_nilai_id"
+                                    showSearch
+                                    placeholder="Select Jenis Penilaian"
+                                    optionFilterProp="children"
+                                    onChange={(value)=>{
+                                        this.setState({
+                                            paramjenisnilai:value
+                                        });
+                                    }}
+                                    style={paramjenisnilai === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
+                                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                            >
+                                <Option value="" disabled>Select jenis penilaian</Option>
+                                {
+                                    dataoptionsjenisnilai.map((prop, index) => {
+                                        var value = prop.value;
+                                        var label = prop.text;
+
+                                        if (label === 'Kualitatif (Multi Alternatif)'){
+                                            return (
+                                                <Option value={value} key={index}>{label}</Option>
+                                            )
+                                        } else {
+                                            return '';
+                                        }
+                                    })
+                                }
+                            </Select>
+                        )}
+                    </FormItem>
+
                     <FormItem {...formItemLayout} label="Master Versi">
                         {getFieldDecorator('master_version_list', {
                             rules: [{
@@ -197,7 +241,7 @@ class SaveParameterFaktor extends React.PureComponent{
                           <Select id="master_version_list"
                                   showSearch
                                   mode="multiple"
-                                  placeholder="Select Jenis Penilaian"
+                                  placeholder="Select Master Versi"
                                   optionFilterProp="children"
                                   onChange={this.handleChangeMultipleSelect}
                                   style={paramjenisnilai === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
@@ -238,22 +282,31 @@ class SaveParameterFaktor extends React.PureComponent{
 
 const WrappedSaveParameterFaktor = Form.create()(SaveParameterFaktor);
 
-const mapStateToProps = ({auth, parameterfaktor, jenisrisiko, masterversion}) => {
+const mapStateToProps = ({
+  auth,
+  parameterfaktor,
+  jenisrisiko,
+  masterversion,
+  masterparameter
+}) => {
     const {token} = auth;
     const {statuspostparameterfaktor} = parameterfaktor;
     const {getallrisks} = jenisrisiko;
     const {masterversionsdata} = masterversion;
+    const {jenisnilaiparam} = masterparameter;
     return {
       statuspostparameterfaktor,
       token,
       getallrisks,
-      masterversionsdata
+      masterversionsdata,
+      jenisnilaiparam
     }
 };
 
 export default connect(mapStateToProps, {
-  postFaktorParameterForKPMR,
+  postFaktorParameter,
   getAllRisks,
   resetPostFaktorParameter,
-  fetchAllMasterVersion
+  fetchAllMasterVersion,
+  jenisNilaiParam
 })(WrappedSaveParameterFaktor);

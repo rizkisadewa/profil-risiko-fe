@@ -456,6 +456,9 @@ function TableParameterKuantitatif ({
                     masterversionlistdata.push(parseInt(text.parameterVersionList[i].mst_version.id));
                   }
 
+                  console.log("=====TEXT")
+                  console.log(text);
+
                   setFetchData([
                     ...fetchdata,
                     {

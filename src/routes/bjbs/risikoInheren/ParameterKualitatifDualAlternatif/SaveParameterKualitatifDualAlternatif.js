@@ -26,9 +26,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 
 const optionsLevel = [
-    {label:"Level Kedua (2)", value:2},
-    {label:"Level Ketiga (3)", value:3},
-    {label:"Level Keempat (4)", value:4}
+    {label:"Level Kedua (2)", value:2}
 ];
 
 const operatorOption = [
@@ -250,7 +248,7 @@ class SaveParameterKualitatifDualAlternatif extends React.Component {
         for (var i = 0; i < numChildren; i++) {
           children.push(
             <ChildComponent
-              indikatordata={dataoptionsratioindikatorkualitatif}
+              indikatordata={dataoptionsratioindikator}
               key={i}
               id_operator_arithmetic={"operator_arithmetic_"+i}
               handleChangeRatioIndikator={this.handleChangeRatioIndikator}

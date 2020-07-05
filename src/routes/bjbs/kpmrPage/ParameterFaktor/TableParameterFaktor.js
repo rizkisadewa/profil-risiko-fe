@@ -340,7 +340,7 @@ class TableParameterFaktor extends React.Component{
         this.onRefresh();
     }
 
-    clickEditSuccessButton = (status) => {
+    clickEditSuccessButton = (status, message) => {
         // this.props.getAllFaktorParameterTable({page:this.state.paging, token:this.props.token});
         this.setState({
             editbutton: false,
@@ -348,8 +348,11 @@ class TableParameterFaktor extends React.Component{
         });
 
         if (status === 201 || status === 200) {
-            this.onRefresh();
-            NotificationManager.success("Data has updated.", "Success !!");
+          this.onRefresh();
+          NotificationManager.success("Data has updated.", `${message}`);
+        } else {
+          this.onRefresh();
+          NotificationManager.error("error", `${message}`);
         }
     }
 
@@ -450,7 +453,8 @@ class TableParameterFaktor extends React.Component{
                                 name : text.name,
                                 bobot : text.bobot,
                                 level : text.level,
-                                penomoran : text.penomoran
+                                penomoran : text.penomoran,
+                                jenis_nilai_id : parseInt(text.jenis_nilai_id),
                             }]
                         })
                     }}>Edit</span>
@@ -572,6 +576,7 @@ class TableParameterFaktor extends React.Component{
                                             deletestatus:''
                                         })
                                         this.props.deleteFaktorParameter({id:idvalue, token:token});
+                                        this.onRefresh();
                                         NotificationManager.success("Data has deleted.", "Success !!");
                                     }}
                                     onCancel={this.onCancelDelete}

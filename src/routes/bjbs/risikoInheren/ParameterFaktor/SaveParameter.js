@@ -5,7 +5,8 @@ import {
   getAllRisks,
   postFaktorParameter,
   resetPostFaktorParameter,
-  fetchAllMasterVersion
+  fetchAllMasterVersion,
+  jenisNilaiParam
 } from "../../../../appRedux/actions/index";
 import SweetAlerts from "react-bootstrap-sweetalert";
 
@@ -25,6 +26,7 @@ class SaveParameter extends React.PureComponent{
             dataoptions : [],
             dataoptionslevel : optionsLevel,
             dataoptionsmasterversion: [],
+            dataoptionsjenisnilai: [],
             basic: false,
             statuspost: '',
             paramjenisnilai:'',
@@ -34,6 +36,7 @@ class SaveParameter extends React.PureComponent{
     componentDidMount(){
         this.props.getAllRisks({token:this.props.token, page:'', jenis:'PR', nama:'', keterangan:''});
         this.props.fetchAllMasterVersion({token: this.props.token});
+        this.props.jenisNilaiParam({token:this.props.token});
     }
 
     componentWillReceiveProps(nextProps) {
@@ -42,6 +45,7 @@ class SaveParameter extends React.PureComponent{
             dataoptions : nextProps.getallrisks,
             statuspost : nextProps.statuspostparameterfaktor,
             dataoptionsmasterversion : nextProps.masterversionsdata,
+            dataoptionsjenisnilai : nextProps.jenisnilaiparam
         });
 
         if (nextProps.statuspostparameterfaktor === 201 || nextProps.statuspostparameterfaktor === 200){
@@ -67,9 +71,10 @@ class SaveParameter extends React.PureComponent{
           dataoptionslevel,
           basic,
           paramjenisnilai,
-          dataoptionsmasterversion
+          dataoptionsmasterversion,
+          dataoptionsjenisnilai
         } = this.state;
-        const {token} = this.props;
+        const {token, addPropstate} = this.props;
         const {getFieldDecorator} = this.props.form;
         return (
             <>
@@ -77,6 +82,8 @@ class SaveParameter extends React.PureComponent{
                     e.preventDefault();
                     this.props.form.validateFields((err, values) => {
                         if (!err) {
+                            values.jenis = 'PR';
+                            // console.log(values);
                             this.props.postFaktorParameter(values);
                         }
                         // console.log("****PARAMETER VERSION LIST****")
@@ -187,6 +194,40 @@ class SaveParameter extends React.PureComponent{
                         )}
                     </FormItem>
 
+                    <FormItem {...formItemLayout} label="Jenis Penilaian">
+                        {getFieldDecorator('jenis_nilai_id', {
+                            initialValue: addPropstate ? addPropstate.pkjenisnilai : '',
+                            rules: [{
+                                required: true, message: 'Please input jenis penilaian field.',
+                            }],
+                        })(
+                            <Select id="jenis_nilai_id"
+                                    showSearch
+                                    placeholder="Select Jenis Penilaian"
+                                    optionFilterProp="children"
+                                    onChange={(value)=>{
+                                        this.setState({
+                                            paramjenisnilai:value
+                                        });
+                                    }}
+                                    style={paramjenisnilai === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
+                                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                            >
+                                <Option value="" disabled>Select jenis penilaian</Option>
+                                {
+                                    dataoptionsjenisnilai.map((prop, index) => {
+                                        var value = prop.value;
+                                        var label = prop.text;
+
+                                        return (
+                                            <Option value={value} key={index}>{label}</Option>
+                                        )
+                                    })
+                                }
+                            </Select>
+                        )}
+                    </FormItem>
+
                     <FormItem {...formItemLayout} label="Master Versi">
                         {getFieldDecorator('master_version_list', {
                             rules: [{
@@ -237,16 +278,24 @@ class SaveParameter extends React.PureComponent{
 
 const WrappedSaveParameter = Form.create()(SaveParameter);
 
-const mapStateToProps = ({auth, parameterfaktor, jenisrisiko, masterversion}) => {
+const mapStateToProps = ({
+  auth,
+  parameterfaktor,
+  jenisrisiko,
+  masterversion,
+  masterparameter
+}) => {
     const {token} = auth;
     const {statuspostparameterfaktor} = parameterfaktor;
     const {masterversionsdata} = masterversion;
     const {getallrisks} = jenisrisiko;
+    const {jenisnilaiparam} = masterparameter;
     return {
       statuspostparameterfaktor,
       token,
       getallrisks,
-      masterversionsdata
+      masterversionsdata,
+      jenisnilaiparam
     }
 };
 
@@ -254,5 +303,6 @@ export default connect(mapStateToProps, {
   postFaktorParameter,
   getAllRisks,
   resetPostFaktorParameter,
-  fetchAllMasterVersion
+  fetchAllMasterVersion,
+  jenisNilaiParam
 })(WrappedSaveParameter);

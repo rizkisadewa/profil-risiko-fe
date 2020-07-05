@@ -73,7 +73,7 @@ class SaveParameterKuantitatif extends React.Component{
     }
 
     componentDidMount(){
-        this.props.getAllRisks({token:this.props.token, page:'', jenis:'', nama:'', keterangan:''});
+        this.props.getAllRisks({token:this.props.token, page:'', jenis:'PR', nama:'', keterangan:''});
         this.props.getAllPeringkatRisiko({page:'', token:this.props.token, description:'', name:'', jenis_nilai:''});
         this.props.jenisNilaiParam({token:this.props.token});
         this.props.getAllRatioIndikator({token:this.props.token});
@@ -535,7 +535,7 @@ class SaveParameterKuantitatif extends React.Component{
                                         var value = prop.value;
                                         var label = prop.text;
 
-                                        if (label === 'Kuantitatif (Naik)' || label === 'Kuantitatif (Turun)'){
+                                        if (label === 'Kuantitatif' || label === 'Kuantitatif (Turun)'){
                                             return (
                                                 <Option value={value} key={index}>{label}</Option>
                                             )

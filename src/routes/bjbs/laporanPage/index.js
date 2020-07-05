@@ -8,6 +8,7 @@ const LaporanPage = ({match}) => (
         <Route path={`${match.url}/laporanprofilrisikokeojk`} component={asyncComponent(() => import('./LaporanProfilRisikoKeOjk'))}/>
         <Route path={`${match.url}/laporanpertriwulan`} component={asyncComponent(() => import('./LaporanPerTriwulan'))}/>
         <Route path={`${match.url}/laporanakhirtahun`} component={asyncComponent(() => import('./LaporanAkhirTahun'))}/>
+        <Route path={`${match.url}/laporanrisikoinheren`} component={asyncComponent(() => import('./LaporanRisikoInheren'))}/>
     </Switch>
 );
 

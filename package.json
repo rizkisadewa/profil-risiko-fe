@@ -40,6 +40,7 @@
     "react-placeholder": "^3.0.1",
     "react-redux": "^5.0.7",
     "react-redux-notify": "^4.2.1",
+    "react-resizable": "^1.10.1",
     "react-router-dom": "^4.3.1",
     "react-router-redux": "^5.0.0-alpha.9",
     "react-scripts": "^2.1.3",

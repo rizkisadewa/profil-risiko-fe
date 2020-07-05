@@ -294,7 +294,7 @@ export const getFaktorParameter = ({id, token}) => {
     }
 };
 
-export const updateFaktorParameter = ({id, risk_id, penomoran, name, level, bobot, token, master_version_list, history_parameter_version}) => {
+export const updateFaktorParameter = ({id, risk_id, penomoran, name, level, bobot, token, master_version_list, history_parameter_version, jenis_nilai_id}) => {
     return async (dispatch) => {
         dispatch({type: FETCH_START});
 
@@ -323,36 +323,6 @@ export const updateFaktorParameter = ({id, risk_id, penomoran, name, level, bobo
             }
           }
 
-
-
-          // axios.put('api/parameter-faktor/'+id,{
-          //     risk_id: risk_id,
-          //     penomoran: penomoran,
-          //     name: name,
-          //     level: level,
-          //     bobot: bobot
-          // },{
-          //     headers: {
-          //         Authorization: "Bearer "+token
-          //     }
-          // }).then(({data}) => {
-          //     if (data.data){
-          //         dispatch({type: PUT_PARAMETER_FAKTOR, payload: data.data});
-          //         dispatch({type: STATUS_PUT_PARAMETER_FAKTOR, payload: data.statusCode});
-          //     } else {
-          //         dispatch({type: FETCH_ERROR, payload: data.error});
-          //     }
-          // }).catch(function (error) {
-          //     if (error.response) {
-          //         if (error.response.data.data){
-          //             dispatch({type: PUT_PARAMETER_FAKTOR, payload: error.response.data.data});
-          //         } else {
-          //             dispatch({type: FETCH_ERROR, payload: error.response.data.message});
-          //             console.log("Error****:", error.response.data.message);
-          //         }
-          //     }
-          // });
-
           const rawResponse = await axios({
             method: "PUT",
             url : 'api/parameter-faktor/'+id,
@@ -365,7 +335,8 @@ export const updateFaktorParameter = ({id, risk_id, penomoran, name, level, bobo
                 penomoran: penomoran,
                 name: name,
                 level: level,
-                bobot: bobot
+                bobot: bobot,
+                jenis_nilai_id: jenis_nilai_id,
             },
             validateStatus: function(status) {
               return status < 500; // Reject only if the status code is greater than or equal to 500
@@ -388,12 +359,12 @@ export const updateFaktorParameter = ({id, risk_id, penomoran, name, level, bobo
 
 export const resetPutFaktorParameter = () => {
     return (dispatch) => {
-        dispatch({type: STATUS_PUT_PARAMETER_FAKTOR, payload: 'STATUS_PUT_PARAMETER_FAKTOR'});
+        dispatch({type: PUT_PARAMETER_FAKTOR, payload: []});
     }
 }
 
 // add parameter faktof for risiko inheren
-export const postFaktorParameter = ({risk_id, penomoran, name, level, bobot, token, master_version_list}) => {
+export const postFaktorParameter = ({risk_id, penomoran, name, level, bobot, token, master_version_list, jenis_nilai_id, jenis}) => {
     return (dispatch) => {
         dispatch({type: FETCH_START});
         axios.post('api/parameter-faktor',{
@@ -401,7 +372,9 @@ export const postFaktorParameter = ({risk_id, penomoran, name, level, bobot, tok
             penomoran: penomoran,
             name: name,
             level: level,
-            bobot: bobot
+            bobot: bobot,
+            jenis_nilai_id: jenis_nilai_id,
+            jenis: jenis
         },{
             headers: {
                 Authorization: "Bearer "+token
@@ -442,7 +415,16 @@ export const resetPostFaktorParameter = () => {
 }
 
 // add parameter version for KPMR
-export const postFaktorParameterForKPMR = ({risk_id, penomoran, name, level, bobot, token, master_version_list}) => {
+export const postFaktorParameterForKPMR = ({
+  risk_id,
+  penomoran,
+  name,
+  level,
+  bobot,
+  token,
+  master_version_list,
+  jenis_nilai_id
+}) => {
     return (dispatch) => {
         dispatch({type: FETCH_START});
         axios.post('api/parameter-kpmr-faktor',{
@@ -450,7 +432,8 @@ export const postFaktorParameterForKPMR = ({risk_id, penomoran, name, level, bob
             penomoran: penomoran,
             name: name,
             level: level,
-            bobot: bobot
+            bobot: bobot,
+            jenis_nilai_id : jenis_nilai_id
         },{
             headers: {
                 Authorization: "Bearer "+token

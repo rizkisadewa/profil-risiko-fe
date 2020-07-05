@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Input, Form, Card } from "antd";
+import {Button, Input, Form, Card , InputNumber} from "antd";
 // import {Button, Input, Form, Select, InputNumber, Spin} from "antd";
 import connect from "react-redux/es/connect/connect";
 import {
@@ -9,6 +9,8 @@ import {
 } from "../../../../../appRedux/actions/index";
 import {NotificationContainer, NotificationManager} from "react-notifications";
 import SweetAlerts from "react-bootstrap-sweetalert";
+// import local css
+import './mystyle.css';
 
 const FormItem = Form.Item;
 
@@ -147,7 +149,7 @@ class SaveRisikoInherenKuantitatif extends React.Component {
         // ]
 
         return (
-          <Card title={`Data Risiko Inheren Kuantitatif - ${this.state.risk_name} : ${monthText} ${this.state.paramtahun} (${this.state.version_name})`}>
+          <Card title={`Data Risiko Inheren Kuantitatif : ${monthText} ${this.state.paramtahun} (${this.state.version_name})`}>
             <>
                 <Form onSubmit={(e)=>{
                     e.preventDefault();
@@ -187,20 +189,14 @@ class SaveRisikoInherenKuantitatif extends React.Component {
                         return (
                           <FormItem {...formItemLayout} label={prop.ratio_indikator.name}>
                               {getFieldDecorator(`${prop.ratio_indikator.id}`, {
-                                  initialValue: parseInt(prop.value),
-                                  rules: [{
-                                      required: true, message: 'Please input name field.',
-                                  }],
+                                  initialValue: prop.value
                               })(
-                                  <Input id={index} placeholder="Input Indikator"
-                                    onChange={(e,value) =>{
-                                        // this.setState({
-                                        //     paramparameter:e.target.value,
-                                        // });
-                                        console.log(e)
-                                        console.log(e.target.value)
-                                    }}
-                                         />
+                                <InputNumber
+                                  id={index}
+                                  className="w-100"
+                                  formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                  parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                                />
                               )}
                           </FormItem>
                         )

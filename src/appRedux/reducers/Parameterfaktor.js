@@ -22,7 +22,8 @@ const initialTable = {
     statusallparameterfaktortable: STATUS_ALL_PARAMETER_FAKTOR_TABLE,
     statusallparameterfaktor: STATUS_ALL_PARAMETER_FAKTOR,
     countallparameterfaktor: COUNT_ALL_PARAMETER_FAKTOR,
-    statusputparameterfaktor : STATUS_PUT_PARAMETER_FAKTOR
+    statusputparameterfaktor : STATUS_PUT_PARAMETER_FAKTOR,
+    putparameterfaktor: []
 };
 
 const parameterfaktor = (state = initialTable, action) => {
