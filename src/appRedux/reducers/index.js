@@ -22,6 +22,7 @@ import Kpmrparameterkualitatif from './Kpmrparameterkualitatif';
 import Risikoinhereninputkuantitatif from './Risikoinhereninputkuantitatif';
 import Risikoinhereninputkualitatif from './Risikoinhereninputkualitatif';
 import Risikoinhereninputkualitatifdual from './Risikoinhereninputkualitatifdual';
+import Risikoinherenreport from './Risikoinherenreport';
 
 const reducers = combineReducers({
   routing: routerReducer,
@@ -46,7 +47,8 @@ const reducers = combineReducers({
   kpmrparameterkualitatif: Kpmrparameterkualitatif,
   risikoinhereninputkuantitatif : Risikoinhereninputkuantitatif,
   risikoinhereninputkualitatif : Risikoinhereninputkualitatif,
-  risikoinhereninputkualitatifdual : Risikoinhereninputkualitatifdual
+  risikoinhereninputkualitatifdual : Risikoinhereninputkualitatifdual,
+  risikoinherenreport: Risikoinherenreport
 });
 
 export default reducers;

@@ -20,3 +20,4 @@ export * from './Kpmrparameterkualitatif';
 export * from './Risikoinhereninputkuantitatif';
 export * from './Risikoinhereninputkualitatif';
 export * from './Risikoinhereninputkualitatifdual';
+export * from './Risikoinherenreport';

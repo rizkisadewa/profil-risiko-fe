@@ -18,7 +18,8 @@ import {
   fetchAllMasterVersion,
   fetchAllRisikoInherenInputKualitatif,
   addRisikoInherenInputKualitatif,
-  resetAddRisikoInherenInputKualitatif
+  resetAddRisikoInherenInputKualitatif,
+  fetchAllRisikoInherenReport
 } from "../../../../appRedux/actions/index";
 
 import {connect} from "react-redux";
@@ -47,6 +48,7 @@ class TableRisikoInheren extends  React.Component{
             deletestatus:'',
             addbutton: false,
             masterversionsdata: [],
+            datatable: [],
             statusallparametermanualtable :'',
             statusallparametermanual:'',
             paramname : '',
@@ -67,11 +69,19 @@ class TableRisikoInheren extends  React.Component{
     }
 
     componentDidMount(){
-
+      this.props.fetchAllRisikoInherenReport({token: this.props.token, searchData : {
+        version_id : this.state.version_id,
+        jenis : "PR",
+        bulan : this.state.parambulan,
+        tahun : this.state.paramtahun,
+        risk_id : this.state.paramrisk_id,
+      }})
     }
 
     componentWillReceiveProps(nextProps) {
-
+      this.setState({
+        datatable: nextProps.risikoinherenreportdata
+      })
     }
 
     /* componentDidUpdate(){
@@ -308,6 +318,7 @@ class TableRisikoInheren extends  React.Component{
 
     render() {
         const {token} = this.props;
+        const {datatable} = this.state;
         let {
           sortedInfo,
           name,
@@ -661,7 +672,7 @@ class TableRisikoInheren extends  React.Component{
                               </Grid>
                             </Grid>
                             <Spin tip="Loading..." spinning={loading}>
-                                <Table dataSource={dataDummy} className="gx-table-responsive" onChange={this.handleChange} rowKey="id" columns={columns}
+                                <Table dataSource={datatable} className="gx-table-responsive" onChange={this.handleChange} rowKey="id" columns={columns}
                                        pagination={false}
                                        size="small"
                                        />
@@ -716,15 +727,18 @@ class TableRisikoInheren extends  React.Component{
 }
 
 const mapStateToProps = ({
-  auth
+  auth,
+  risikoinherenreport
 }) => {
     const {token} = auth;
-
+    const {risikoinherenreportdata} = risikoinherenreport;
     return {
-      token
+      token,
+      risikoinherenreportdata
     };
 };
 
 export default connect(mapStateToProps, {
-  getAllParameterManualTable
+  getAllParameterManualTable,
+  fetchAllRisikoInherenReport
 })(TableRisikoInheren);
