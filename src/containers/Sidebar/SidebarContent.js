@@ -348,6 +348,19 @@ class SidebarContent extends Component {
                       </Menu.Item>
                   </SubMenu>
 
+                  {/* Laporan Locked */}
+                  <SubMenu key="laporan-locked" className={this.getNavStyleSubMenuClass(navStyle)}
+                           title={<span> <i className="icon icon-data-display"/>
+                         <IntlMessages id="sidebar.laporan.locked"/></span>}>
+                      <Menu.Item key="bjbs/laporan-locked/risikoinheren">
+                          <Link to="/bjbs/laporan-locked/risikoinheren">
+                              <i className="icon icon-product-grid"/>
+                              <IntlMessages id="sidebar.laporan.locked.risikoinheren"/>
+                          </Link>
+                      </Menu.Item>
+                  </SubMenu>
+
+
                   {/* Profile User */}
                   {/*
                   <SubMenu key="profileuser" className={this.getNavStyleSubMenuClass(navStyle)}

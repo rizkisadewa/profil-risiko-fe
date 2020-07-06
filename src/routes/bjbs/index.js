@@ -10,6 +10,7 @@ import ProfileUserPage from "./profileUserPage";
 import LainLainPage from "./lainPage";
 import KpmrPage from "./kpmrPage";
 import DataInputPage from "./dataInputPage";
+import LaporanLockedPage from "./laporanLockedPage";
 
 import asyncComponent from "util/asyncComponent";
 
@@ -24,6 +25,7 @@ const Bjbs = ({match}) => (
         <Route path={`${match.url}/masterdata`} component={MasterDataPage}/>
         <Route path={`${match.url}/keperluandata`} component={KeperluanDataPage}/>
         <Route path={`${match.url}/laporan`} component={LaporanPage}/>
+        <Route path={`${match.url}/laporan-locked`} component={LaporanLockedPage}/>
         <Route path={`${match.url}/profileuser`} component={ProfileUserPage}/>
         <Route path={`${match.url}/lainlain`} component={LainLainPage}/>
     </Switch>
