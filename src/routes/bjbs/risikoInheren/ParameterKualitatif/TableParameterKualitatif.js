@@ -323,6 +323,14 @@ function TableParameterKualitatif ({
 
   const onRefresh = () => {
       setLoading(true);
+      fetchAllParameterKualitatif({
+        token: authData.token,
+        page: 1,
+        searchData: {
+          jenis_nilai_id : 4
+        }
+      });
+      setLoading(false);
   };
 
   // *** ADD BUTTON ***

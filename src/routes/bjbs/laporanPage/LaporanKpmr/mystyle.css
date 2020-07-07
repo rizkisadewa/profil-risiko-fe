@@ -1,0 +1,25 @@
+.editable-row {
+  font-size: 0.65rem;
+}
+
+.level2-row {
+  font-size: 0.75rem;
+}
+
+.parameter-faktor {
+  background-color: #002766;
+  color: #ffffff;
+}
+
+.parameter-faktor:hover {
+  color: black;
+}
+
+.tingkat-risiko-inheren {
+  background-color: #13c2c2;
+  color: #ffffff;
+}
+
+.tingkat-risiko-inheren:hover {
+  color: black;
+}

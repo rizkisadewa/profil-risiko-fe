@@ -1,6 +1,5 @@
 import React from "react";
-import {Button, Card, Table, Spin, Pagination, Tag, Input} from "antd";
-import { Resizable } from 'react-resizable';
+import {Button, Card, Table, Spin, Pagination, Input} from "antd";
 import SweetAlert from "react-bootstrap-sweetalert";
 import {NotificationContainer, NotificationManager} from "react-notifications";
 import IntlMessages from "util/IntlMessages";
@@ -15,10 +14,8 @@ import {
   getAllParameterManualTable,
 } from "../../../../appRedux/actions/Parametermanual";
 import {
-  fetchAllMasterVersion,
   fetchAllRisikoInherenInputKualitatif,
   addRisikoInherenInputKualitatif,
-  resetAddRisikoInherenInputKualitatif,
   fetchAllRisikoInherenReport
 } from "../../../../appRedux/actions/index";
 
@@ -28,10 +25,6 @@ import Grid from "@material-ui/core/Grid";
 // data dummy
 import {dataDummy} from './dataDummy';
 import {
-  renderNameColumn,
-  renderParameterFaktorColumn,
-  renderTingkatRisikoInherenColumn,
-  renderParameterRight,
   renderColumn
 } from './ColumnProperties';
 
@@ -48,7 +41,6 @@ class TableRisikoInheren extends  React.Component{
             deletestatus:'',
             addbutton: false,
             masterversionsdata: [],
-            datatable: [],
             statusallparametermanualtable :'',
             statusallparametermanual:'',
             paramname : '',
@@ -63,8 +55,7 @@ class TableRisikoInheren extends  React.Component{
             loading: false,
             visible: false,
             inputdataoptions: [],
-            answervalue: 0,
-            risikoinhereninputkualitatifdata: []
+            answervalue: 0
         }
     }
 
@@ -79,9 +70,9 @@ class TableRisikoInheren extends  React.Component{
     }
 
     componentWillReceiveProps(nextProps) {
-      this.setState({
-        datatable: nextProps.risikoinherenreportdata
-      })
+      // this.setState({
+      //   datatable: nextProps.risikoinherenreportdata
+      // })
     }
 
     /* componentDidUpdate(){
@@ -318,7 +309,7 @@ class TableRisikoInheren extends  React.Component{
 
     render() {
         const {token} = this.props;
-        const {datatable} = this.state;
+        // const {datatable} = this.state;
         let {
           sortedInfo,
           name,
@@ -328,8 +319,7 @@ class TableRisikoInheren extends  React.Component{
           loading,
           addbutton,
           paging,
-          lengthdata,
-          risikoinhereninputkualitatifdata
+          lengthdata
         } = this.state;
         sortedInfo = sortedInfo || {};
 
@@ -739,5 +729,7 @@ const mapStateToProps = ({
 
 export default connect(mapStateToProps, {
   getAllParameterManualTable,
-  fetchAllRisikoInherenReport
+  fetchAllRisikoInherenReport,
+  fetchAllRisikoInherenInputKualitatif,
+  addRisikoInherenInputKualitatif
 })(TableRisikoInheren);

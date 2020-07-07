@@ -8,11 +8,13 @@ import {
   jenisNilaiParam,
   getAllRatioIndikatorForParamterKualitatif,
   addParameterKuantitatif,
-  resetUpdateParameterKualitatif,
+  resetKpmrUpdateParameterKualitatif,
   fetchAllIngredients,
   addParameterKualitatif,
   kpmrUpdateParameterKualitatif,
   fetchAllMasterVersion,
+  getAllFaktorParameterDataOption,
+  fetchAllRatioIndikatorFormula
 } from "../../../../appRedux/actions/index";
 import SweetAlerts from "react-bootstrap-sweetalert";
 import {Link} from "react-router-dom";
@@ -34,6 +36,7 @@ class EditKpmrParameterKualitatif extends React.Component{
             dataoptionsingredientsdata : [],
             datavalue: [],
             dataoptionsmasterversion: [],
+            dataoptionsparameterfaktor: [],
             //state value
             paramparameter:'',
             paramlow:'',
@@ -62,6 +65,11 @@ class EditKpmrParameterKualitatif extends React.Component{
           jenis_nilai_id: 4
         }});
         this.props.fetchAllMasterVersion({token: this.props.token});
+        this.props.getAllFaktorParameterDataOption({token: this.props.token, jenisParamA: "KPMR"});
+        this.props.fetchAllRatioIndikatorFormula({token: this.props.token, searchData: {
+          ingredients_id: this.props.fetchdata[0].id
+        }});
+
     }
 
     componentWillReceiveProps(nextProps){
@@ -70,6 +78,7 @@ class EditKpmrParameterKualitatif extends React.Component{
             dataoptionsratioindikatorkualitatif: nextProps.getallratioindikatorkualitatif,
             dataoptionsingredientsdata: nextProps.ingredientsdata,
             dataoptionsmasterversion : nextProps.masterversionsdata,
+            dataoptionsparameterfaktor: nextProps.getallparameterfaktor
         });
 
         switch(nextProps.updateparameterkualitatifresult.statusCode){
@@ -81,7 +90,7 @@ class EditKpmrParameterKualitatif extends React.Component{
               nextProps.updateparameterkualitatifresult.message
             );
             // reset all state
-            this.props.resetUpdateParameterKualitatif();
+            this.props.resetKpmrUpdateParameterKualitatif();
             break;
           default:
             break;
@@ -122,7 +131,8 @@ class EditKpmrParameterKualitatif extends React.Component{
             dataoptionsratioindikatorkualitatif,
             dataoptionsingredientsdata,
             datavalue,
-            dataoptionsmasterversion
+            dataoptionsmasterversion,
+            dataoptionsparameterfaktor
         } = this.state;
         const {token, fetchdata} = this.props;
         const {getFieldDecorator} = this.props.form;
@@ -159,7 +169,9 @@ class EditKpmrParameterKualitatif extends React.Component{
                                             this.setState({
                                                 paramrisk_id:value,
                                             });
+                                            this.props.getAllFaktorParameterDataOption({token: this.props.token, risk_id: value, jenisParamA: "KPMR"});
                                         }}
+
                                         style={paramrisk_id === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
                                         filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
                                     <Option value="" disabled>Select risk</Option>
@@ -245,9 +257,41 @@ class EditKpmrParameterKualitatif extends React.Component{
                             )}
                         </FormItem>
 
+                        <FormItem {...formItemLayout} label="Parameter Faktor">
+                            {getFieldDecorator('parameter_faktor_id', {
+                                initialValue: parseInt(prop.parameter_faktor_id),
+                                rules: [{
+                                    required: true, message: 'Please input induk/parameter field.',
+                                }],
+                            })(
+                                <Select id="parameter_faktor_id"
+                                        showSearch
+                                        placeholder="Select parameter faktor"
+                                        optionFilterProp="children"
+                                        onChange={(value)=>{
+                                            this.setState({
+                                                paramindukparameter:value,
+                                            });
+                                        }}
+                                        style={paramindukparameter === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
+                                        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
+                                    <Option value="" disabled>Select induk/parameter</Option>
+                                    {
+                                        dataoptionsparameterfaktor.map((prop, index) => {
+                                            var value = prop.id;
+                                            var label = prop.name;
+                                            return (
+                                                <Option key={index} value={value}>{label}</Option>
+                                            )
+                                        })
+                                    }
+                                </Select>
+                            )}
+                        </FormItem>
+
                         <FormItem {...formItemLayout} label="Induk/Parameter">
                             {getFieldDecorator('induk_id', {
-                                initialValue: prop.induk_id,
+                                initialValue: parseInt(prop.induk_id),
                                 rules: [{
                                     required: true, message: 'Please input induk/parameter field.',
                                 }],
@@ -263,7 +307,7 @@ class EditKpmrParameterKualitatif extends React.Component{
                                         }}
                                         style={paramindukparameter === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
                                         filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
-                                    <Option value={prop.induk_id} disabled>`Level - ${prop.level} - ${prop.name}`</Option>
+                                    <Option value="" disabled>Select induk/parameter</Option>
                                     {
                                         dataoptionsingredientsdata.map((prop, index) => {
                                             var value = prop.id;
@@ -522,10 +566,10 @@ class EditKpmrParameterKualitatif extends React.Component{
                         </FormItem>
 
                         <FormItem style={{ float : "right", paddingRight : "1rem" }}>
-                            {/*<Button onClick={this.props.clickCancelEditButton}>Cancel</Button>*/}
-                            <Link className="ant-btn" to={{pathname:'/bjbs/profilrisiko/parameterkualitatif', cancelProps:{
+                            <Button onClick={this.props.clickCancelEditButton}>Cancel</Button>
+                            {/*<Link className="ant-btn" to={{pathname:'/bjbs/profilrisiko/parameterkualitatif', cancelProps:{
                                     propscancel:true
-                                }}}>Cancel</Link>
+                                }}}>Cancel</Link>*/}
                             <Button type="primary" htmlType="submit">Edit</Button>
                         </FormItem>
 
@@ -586,6 +630,7 @@ const mapStateToProps = ({
   kpmrparameterkualitatif,
   ingredients,
   masterversion,
+  parameterfaktor
 }) => {
     const {token} = auth;
     const {getallrisks} = jenisrisiko;
@@ -595,6 +640,7 @@ const mapStateToProps = ({
     const {parameterkualitatifdata, updateparameterkualitatifresult} = kpmrparameterkualitatif;
     const {ingredientsdata} = ingredients;
     const {masterversionsdata} = masterversion;
+    const {getallparameterfaktor} = parameterfaktor
     return {
       token,
       getallrisks,
@@ -605,7 +651,8 @@ const mapStateToProps = ({
       getallratioindikatorkualitatif,
       parameterkualitatifdata,
       ingredientsdata,
-      masterversionsdata
+      masterversionsdata,
+      getallparameterfaktor
     }
 };
 
@@ -615,10 +662,12 @@ export default connect(mapStateToProps, {
   jenisNilaiParam,
   getAllRatioIndikatorForParamterKualitatif,
   addParameterKuantitatif,
-  resetUpdateParameterKualitatif,
+  resetKpmrUpdateParameterKualitatif,
   fetchAllIngredients,
   addParameterKualitatif,
   kpmrUpdateParameterKualitatif,
   fetchAllMasterVersion,
+  getAllFaktorParameterDataOption,
+  fetchAllRatioIndikatorFormula
 })(WrappedEditKpmrParameterKualitatif);
 export {optionsLevel};

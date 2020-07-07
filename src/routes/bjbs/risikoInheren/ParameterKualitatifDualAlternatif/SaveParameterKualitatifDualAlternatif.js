@@ -235,8 +235,7 @@ class SaveParameterKualitatifDualAlternatif extends React.Component {
             numChildren,
             dataoptionsmasterversion,
             paramparameterfaktor,
-            dataoptionsparameterfaktor,
-            dataoptionsratioindikatorkualitatif
+            dataoptionsparameterfaktor
         } = this.state;
         const {addPropstate} = this.props;
         const {getFieldDecorator} = this.props.form;

@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Input, Form, Card , InputNumber} from "antd";
+import {Button, Form, Card , InputNumber} from "antd";
 // import {Button, Input, Form, Select, InputNumber, Spin} from "antd";
 import connect from "react-redux/es/connect/connect";
 import {

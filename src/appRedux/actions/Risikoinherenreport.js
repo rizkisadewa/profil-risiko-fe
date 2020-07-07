@@ -4,7 +4,7 @@ import {
   RISIKO_INHEREN_FETCH_REPORT_FAILURE
 } from '../../constants/ActionTypes';
 import axios from 'util/Api';
-import { backendUrl } from "util/Api";
+// import { backendUrl } from "util/Api";
 
 export const fetchAllRisikoInherenReportRequest = () => {
   return {

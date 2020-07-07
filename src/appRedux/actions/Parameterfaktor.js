@@ -9,7 +9,6 @@ import {FETCH_ERROR,
     STATUS_POST_PARAMETER_FAKTOR,
     STATUS_ALL_PARAMETER_FAKTOR_TABLE,
     STATUS_ALL_PARAMETER_FAKTOR,
-    STATUS_PUT_PARAMETER_FAKTOR,
     COUNT_ALL_PARAMETER_FAKTOR
 } from "../../constants/ActionTypes";
 import axios from 'util/Api';
@@ -112,15 +111,21 @@ export const getAllFaktorParameterTable = ({page, token, searchData}) => {
 
 };
 
-export const getAllFaktorParameterDataOption = ({token, risk_id}) => {
+export const getAllFaktorParameterDataOption = ({token, risk_id, jenisParamA}) => {
     return (dispatch) => {
         dispatch({type: FETCH_START});
         let url = '';
+        let jenisParam = 'PR';
+
+        // if any value , then will be KPMR
+        if(typeof jenisParamA !== "undefined"){
+          jenisParam = jenisParamA
+        }
 
         if(typeof risk_id !== 'undefined'){
-          url = `api/parameter-faktor-table?risk_id=${risk_id}&jenis=PR`
+          url = `api/parameter-faktor-table?risk_id=${risk_id}&jenis=${jenisParam}`
         } else {
-          url = `api/parameter-faktor-table?jenis=PR`
+          url = `api/parameter-faktor-table?jenis=${jenisParam}`
         }
 
         axios.get(url,{

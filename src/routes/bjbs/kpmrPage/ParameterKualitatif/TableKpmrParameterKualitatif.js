@@ -304,6 +304,7 @@ function TableKpmrParameterKualitatif ({
                       induk_id:text.induk_id,
                       risk_id:text.risk_id,
                       id_jenis_nilai:text.id_jenis_nilai,
+                      parameter_faktor_id: text.parameter_faktor_id,
                       masterversionlist: masterversionlistdata,
                     }
                   ]);
@@ -328,6 +329,14 @@ function TableKpmrParameterKualitatif ({
 
   const onRefresh = () => {
       setLoading(true);
+      kpmrFetchAllParameterKualitatif({
+        token: authData.token,
+        page: 1,
+        searchData: {
+          jenis: "KPMR"
+        }
+      });
+      setLoading(false);
   };
 
   // *** ADD BUTTON ***

@@ -32,7 +32,7 @@ import {
 import './mystyle.css';
 
 
-class TableRisikoInheren extends  React.Component{
+class TableKpmr extends  React.Component{
     constructor(props) {
         super(props);
         this.state = {
@@ -63,7 +63,7 @@ class TableRisikoInheren extends  React.Component{
     componentDidMount(){
       this.props.fetchAllRisikoInherenReport({token: this.props.token, searchData : {
         version_id : this.state.version_id,
-        jenis : "PR",
+        jenis : "KPMR",
         bulan : this.state.parambulan,
         tahun : this.state.paramtahun,
         risk_id : this.state.paramrisk_id,
@@ -734,4 +734,4 @@ export default connect(mapStateToProps, {
   fetchAllRisikoInherenReport,
   fetchAllRisikoInherenInputKualitatif,
   addRisikoInherenInputKualitatif
-})(TableRisikoInheren);
+})(TableKpmr);

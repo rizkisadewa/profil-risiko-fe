@@ -54,7 +54,7 @@ export const renderParameterFaktorColumn = (value, row, index) => {
   };
 
   if(typeof row.pr_low === "undefined"){
-    if(row.level >= 1 && typeof row.level !== "Sring"){
+    if(row.level >= 1 && typeof row.level !== "string"){
       obj.props.colSpan = 0;
     }
   }
@@ -197,6 +197,7 @@ export const renderCombineColumnParameterKualitatifDual = (value, row, index, ri
     case 2:
       obj.props.colSpan = 1;
       obj.props.className = 'level2-row';
+      break;
     default:
       break;
   }
@@ -229,6 +230,7 @@ export const renderRiskRateParameterKualitatifDual = (value, row, index, risk_ra
     case 2:
       obj.props.colSpan = 1;
       obj.props.className = 'level2-row';
+      break;
     default:
       break;
   }
@@ -354,6 +356,7 @@ export const renderRiskRateParameterKualitatifMulti = (value, row, index, risk_r
     case 2:
       obj.props.colSpan = 1;
       obj.props.className = 'level2-row';
+      break;
     default:
       break;
   }
@@ -394,16 +397,12 @@ export const renderColumn = (name, value, row, index) => {
     case "name":
       if(row.id_jenis_nilai === 1){
         return renderNameColumn(value, row, index);
-        break;
       } else if (row.id_jenis_nilai === 21) {
         return renderNameParameterKualitatifDual(value, row, index);
-        break;
       } else if (row.id_jenis_nilai === 4) {
         return renderNameParameterKualitatifMulti(value, row, index);
-        break;
       }else if (row.level === 'inheren'){
         return renderTingkatRisikoInherenColumn(value, row, index, 8);
-        break;
       }
       break;
     case "pr_low":
@@ -411,56 +410,56 @@ export const renderColumn = (name, value, row, index) => {
         return renderParameterRight(value, row, index);
       } else if (row.level === 'inheren'){
         return renderTingkatRisikoInherenColumn(value, row, index, 0);
-        break;
       } else if (row.id_jenis_nilai === 21){
         return renderParameterKualitatifDual(value, row, index, 0);
       } else if (row.id_jenis_nilai === 4){
         return renderPeringkatRisikoParameterKualitatifMulti(value, row, index, 1, "pr_low");
       }
+      break;
     case "pr_lowtomod":
       if(row.id_jenis_nilai === 1){
         return renderParameterRight(value, row, index);
       } else if (row.level === 'inheren'){
         return renderTingkatRisikoInherenColumn(value, row, index, 0);
-        break;
       } else if (row.id_jenis_nilai === 21){
         return renderParameterKualitatifDual(value, row, index, 0)
       } else if (row.id_jenis_nilai === 4){
         return renderPeringkatRisikoParameterKualitatifMulti(value, row, index, 1, "pr_lowtomod");
       }
+      break;
     case "pr_mod":
       if(row.id_jenis_nilai === 1){
         return renderParameterRight(value, row, index);
       } else if (row.level === 'inheren'){
         return renderTingkatRisikoInherenColumn(value, row, index, 0);
-        break;
       } else if (row.id_jenis_nilai === 21){
         return renderParameterKualitatifDual(value, row, index, 0)
       } else if (row.id_jenis_nilai === 4){
         return renderPeringkatRisikoParameterKualitatifMulti(value, row, index, 1, "pr_mod");
       }
+      break;
     case "pr_modtohigh":
       if(row.id_jenis_nilai === 1){
         return renderParameterRight(value, row, index);
       } else if (row.level === 'inheren'){
         return renderTingkatRisikoInherenColumn(value, row, index, 0);
-        break;
       } else if (row.id_jenis_nilai === 21){
         return renderParameterKualitatifDual(value, row, index, 0)
       } else if (row.id_jenis_nilai === 4){
         return renderPeringkatRisikoParameterKualitatifMulti(value, row, index, 1, "pr_modtohigh");
       }
+      break;
     case "pr_high":
       if(row.id_jenis_nilai === 1){
         return renderParameterRight(value, row, index);
       } else if (row.level === 'inheren'){
         return renderTingkatRisikoInherenColumn(value, row, index, 0);
-        break;
       } else if (row.id_jenis_nilai === 21){
         return renderParameterKualitatifDual(value, row, index, 0)
       } else if (row.id_jenis_nilai === 4){
         return renderPeringkatRisikoParameterKualitatifMulti(value, row, index, 1, "pr_high");
       }
+      break;
     case "bobot":
       if (row.level === "Per Faktor"){
         return renderRisikoPerFaktorBobot(value, row, index);
@@ -468,56 +467,56 @@ export const renderColumn = (name, value, row, index) => {
         return renderParameterRight(value, row, index);
       } else if (row.level === 'inheren'){
         return renderTingkatRisikoInherenColumn(value, row, index, 0);
-        break;
       } else if (row.id_jenis_nilai === 21){
         return renderParameterKualitatifDual(value, row, index, 1)
       } else if (row.id_jenis_nilai === 4){
         return renderParameterKualitatifMulti(value, row, index, 1);
       }
+      break;
     case "ratio":
       if(row.id_jenis_nilai === 1){
         return renderParameterRatio(value, row, index);
       } else if (row.level === 'inheren'){
         return renderTingkatRisikoInherenColumn(value, row, index, 0);
-        break;
       } else if (row.id_jenis_nilai === 21){
         return renderParameterKualitatifDual(value, row, index, 1)
       } else if (row.id_jenis_nilai === 4){
         return renderParameterKualitatifMulti(value, row, index, 1);
       }
+      break;
     case "risk_rate":
       if(row.id_jenis_nilai === 1){
         return renderRiskRateColumn(value, row, index);
       } else if (row.level === 'inheren'){
         return renderTingkatRisikoInherenColumn(value, row, index, 1);
-        break;
       } else if (row.id_jenis_nilai === 21){
         return renderRiskRateParameterKualitatifDual(value, row, index);
       } else if (row.id_jenis_nilai === 4) {
         return renderRiskRateParameterKualitatifMulti(value, row, index);
       }
+      break;
     case "score":
       if(row.id_jenis_nilai === 1){
         return renderParameterRight(value, row, index);
       } else if (row.level === 'inheren'){
         return renderTingkatRisikoInherenColumn(value, row, index, 1);
-        break;
       } else if (row.id_jenis_nilai === 21){
         return renderCombineColumnParameterKualitatifDual(value, row, index);
       } else if (row.id_jenis_nilai === 4) {
         return renderCombineColumnParameterKualitatifMulti(value, row, index);
       }
+      break;
     case "bobot_score":
       if(row.id_jenis_nilai === 1){
         return renderParameterFaktorColumn(value, row, index);
       } else if (row.level === 'inheren'){
         return renderTingkatRisikoInherenColumn(value, row, index, 1);
-        break;
       } else if (row.id_jenis_nilai === 21){
         return renderCombineColumnParameterKualitatifDual(value, row, index);
       } else if (row.id_jenis_nilai === 4){
         return renderCombineColumnParameterKualitatifMulti(value, row, index);
       }
+      break;
     default:
       break;
   }
