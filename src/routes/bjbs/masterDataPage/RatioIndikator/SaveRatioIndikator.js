@@ -18,6 +18,12 @@ const optionsJenis = [
     {label:"KPMR", value:"KPMR"}
 ];
 
+export const jenisNilaiOptions = [
+    {text:"Kualitatif (Dual Alternatif)", value:21},
+    {text:"Kualitatif (Multi Alternatif)", value:4},
+    {text:"Kuantitatif", value:1}
+];
+
 class SaveRatioIndikator extends React.Component{
     constructor(props) {
         super(props);
@@ -155,7 +161,7 @@ class SaveRatioIndikator extends React.Component{
                                     filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                             >
                                 {
-                                    dataoptions.map((prop, index) => {
+                                    jenisNilaiOptions.map((prop, index) => {
                                         var value = prop.value;
                                         var label = prop.text;
                                         return (

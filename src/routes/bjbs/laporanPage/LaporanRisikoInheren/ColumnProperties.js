@@ -32,7 +32,7 @@ export const renderNameColumn = (value, row, index) => {
       obj.props.colSpan = 11;
       obj.props.className = 'parameter-faktor';
     } else if (row.level >= 2){
-      obj.props.colSpan = 11;
+      obj.props.colSpan = 6;
       obj.props.className = 'level2-row';
     } else if (row.level === "Per Faktor"){
       obj.props.colSpan = 6;
@@ -106,6 +106,24 @@ export const renderParameterRight = (value, row, index) => {
 
   if(typeof row.pr_low === "undefined"){
     obj.props.colSpan = 0;
+  }
+
+  return obj;
+}
+
+// render bobot
+export const renderParameterBobot = (value, row, index) => {
+  const obj = {
+    children: value,
+    props: {}
+  };
+
+  if(typeof row.pr_low === "undefined"){
+    if(typeof row.bobot !== "undefined"){
+      obj.props.colSpan = 5;
+    } else {
+      obj.props.colSpan = 0;
+    }
   }
 
   return obj;
@@ -391,15 +409,32 @@ export const renderCombineColumnParameterKualitatifMulti = (value, row, index, r
   return obj;
 }
 
+export const renderParameterKualitatifMultiBobot = (value, row, index, totalColSpan) => {
+  const obj = {
+    children: value,
+    props: {}
+  };
+
+  if(row.level === 1){
+    obj.props.colSpan = 0;
+  } else if(typeof value === "undefined"){
+    obj.props.colSpan = totalColSpan;
+  } else {
+    obj.props.colSpan = totalColSpan;
+  }
+
+  return obj;
+}
+
 // render all column specs
 export const renderColumn = (name, value, row, index) => {
   switch (name) {
     case "name":
       if(row.id_jenis_nilai === 1){
         return renderNameColumn(value, row, index);
-      } else if (row.id_jenis_nilai === 21) {
+      } else if (row.id_jenis_nilai === 21 || row.id_jenis_nilai === 0) {
         return renderNameParameterKualitatifDual(value, row, index);
-      } else if (row.id_jenis_nilai === 4) {
+      } else if (row.id_jenis_nilai === 4 || row.id_jenis_nilai === 0) {
         return renderNameParameterKualitatifMulti(value, row, index);
       }else if (row.level === 'inheren'){
         return renderTingkatRisikoInherenColumn(value, row, index, 8);
@@ -410,9 +445,9 @@ export const renderColumn = (name, value, row, index) => {
         return renderParameterRight(value, row, index);
       } else if (row.level === 'inheren'){
         return renderTingkatRisikoInherenColumn(value, row, index, 0);
-      } else if (row.id_jenis_nilai === 21){
+      } else if (row.id_jenis_nilai === 21 || row.id_jenis_nilai === 0){
         return renderParameterKualitatifDual(value, row, index, 0);
-      } else if (row.id_jenis_nilai === 4){
+      } else if (row.id_jenis_nilai === 4 || row.id_jenis_nilai === 0){
         return renderPeringkatRisikoParameterKualitatifMulti(value, row, index, 1, "pr_low");
       }
       break;
@@ -421,9 +456,9 @@ export const renderColumn = (name, value, row, index) => {
         return renderParameterRight(value, row, index);
       } else if (row.level === 'inheren'){
         return renderTingkatRisikoInherenColumn(value, row, index, 0);
-      } else if (row.id_jenis_nilai === 21){
+      } else if (row.id_jenis_nilai === 21 || row.id_jenis_nilai === 0){
         return renderParameterKualitatifDual(value, row, index, 0)
-      } else if (row.id_jenis_nilai === 4){
+      } else if (row.id_jenis_nilai === 4 || row.id_jenis_nilai === 0){
         return renderPeringkatRisikoParameterKualitatifMulti(value, row, index, 1, "pr_lowtomod");
       }
       break;
@@ -432,9 +467,9 @@ export const renderColumn = (name, value, row, index) => {
         return renderParameterRight(value, row, index);
       } else if (row.level === 'inheren'){
         return renderTingkatRisikoInherenColumn(value, row, index, 0);
-      } else if (row.id_jenis_nilai === 21){
+      } else if (row.id_jenis_nilai === 21 || row.id_jenis_nilai === 0){
         return renderParameterKualitatifDual(value, row, index, 0)
-      } else if (row.id_jenis_nilai === 4){
+      } else if (row.id_jenis_nilai === 4 || row.id_jenis_nilai === 0){
         return renderPeringkatRisikoParameterKualitatifMulti(value, row, index, 1, "pr_mod");
       }
       break;
@@ -443,9 +478,9 @@ export const renderColumn = (name, value, row, index) => {
         return renderParameterRight(value, row, index);
       } else if (row.level === 'inheren'){
         return renderTingkatRisikoInherenColumn(value, row, index, 0);
-      } else if (row.id_jenis_nilai === 21){
+      } else if (row.id_jenis_nilai === 21 || row.id_jenis_nilai === 0){
         return renderParameterKualitatifDual(value, row, index, 0)
-      } else if (row.id_jenis_nilai === 4){
+      } else if (row.id_jenis_nilai === 4 || row.id_jenis_nilai === 0){
         return renderPeringkatRisikoParameterKualitatifMulti(value, row, index, 1, "pr_modtohigh");
       }
       break;
@@ -454,22 +489,23 @@ export const renderColumn = (name, value, row, index) => {
         return renderParameterRight(value, row, index);
       } else if (row.level === 'inheren'){
         return renderTingkatRisikoInherenColumn(value, row, index, 0);
-      } else if (row.id_jenis_nilai === 21){
+      } else if (row.id_jenis_nilai === 21 || row.id_jenis_nilai === 0){
         return renderParameterKualitatifDual(value, row, index, 0)
-      } else if (row.id_jenis_nilai === 4){
+      } else if (row.id_jenis_nilai === 4 || row.id_jenis_nilai === 0){
         return renderPeringkatRisikoParameterKualitatifMulti(value, row, index, 1, "pr_high");
       }
       break;
     case "bobot":
       if (row.level === "Per Faktor"){
         return renderRisikoPerFaktorBobot(value, row, index);
+        // return renderParameterKualitatifMultiBobot(value, row, index, 1)
       } else if(row.id_jenis_nilai === 1){
-        return renderParameterRight(value, row, index);
+        return renderParameterBobot(value, row, index);
       } else if (row.level === 'inheren'){
         return renderTingkatRisikoInherenColumn(value, row, index, 0);
-      } else if (row.id_jenis_nilai === 21){
+      } else if (row.id_jenis_nilai === 21 || row.id_jenis_nilai === 0){
         return renderParameterKualitatifDual(value, row, index, 1)
-      } else if (row.id_jenis_nilai === 4){
+      } else if (row.id_jenis_nilai === 4 || row.id_jenis_nilai === 0){
         return renderParameterKualitatifMulti(value, row, index, 1);
       }
       break;
@@ -478,9 +514,9 @@ export const renderColumn = (name, value, row, index) => {
         return renderParameterRatio(value, row, index);
       } else if (row.level === 'inheren'){
         return renderTingkatRisikoInherenColumn(value, row, index, 0);
-      } else if (row.id_jenis_nilai === 21){
+      } else if (row.id_jenis_nilai === 21 || row.id_jenis_nilai === 0){
         return renderParameterKualitatifDual(value, row, index, 1)
-      } else if (row.id_jenis_nilai === 4){
+      } else if (row.id_jenis_nilai === 4 || row.id_jenis_nilai === 0){
         return renderParameterKualitatifMulti(value, row, index, 1);
       }
       break;
@@ -489,9 +525,9 @@ export const renderColumn = (name, value, row, index) => {
         return renderRiskRateColumn(value, row, index);
       } else if (row.level === 'inheren'){
         return renderTingkatRisikoInherenColumn(value, row, index, 1);
-      } else if (row.id_jenis_nilai === 21){
+      } else if (row.id_jenis_nilai === 21 || row.id_jenis_nilai === 0){
         return renderRiskRateParameterKualitatifDual(value, row, index);
-      } else if (row.id_jenis_nilai === 4) {
+      } else if (row.id_jenis_nilai === 4 || row.id_jenis_nilai === 0) {
         return renderRiskRateParameterKualitatifMulti(value, row, index);
       }
       break;
@@ -500,9 +536,9 @@ export const renderColumn = (name, value, row, index) => {
         return renderParameterRight(value, row, index);
       } else if (row.level === 'inheren'){
         return renderTingkatRisikoInherenColumn(value, row, index, 1);
-      } else if (row.id_jenis_nilai === 21){
+      } else if (row.id_jenis_nilai === 21 || row.id_jenis_nilai === 0){
         return renderCombineColumnParameterKualitatifDual(value, row, index);
-      } else if (row.id_jenis_nilai === 4) {
+      } else if (row.id_jenis_nilai === 4 || row.id_jenis_nilai === 0) {
         return renderCombineColumnParameterKualitatifMulti(value, row, index);
       }
       break;
@@ -511,9 +547,9 @@ export const renderColumn = (name, value, row, index) => {
         return renderParameterFaktorColumn(value, row, index);
       } else if (row.level === 'inheren'){
         return renderTingkatRisikoInherenColumn(value, row, index, 1);
-      } else if (row.id_jenis_nilai === 21){
+      } else if (row.id_jenis_nilai === 21 || row.id_jenis_nilai === 0){
         return renderCombineColumnParameterKualitatifDual(value, row, index);
-      } else if (row.id_jenis_nilai === 4){
+      } else if (row.id_jenis_nilai === 4 || row.id_jenis_nilai === 0){
         return renderCombineColumnParameterKualitatifMulti(value, row, index);
       }
       break;

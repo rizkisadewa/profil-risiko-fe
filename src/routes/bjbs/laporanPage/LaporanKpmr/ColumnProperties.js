@@ -79,12 +79,12 @@ export const renderRiskRateColumn = (value, row, index) => {
   const obj = {
     children: (
       <>
-        {
-          <Tag
-            color={value === 'H' ? 'red' : value === "MTH" ? 'orange' : value === "M" ? "yellow" : value === "LTM" ? 'green' : value === "L" ? "blue" : "black" }
-            key={value}
-          > {value} </Tag>
-        }
+      {
+        <Tag
+          color={value === 'H' ? 'red' : value === "MTH" ? 'green' : value === "M" ? "yellow" : value === "LTM" ? 'orange' : value === "L" ? "red" : "black" }
+          key={value === 'H' ? 'Strong' : value === "MTH" ? 'Strong' : value === "M" ? "Fair" : value === "LTM" ? 'Marginal' : value === "L" ? "Unsatisfactory" : "TBA"}
+        > {value === 'H' ? 'Strong' : value === "MTH" ? 'Strong' : value === "M" ? "Fair" : value === "LTM" ? 'Marginal' : value === "L" ? "Unsatisfactory" : "TBA"} </Tag>
+      }
       </>
     ),
     props: {}
@@ -392,7 +392,7 @@ export const renderCombineColumnParameterKualitatifMulti = (value, row, index, r
 }
 
 // render all column specs
-export const renderColumn = (name, value, row, index) => {
+export const renderColumnKpmr = (name, value, row, index) => {
   switch (name) {
     case "name":
       if(row.id_jenis_nilai === 1){

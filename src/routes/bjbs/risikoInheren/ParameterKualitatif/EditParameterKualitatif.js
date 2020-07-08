@@ -59,7 +59,7 @@ class EditParameterKualitatif extends React.Component{
         this.props.getAllRisks({token:this.props.token, page:'', jenis:'PR', nama:'', keterangan:''});
         this.props.getAllPeringkatRisiko({page:'', token:this.props.token, description:'', name:'', jenis_nilai:''});
         this.props.jenisNilaiParam({token:this.props.token});
-        this.props.getAllRatioIndikatorForParamterKualitatif({token:this.props.token, jenis: "PR", id_jenis_nilai: 4});
+        this.props.getAllRatioIndikatorForParamterKualitatif({token:this.props.token, jenis: "PR", id_jenis_nilai: 0});
         this.props.fetchAllIngredients({token: this.props.token, searchData: {
           jenis: "PR",
           jenis_nilai_id: 4
@@ -171,7 +171,8 @@ class EditParameterKualitatif extends React.Component{
                                             this.setState({
                                                 paramrisk_id:value,
                                             });
-                                            this.props.getAllFaktorParameterDataOption({token: this.props.token, risk_id: value});
+                                            this.props.getAllRatioIndikatorForParamterKualitatif({token:this.props.token, jenis: "PR", risk_id: value, id_jenis_nilai: 0});
+                                            // this.props.getAllFaktorParameterDataOption({token: this.props.token, risk_id: value});
                                         }}
                                         style={paramrisk_id === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
                                         filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
@@ -381,10 +382,7 @@ class EditParameterKualitatif extends React.Component{
                         <label style={{ textDecoration: 'underline', fontWeight: 'bold', textAlign: 'center'}}>Peringkat Risiko</label><br/>
                         <FormItem {...formItemLayout} label="Low">
                             {getFieldDecorator('pr_low', {
-                                initialValue: prop.pr_low,
-                                rules: [{
-                                    required: true, message: 'Please input low field.',
-                                }],
+                                initialValue: prop.pr_low
                             })(
                                 <Select id="pr_low"
                                         showSearch
@@ -414,10 +412,7 @@ class EditParameterKualitatif extends React.Component{
 
                         <FormItem {...formItemLayout} label="Low to Moderate">
                             {getFieldDecorator('pr_lowtomod', {
-                                initialValue: prop.pr_lowtomod,
-                                rules: [{
-                                    required: true, message: 'Please input low to moderate field.',
-                                }],
+                                initialValue: prop.pr_lowtomod
                             })(
                                 <Select id="pr_lowtomod"
                                         showSearch
@@ -447,10 +442,7 @@ class EditParameterKualitatif extends React.Component{
 
                         <FormItem {...formItemLayout} label="Moderate">
                             {getFieldDecorator('pr_mod', {
-                                initialValue: prop.pr_mod,
-                                rules: [{
-                                    required: true, message: 'Please input moderate field.',
-                                }],
+                                initialValue: prop.pr_mod
                             })(
                                 <Select id="pr_mod"
                                         showSearch
@@ -480,10 +472,7 @@ class EditParameterKualitatif extends React.Component{
 
                         <FormItem {...formItemLayout} label="Moderate to High">
                             {getFieldDecorator('pr_modtohigh', {
-                                initialValue: prop.pr_modtohigh,
-                                rules: [{
-                                    required: true, message: 'Please input moderate to high field.',
-                                }],
+                                initialValue: prop.pr_modtohigh
                             })(
                                 <Select id="pr_modtohigh"
                                         showSearch
@@ -513,10 +502,7 @@ class EditParameterKualitatif extends React.Component{
 
                         <FormItem {...formItemLayout} label="High">
                             {getFieldDecorator('pr_high', {
-                                initialValue: prop.pr_high,
-                                rules: [{
-                                    required: true, message: 'Please input high field.',
-                                }],
+                                initialValue: prop.pr_high
                             })(
                                 <Select id="pr_high"
                                         showSearch

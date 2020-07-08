@@ -10,6 +10,7 @@ import {
   jenisNilaiParam
 } from "../../../../appRedux/actions/index";
 import SweetAlerts from "react-bootstrap-sweetalert";
+import { jenisNilaiOptions } from './SaveRatioIndikator';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -19,6 +20,7 @@ const optionsJenis = [
     {label:"Risiko Inheren", value:"PR"},
     {label:"KPMR", value:"KPMR"}
 ];
+
 
 class EditRatioIndikator extends React.Component{
     constructor(props) {
@@ -186,7 +188,7 @@ class EditRatioIndikator extends React.Component{
                                                         filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                                                 >
                                                     {
-                                                        dataoptions.map((prop, index) => {
+                                                        jenisNilaiOptions.map((prop, index) => {
                                                             var value = prop.value;
                                                             var label = prop.text;
                                                             return (

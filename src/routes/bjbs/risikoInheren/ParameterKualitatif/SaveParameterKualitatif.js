@@ -22,8 +22,7 @@ const Option = Select.Option;
 
 const optionsLevel = [
     {label:"Level Kedua (2)", value:2},
-    {label:"Level Ketiga (3)", value:3},
-    {label:"Level Keempat (4)", value:4}
+    {label:"Level Ketiga (3)", value:3}
 ];
 
 class SaveParameterKualitatif extends React.Component{
@@ -60,7 +59,7 @@ class SaveParameterKualitatif extends React.Component{
         this.props.getAllRisks({token:this.props.token, page:'', jenis:'PR', nama:'', keterangan:''});
         this.props.getAllPeringkatRisiko({page:'', token:this.props.token, description:'', name:'', jenis_nilai:''});
         this.props.jenisNilaiParam({token:this.props.token});
-        this.props.getAllRatioIndikatorForParamterKualitatif({token:this.props.token, jenis: "PR", id_jenis_nilai: 4});
+        this.props.getAllRatioIndikatorForParamterKualitatif({token:this.props.token, jenis: "PR", id_jenis_nilai: 0});
         this.props.fetchAllIngredients({token: this.props.token, searchData: {
           jenis: "PR",
           jenis_nilai_id: 4
@@ -399,10 +398,7 @@ class SaveParameterKualitatif extends React.Component{
                     <label style={{ textDecoration: 'underline', fontWeight: 'bold', textAlign: 'center'}}>Peringkat Risiko</label><br/>
                     <FormItem {...formItemLayout} label="Low">
                         {getFieldDecorator('low', {
-                            initialValue: addPropstate ? addPropstate.pklow : '',
-                            rules: [{
-                                required: true, message: 'Please input low field.',
-                            }],
+                            initialValue: addPropstate ? addPropstate.pklow : ''
                         })(
                             <Select id="low"
                                     showSearch
@@ -432,10 +428,7 @@ class SaveParameterKualitatif extends React.Component{
 
                     <FormItem {...formItemLayout} label="Low to Moderate">
                         {getFieldDecorator('lowtomoderate', {
-                            initialValue: addPropstate ? addPropstate.pklowtomoderate : '',
-                            rules: [{
-                                required: true, message: 'Please input low to moderate field.',
-                            }],
+                            initialValue: addPropstate ? addPropstate.pklowtomoderate : ''
                         })(
                             <Select id="lowtomoderate"
                                     showSearch
@@ -465,10 +458,7 @@ class SaveParameterKualitatif extends React.Component{
 
                     <FormItem {...formItemLayout} label="Moderate">
                         {getFieldDecorator('moderate', {
-                            initialValue: addPropstate ? addPropstate.pklmoderate : '',
-                            rules: [{
-                                required: true, message: 'Please input moderate field.',
-                            }],
+                            initialValue: addPropstate ? addPropstate.pklmoderate : ''
                         })(
                             <Select id="moderate"
                                     showSearch
@@ -498,10 +488,7 @@ class SaveParameterKualitatif extends React.Component{
 
                     <FormItem {...formItemLayout} label="Moderate to High">
                         {getFieldDecorator('moderatetohigh', {
-                            initialValue: addPropstate ? addPropstate.pkmoderatetohigh : '',
-                            rules: [{
-                                required: true, message: 'Please input moderate to high field.',
-                            }],
+                            initialValue: addPropstate ? addPropstate.pkmoderatetohigh : ''
                         })(
                             <Select id="moderatetohigh"
                                     showSearch
@@ -531,10 +518,7 @@ class SaveParameterKualitatif extends React.Component{
 
                     <FormItem {...formItemLayout} label="High">
                         {getFieldDecorator('high', {
-                            initialValue: addPropstate ? addPropstate.pkhigh : '',
-                            rules: [{
-                                required: true, message: 'Please input high field.',
-                            }],
+                            initialValue: addPropstate ? addPropstate.pkhigh : ''
                         })(
                             <Select id="high"
                                     showSearch

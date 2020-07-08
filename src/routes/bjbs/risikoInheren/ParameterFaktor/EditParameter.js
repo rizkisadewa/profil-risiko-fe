@@ -12,6 +12,7 @@ import {
   jenisNilaiParam
 } from "../../../../appRedux/actions/index";
 import SweetAlerts from "react-bootstrap-sweetalert";
+import {jenisNilaiOptions} from './SaveParameter';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -272,7 +273,7 @@ class EditParameter extends React.Component{
                                             >
                                                 <Option value="" disabled>Select jenis penilaian</Option>
                                                 {
-                                                    dataoptionsjenisnilai.map((prop, index) => {
+                                                    jenisNilaiOptions.map((prop, index) => {
                                                         var value = prop.value;
                                                         var label = prop.text;
 

@@ -18,6 +18,11 @@ const optionsLevel = [
     {label:"Level Pertama (1)", value:"1"}
 ];
 
+export const jenisNilaiOptions = [
+    {text:"Kualitatif", value:0},
+    {text:"Kuantitatif", value:1},
+];
+
 class SaveParameter extends React.PureComponent{
     constructor(props) {
         super(props);
@@ -36,7 +41,9 @@ class SaveParameter extends React.PureComponent{
     componentDidMount(){
         this.props.getAllRisks({token:this.props.token, page:'', jenis:'PR', nama:'', keterangan:''});
         this.props.fetchAllMasterVersion({token: this.props.token});
-        this.props.jenisNilaiParam({token:this.props.token});
+        this.props.jenisNilaiParam({token:this.props.token, searchData: {
+          jenis_nilai_id: 0
+        }});
     }
 
     componentWillReceiveProps(nextProps) {
@@ -196,7 +203,6 @@ class SaveParameter extends React.PureComponent{
 
                     <FormItem {...formItemLayout} label="Jenis Penilaian">
                         {getFieldDecorator('jenis_nilai_id', {
-                            initialValue: addPropstate ? addPropstate.pkjenisnilai : '',
                             rules: [{
                                 required: true, message: 'Please input jenis penilaian field.',
                             }],
@@ -215,7 +221,7 @@ class SaveParameter extends React.PureComponent{
                             >
                                 <Option value="" disabled>Select jenis penilaian</Option>
                                 {
-                                    dataoptionsjenisnilai.map((prop, index) => {
+                                    jenisNilaiOptions.map((prop, index) => {
                                         var value = prop.value;
                                         var label = prop.text;
 

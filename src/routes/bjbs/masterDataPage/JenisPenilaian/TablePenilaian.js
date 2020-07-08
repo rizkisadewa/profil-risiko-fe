@@ -355,31 +355,6 @@ class TablePenilaian extends React.Component{
                     <span>{tgl}</span>
                 );
             }
-        }, {
-            title: 'Action',
-            key: 'action',
-            render: (text, record) => (
-                <span>
-                    <span className="gx-link" onClick={()=>{
-                        this.setState({
-                            eid : text.id,
-                            editbutton: true,
-                            fetchdata : [{
-                                id:text.id,
-                                name:text.name,
-                                description:text.description,
-                            }]
-                        })
-                    }}>Edit</span>
-                    <Divider type="vertical"/>
-                    <span className="gx-link" onClick={() => {
-                        this.setState({
-                            warning: true,
-                            idvalue: text.id
-                        })
-                    }}>Delete</span>
-                </span>
-            ),
         }];
 
         return (
@@ -393,7 +368,7 @@ class TablePenilaian extends React.Component{
                         /> :
                     <>
                         <div className="table-operations">
-                            <Button className="ant-btn ant-btn-primary" onClick={this.clickAddButton}>Add</Button>
+                            {/* <Button className="ant-btn ant-btn-primary" onClick={this.clickAddButton}>Add</Button> */}
                             <Button className="ant-btn" onClick={this.onRefresh}>Refresh</Button>
                         </div>
                         <Spin tip="Loading..." spinning={loading}>

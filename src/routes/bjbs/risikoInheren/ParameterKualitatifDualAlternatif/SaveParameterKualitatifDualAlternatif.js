@@ -528,7 +528,7 @@ class SaveParameterKualitatifDualAlternatif extends React.Component {
                     <label style={{ textDecoration: 'underline', fontWeight: 'bold', textAlign: 'center'}}>Peringkat Risiko</label><br/>
                     <FormItem {...formItemLayout} label="Low">
                         {getFieldDecorator('low', {
-                            initialValue: addPropstate ? addPropstate.pklow : '',
+                            initialValue: 3,
                             rules: [{type:"number", message: 'Input must be number type.'}],
                         })(
                             <InputNumber id="low" placeholder="Input Low"
@@ -545,7 +545,7 @@ class SaveParameterKualitatifDualAlternatif extends React.Component {
 
                     <FormItem {...formItemLayout} label="Low to Moderate">
                         {getFieldDecorator('lowtomoderate', {
-                            initialValue: addPropstate ? addPropstate.pklowtomoderate : '',
+                            initialValue: 2,
                             rules: [{type:"number", message: 'Input must be number type.'}],
                         })(
                             <InputNumber id="low" placeholder="Input Low to Moderate"
@@ -562,7 +562,7 @@ class SaveParameterKualitatifDualAlternatif extends React.Component {
 
                     <FormItem {...formItemLayout} label="Moderate">
                         {getFieldDecorator('moderate', {
-                            initialValue: addPropstate ? addPropstate.pkmoderate : '',
+                            initialValue: 1,
                             rules: [{type:"number", message: 'Input must be number type.'}],
                         })(
                             <InputNumber id="low" placeholder="Input Moderate"
@@ -579,7 +579,7 @@ class SaveParameterKualitatifDualAlternatif extends React.Component {
 
                     <FormItem {...formItemLayout} label="Moderate to High">
                         {getFieldDecorator('moderatetohigh', {
-                            initialValue: addPropstate ? addPropstate.pkmoderatetohigh : '',
+                            initialValue: 0.5,
                             rules: [{type:"number", message: 'Input must be number type.'}],
                         })(
                             <InputNumber id="low" placeholder="Input Moderate to High"
@@ -596,7 +596,7 @@ class SaveParameterKualitatifDualAlternatif extends React.Component {
 
                     <FormItem {...formItemLayout} label="High">
                         {getFieldDecorator('high', {
-                            initialValue: addPropstate ? addPropstate.pkhigh : '',
+                            initialValue: 0,
                             rules: [{type:"number", message: 'Input must be number type.'}],
                         })(
                             <InputNumber id="high" placeholder="Input High"
