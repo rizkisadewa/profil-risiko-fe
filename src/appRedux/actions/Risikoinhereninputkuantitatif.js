@@ -40,7 +40,7 @@ export const fetchAllRisikoInherenInputKuantitatif = ({token, searchData}) => {
       }).then(response => {
         const responseData = response.data;
         if(responseData.statusCode === 200 || responseData.statusCode === 201) {
-          dispatch(fetchAllRisikoInherenInputKuantitatifSuccess(responseData.data));
+          dispatch(fetchAllRisikoInherenInputKuantitatifSuccess(responseData));
           dispatch({
             type: RISIKO_INHEREN_COUNT_INPUT_KUANTITATIF,
             payload: responseData.data.length
@@ -114,7 +114,7 @@ export const fetchAllRisikoInherenInputKuantitatif = ({token, searchData}) => {
       }).then(response => {
         const responseData = response.data;
         if(responseData.statusCode === 200 || responseData.statusCode === 201) {
-          dispatch(fetchAllRisikoInherenInputKuantitatifSuccess(responseData.data));
+          dispatch(fetchAllRisikoInherenInputKuantitatifSuccess(responseData));
           dispatch({
             type: RISIKO_INHEREN_COUNT_INPUT_KUANTITATIF,
             payload: responseData.data.length
@@ -131,6 +131,19 @@ export const fetchAllRisikoInherenInputKuantitatif = ({token, searchData}) => {
         dispatch(fetchAllRisikoInherenInputKuantitatifFailure(errorMsg));
       });
     }
+  }
+}
+
+export const resetFetchAllRisikoInherenInputKuantitatif = () => {
+  return async (dispatch) => {
+    dispatch({
+      type: RISIKO_INHEREN_FETCH_INPUT_KUANTITATIF_SUCCESS,
+      payload: []
+    })
+    dispatch({
+      type: RISIKO_INHEREN_COUNT_INPUT_KUANTITATIF,
+      payload: 0
+    })
   }
 }
 
@@ -167,6 +180,42 @@ export const addRisikoInherenInputKuantitatif = (token, newRisikoInherenInputKua
     }
   }
 }
+
+export const addRisikoInherenInputKuantitatifPerItem = (token, newRisikoInherenInputKuantitatif) => {
+  return async (dispatch) => {
+    dispatch(fetchAllRisikoInherenInputKuantitatifRequest());
+
+    try {
+      console.log("FROM REDUX - ACTION ADD INPUT KUANTITATIF PER ITEM : ");
+
+      const rawResponse = await axios({
+        method: "POST",
+        url : '/api/input-data/ratio-indikator',
+        baseURL: backendUrl,
+        headers: {
+          Authorization : `Bearer ${token}`
+        },
+        data: newRisikoInherenInputKuantitatif,
+        validateStatus: function(status) {
+          return status < 500; // Reject only if the status code is greater than or equal to 500
+        }
+      });
+
+      const response = rawResponse.data;
+
+      dispatch({
+        type: RISIKO_INHEREN_ADD_INPUT_KUANTITATIF,
+        payload: response
+      });
+
+    } catch (error) {
+      const errorMsg = error.message;
+      dispatch(fetchAllRisikoInherenInputKuantitatifFailure(errorMsg));
+    }
+  }
+}
+
+
 
 export const resetAddRisikoInherenInputKuantitatif = () => {
   return (dispatch) => {

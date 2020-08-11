@@ -274,7 +274,6 @@ function TableParameterKualitatif ({
                   }
 
                   setFetchData([
-                    ...fetchdata,
                     {
                       id:text.id,
                       risk:text.risk,

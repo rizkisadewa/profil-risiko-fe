@@ -21,3 +21,5 @@ export * from './Risikoinhereninputkuantitatif';
 export * from './Risikoinhereninputkualitatif';
 export * from './Risikoinhereninputkualitatifdual';
 export * from './Risikoinherenreport';
+export * from './Excel';
+export * from './Lockedreport';

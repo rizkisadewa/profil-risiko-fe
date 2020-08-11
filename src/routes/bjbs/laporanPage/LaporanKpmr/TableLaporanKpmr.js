@@ -16,7 +16,10 @@ import {
 import {
   fetchAllRisikoInherenInputKualitatif,
   addRisikoInherenInputKualitatif,
-  fetchAllRisikoInherenReport
+  fetchAllRisikoInherenReport,
+  lockedReportStatus,
+  addLockedReport,
+  resetAddLockedReport
 } from "../../../../appRedux/actions/index";
 
 import {connect} from "react-redux";
@@ -25,11 +28,11 @@ import Grid from "@material-ui/core/Grid";
 // data dummy
 // import {dataDummy} from './dataDummy';
 import {
-  renderColumnKpmr
-} from './ColumnProperties';
+  renderColumn
+} from '../../../../constants/KpmrLaporanColumnProperties';
 
 // import local css
-import './mystyle.css';
+import '../../../../assets/mystyle.css';
 
 
 class TableKpmr extends  React.Component{
@@ -56,7 +59,9 @@ class TableKpmr extends  React.Component{
             loading: false,
             visible: false,
             inputdataoptions: [],
-            answervalue: 0
+            answervalue: 0,
+            generatereportvalidate: false,
+            generatereportloading: false
         }
     }
 
@@ -67,13 +72,49 @@ class TableKpmr extends  React.Component{
         bulan : this.state.parambulan,
         tahun : this.state.paramtahun,
         risk_id : this.state.paramrisk_id,
-      }})
+      }});
+      this.props.lockedReportStatus({token: this.props.token, searchData : {
+        bulan: this.state.parambulan,
+        tahun: this.state.paramtahun,
+        risk_id: this.state.paramrisk_id
+      }});
     }
 
     componentWillReceiveProps(nextProps) {
       this.setState({
-        datatable: nextProps.risikoinherenreportdata
-      })
+        datatable: nextProps.risikoinherenreportdata,
+        generatereportvalidate: nextProps.lockedreportstatus.data
+      });
+
+      // handling notifacation after adding data
+      if(typeof nextProps.lockedreportaddresult.statusCode !== "undefined"){
+        if(nextProps.lockedreportaddresult.statusCode === 201 || nextProps.lockedreportaddresult.statusCode === 200) {
+          NotificationManager.success("Report locked", `${nextProps.lockedreportaddresult.message}`);
+          this.props.lockedReportStatus({token: this.props.token, searchData : {
+            bulan: this.state.parambulan,
+            tahun: this.state.paramtahun,
+            risk_id: this.state.paramrisk_id
+          }});
+          this.setState({
+            loading: false,
+            generatereportloading: false
+          });
+          this.props.resetAddLockedReport();
+        } else {
+          NotificationManager.error("Report locked before", `${nextProps.lockedreportaddresult.message}`);
+          this.props.lockedReportStatus({token: this.props.token, searchData : {
+            bulan: this.state.parambulan,
+            tahun: this.state.paramtahun,
+            risk_id: this.state.paramrisk_id
+          }});
+          this.setState({
+            loading: false,
+            generatereportloading: false
+          });
+          this.props.resetAddLockedReport();
+        }
+      }
+
     }
 
     /* componentDidUpdate(){
@@ -205,6 +246,18 @@ class TableKpmr extends  React.Component{
         answervalue: selectedRows[0].value,
       });
     };
+
+    // handle generate report button
+    lockedReport = () => {
+      this.setState({
+        loading: true,
+        generatereportloading: true
+      });
+      this.props.addLockedReport({
+        token: this.props.token,
+        newData: this.state.datatable
+      });
+    }
 
 
 
@@ -513,7 +566,7 @@ class TableKpmr extends  React.Component{
         //   return obj;
         // }
         //
-        // const renderColumnKpmr = (name) => {
+        // const renderColumn = (name) => {
         //   switch (name) {
         //     case "name":
         //     case "pr_low":
@@ -540,7 +593,7 @@ class TableKpmr extends  React.Component{
               width: '31%',
               sorter: (a, b) => a.name.localeCompare(b.name),
               sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order,
-              render: (value, row, index) => renderColumnKpmr("name", value, row, index)
+              render: (value, row, index) => renderColumn("name", value, row, index)
           }, {
               title: 'Peringkat Risiko',
               children: [
@@ -553,7 +606,7 @@ class TableKpmr extends  React.Component{
                       ...this.getColumnSearchProps('pr_low'),
                       sorter:(a, b) => a.pr_low.localeCompare(b.pr_low),
                       sortOrder:sortedInfo.columnKey === 'pr_low' && sortedInfo.order,
-                      render: (value, row, index) => renderColumnKpmr("pr_low", value, row, index)
+                      render: (value, row, index) => renderColumn("pr_low", value, row, index)
                   }, {
                       title:"LTM",
                       dataIndex:"pr_lowtomod",
@@ -563,7 +616,7 @@ class TableKpmr extends  React.Component{
                       ...this.getColumnSearchProps('pr_lowtomod'),
                       sorter:(a, b) => a.pr_lowtomod.localeCompare(b.pr_lowtomod),
                       sortOrder:sortedInfo.columnKey === 'pr_lowtomod' && sortedInfo.order,
-                      render: (value, row, index) => renderColumnKpmr("pr_lowtomod", value, row, index)
+                      render: (value, row, index) => renderColumn("pr_lowtomod", value, row, index)
                   }, {
                       title:"M",
                       dataIndex:"pr_mod",
@@ -573,7 +626,7 @@ class TableKpmr extends  React.Component{
                       ...this.getColumnSearchProps('pr_mod'),
                       sorter:(a, b) => a.pr_mod.localeCompare(b.pr_mod),
                       sortOrder:sortedInfo.columnKey === 'pr_mod' && sortedInfo.order,
-                      render: (value, row, index) => renderColumnKpmr("pr_mod", value, row, index)
+                      render: (value, row, index) => renderColumn("pr_mod", value, row, index)
                   }, {
                       title:"MTH",
                       dataIndex:"pr_modtohigh",
@@ -583,7 +636,7 @@ class TableKpmr extends  React.Component{
                       ...this.getColumnSearchProps('pr_modtohigh'),
                       sorter:(a, b) => a.pr_modtohigh.localeCompare(b.pr_modtohigh),
                       sortOrder:sortedInfo.columnKey === 'pr_modtohigh' && sortedInfo.order,
-                      render: (value, row, index) => renderColumnKpmr("pr_modtohigh", value, row, index)
+                      render: (value, row, index) => renderColumn("pr_modtohigh", value, row, index)
                   }, {
                       title:"H",
                       dataIndex:"pr_high",
@@ -593,7 +646,7 @@ class TableKpmr extends  React.Component{
                       ...this.getColumnSearchProps('pr_high'),
                       sorter:(a, b) => a.pr_high.localeCompare(b.pr_high),
                       sortOrder:sortedInfo.columnKey === 'pr_high' && sortedInfo.order,
-                      render: (value, row, index) => renderColumnKpmr("pr_high", value, row, index)
+                      render: (value, row, index) => renderColumn("pr_high", value, row, index)
                   }
               ]
           }, {
@@ -605,7 +658,7 @@ class TableKpmr extends  React.Component{
               ...this.getColumnSearchProps('bobot'),
               sorter:(a, b) => a.bobot.localeCompare(b.bobot),
               sortOrder:sortedInfo.columnKey === 'bobot' && sortedInfo.order,
-              render: (value, row, index) => renderColumnKpmr("bobot", value, row, index)
+              render: (value, row, index) => renderColumn("bobot", value, row, index)
           }, {
               title:`${monthText} ${this.state.paramtahun}`,
               children: [
@@ -617,7 +670,7 @@ class TableKpmr extends  React.Component{
                   className: "editable-row",
                   sorter:(a, b) => a.ratio.localeCompare(b.ratio),
                   sortOrder:sortedInfo.columnKey === 'ratio' && sortedInfo.order,
-                  render: (value, row, index) => renderColumnKpmr("ratio", value, row, index)
+                  render: (value, row, index) => renderColumn("ratio", value, row, index)
                 },
                 {
                     title:"Risk",
@@ -627,7 +680,7 @@ class TableKpmr extends  React.Component{
                     className: "editable-row",
                     sorter:(a, b) => a.risk_rate.localeCompare(b.risk_rate),
                     sortOrder:sortedInfo.columnKey === 'risk_rate' && sortedInfo.order,
-                    render: (value, row, index) => renderColumnKpmr("risk_rate", value, row, index)
+                    render: (value, row, index) => renderColumn("risk_rate", value, row, index)
                 },
                 {
                     title:"Score",
@@ -637,7 +690,7 @@ class TableKpmr extends  React.Component{
                     className: "editable-row",
                     sorter:(a, b) => a.score.localeCompare(b.score),
                     sortOrder:sortedInfo.columnKey === 'score' && sortedInfo.order,
-                    render: (value, row, index) => renderColumnKpmr("score", value, row, index)
+                    render: (value, row, index) => renderColumn("score", value, row, index)
                 },
                 {
                     title:"Bobot Score",
@@ -645,7 +698,7 @@ class TableKpmr extends  React.Component{
                     key:"bobot_score",
                     width: '11%',
                     className: "editable-row",
-                    render: (value, row, index) => renderColumnKpmr("bobot_score", value, row, index)
+                    render: (value, row, index) => renderColumn("bobot_score", value, row, index)
                 }
               ]
           }
@@ -659,7 +712,12 @@ class TableKpmr extends  React.Component{
                             <Grid container spacing={1}>
                               <Grid item xs={12} md={12} lg={12}>
                                 <Button className="ant-btn ant-btn-danger" onClick={this.onClickCancel}>Back Filter</Button>
-                                <Button className="ant-btn ant-btn-primary" >Generate Report</Button>
+                                <Button
+                                className="ant-btn ant-btn-primary"
+                                disabled={this.state.generatereportvalidate}
+                                onClick={this.lockedReport}
+                                loading={this.state.generatereportloading}
+                                >Generate Report</Button>
                               </Grid>
                             </Grid>
                             <Spin tip="Loading..." spinning={loading}>
@@ -719,13 +777,18 @@ class TableKpmr extends  React.Component{
 
 const mapStateToProps = ({
   auth,
-  risikoinherenreport
+  risikoinherenreport,
+  lockedreport
 }) => {
     const {token} = auth;
     const {risikoinherenreportdata} = risikoinherenreport;
+    const {lockedreportstatus, lockedreportaddresult} = lockedreport;
+
     return {
       token,
-      risikoinherenreportdata
+      risikoinherenreportdata,
+      lockedreportstatus,
+      lockedreportaddresult
     };
 };
 
@@ -733,5 +796,8 @@ export default connect(mapStateToProps, {
   getAllParameterManualTable,
   fetchAllRisikoInherenReport,
   fetchAllRisikoInherenInputKualitatif,
-  addRisikoInherenInputKualitatif
+  addRisikoInherenInputKualitatif,
+  lockedReportStatus,
+  addLockedReport,
+  resetAddLockedReport
 })(TableKpmr);

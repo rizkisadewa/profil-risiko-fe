@@ -29,7 +29,6 @@ class SaveRatioIndikator extends React.Component{
         super(props);
         this.state = {
             statuspost: '',
-            dataoptions : [],
             dataoptionsmasterversion: [],
             jenisoptions: optionsJenis,
             jenis: '',
@@ -45,7 +44,6 @@ class SaveRatioIndikator extends React.Component{
     componentWillReceiveProps(nextProps){
         this.setState({
             statuspost : nextProps.statuspostratioindikator,
-            dataoptions : nextProps.jenisnilaiparam,
             dataoptionsmasterversion : nextProps.masterversionsdata,
         });
 
@@ -68,7 +66,6 @@ class SaveRatioIndikator extends React.Component{
         };
 
         const {
-          dataoptions,
           jenisoptions,
           jenis,
           paramjenisnilai,

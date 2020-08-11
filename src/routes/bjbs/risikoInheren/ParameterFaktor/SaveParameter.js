@@ -31,7 +31,6 @@ class SaveParameter extends React.PureComponent{
             dataoptions : [],
             dataoptionslevel : optionsLevel,
             dataoptionsmasterversion: [],
-            dataoptionsjenisnilai: [],
             basic: false,
             statuspost: '',
             paramjenisnilai:'',
@@ -51,8 +50,7 @@ class SaveParameter extends React.PureComponent{
         this.setState({
             dataoptions : nextProps.getallrisks,
             statuspost : nextProps.statuspostparameterfaktor,
-            dataoptionsmasterversion : nextProps.masterversionsdata,
-            dataoptionsjenisnilai : nextProps.jenisnilaiparam
+            dataoptionsmasterversion : nextProps.masterversionsdata
         });
 
         if (nextProps.statuspostparameterfaktor === 201 || nextProps.statuspostparameterfaktor === 200){
@@ -78,10 +76,9 @@ class SaveParameter extends React.PureComponent{
           dataoptionslevel,
           basic,
           paramjenisnilai,
-          dataoptionsmasterversion,
-          dataoptionsjenisnilai
+          dataoptionsmasterversion
         } = this.state;
-        const {token, addPropstate} = this.props;
+        const {token} = this.props;
         const {getFieldDecorator} = this.props.form;
         return (
             <>

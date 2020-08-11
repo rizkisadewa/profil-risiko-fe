@@ -17,7 +17,8 @@ import {
   countAllParameterKualitatif,
   kpmrDeleteParameterKualitatif,
   resetDeleteParameterKualitatif,
-  kpmrFetchAllParameterKualitatif
+  kpmrFetchAllParameterKualitatif,
+  resetKpmrUpdateParameterKualitatif
 } from "../../../../appRedux/actions/index";
 import MySnackbarContentWrapper from "../../../../components/Snackbar/SnackBar";
 
@@ -29,7 +30,8 @@ function TableKpmrParameterKualitatif ({
   kpmrDeleteParameterKualitatif,
   resetDeleteParameterKualitatif,
   deleteResponse,
-  kpmrFetchAllParameterKualitatif
+  kpmrFetchAllParameterKualitatif,
+  resetKpmrUpdateParameterKualitatif
 }){
 
   // state
@@ -281,7 +283,6 @@ function TableKpmrParameterKualitatif ({
                   }
 
                   setFetchdata([
-                    ...fetchdata,
                     {
                       id:text.id,
                       risk:text.risk,
@@ -369,6 +370,8 @@ function TableKpmrParameterKualitatif ({
 
   // **** EDIT BUTTON ****
   const clickCancelEditButton = () => {
+    console.log("a");
+    resetKpmrUpdateParameterKualitatif();
     seteditbutton(false);
     onRefresh();
   }
@@ -490,6 +493,7 @@ function TableKpmrParameterKualitatif ({
   const handleDeleteButton = (id) => {
     setWarning(false);
     kpmrDeleteParameterKualitatif(authData.token, id);
+    resetDeleteParameterKualitatif();
   }
 
   const clickDeleteSuccessButton = (status, message) => {
@@ -617,7 +621,8 @@ const mapDispatchToProps = dispatch => {
     kpmrFetchAllParameterKualitatif: (token, page, searchData) => dispatch(kpmrFetchAllParameterKualitatif(token, page, searchData)),
     countAllParameterKualitatif: (token) => dispatch(countAllParameterKualitatif(token)),
     kpmrDeleteParameterKualitatif: (token, id) => dispatch(kpmrDeleteParameterKualitatif(token, id)),
-    resetDeleteParameterKualitatif: () => dispatch(resetDeleteParameterKualitatif())
+    resetDeleteParameterKualitatif: () => dispatch(resetDeleteParameterKualitatif()),
+    resetKpmrUpdateParameterKualitatif: () => dispatch(resetKpmrUpdateParameterKualitatif())
   }
 }
 

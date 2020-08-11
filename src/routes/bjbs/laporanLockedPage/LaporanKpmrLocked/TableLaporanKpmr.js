@@ -17,15 +17,16 @@ import {
 import {connect} from "react-redux";
 import Grid from "@material-ui/core/Grid";
 
+// data dummy
 import {
   renderColumn
-} from '../../../../constants/LaporanLockedColumnProperties';
+} from '../../../../constants/KpmrLaporanLockedColumnProperties';
 
 // import local css
 import './mystyle.css';
 
 
-class TableRisikoInheren extends  React.Component{
+class TableLaporanKpmr extends  React.Component{
     constructor(props) {
         super(props);
         this.state = {
@@ -706,4 +707,4 @@ const mapStateToProps = ({
 
 export default connect(mapStateToProps, {
   fetchLockedReport
-})(TableRisikoInheren);
+})(TableLaporanKpmr);

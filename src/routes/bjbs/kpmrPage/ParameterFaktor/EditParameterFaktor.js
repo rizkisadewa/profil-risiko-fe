@@ -274,7 +274,7 @@ class EditParameterFaktor extends React.Component{
                                                         var value = prop.value;
                                                         var label = prop.text;
 
-                                                        if (label === 'Kualitatif (Multi Alternatif)'){
+                                                        if (label === 'Kualitatif'){
                                                             return (
                                                                 <Option value={value} key={index}>{label}</Option>
                                                             )

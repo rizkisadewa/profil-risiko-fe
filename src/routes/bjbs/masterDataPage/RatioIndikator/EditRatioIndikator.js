@@ -32,7 +32,6 @@ class EditRatioIndikator extends React.Component{
             propsvalue : [],
             dataoptionsmasterversion: [],
             propsid : props.eid,
-            dataoptions : [],
             jenis: '',
             jenisoptions: optionsJenis,
             paramjenisnilai:'',
@@ -52,7 +51,6 @@ class EditRatioIndikator extends React.Component{
         this.setState({
             statusput : nextProps.statusputratioindikator,
             propsvalue : nextProps.getratioindikator,
-            dataoptions : nextProps.jenisnilaiparam,
             dataoptionsmasterversion : nextProps.masterversionsdata,
         });
 
@@ -78,7 +76,6 @@ class EditRatioIndikator extends React.Component{
           ewarning,
           datavalue,
           propsvalue,
-          dataoptions,
           jenisoptions,
           jenis,
           paramjenisnilai,

@@ -5,17 +5,16 @@ import { DatePicker } from 'antd';
 // import moment from 'moment';
 import connect from "react-redux/es/connect/connect";
 import {
-  getAllRisks,
-  fetchAllMasterVersion,
+  getAllRisks
 } from "../../../../appRedux/actions/index";
-import TableLaporanRisikoInheren from './TableLaporanRisikoInheren';
+import TableLaporanKpmr from './TableLaporanKpmr';
 
 
 const {MonthPicker} = DatePicker;
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-class FilterTableLaporanRisikoInheren extends React.Component{
+class FilterTableLaporanKpmrLocked extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
@@ -23,7 +22,6 @@ class FilterTableLaporanRisikoInheren extends React.Component{
             loading:false,
             isInput:false,
             fetchdata:[],
-            dataoptionsmasterversion: [],
             ismonth:'',
             isyear:'',
             stringmonth:'',
@@ -33,15 +31,13 @@ class FilterTableLaporanRisikoInheren extends React.Component{
     }
 
     componentDidMount(){
-        this.props.getAllRisks({token:this.props.token, page:'', jenis:'PR', nama:'', keterangan:''});
-        this.props.fetchAllMasterVersion({token: this.props.token});
+        this.props.getAllRisks({token:this.props.token, page:'', jenis:'KPMR', nama:'', keterangan:''});
     }
 
     componentWillReceiveProps(nextProps) {
         // this.handleProp(nextProps);
         this.setState({
             dataoptions: nextProps.getallrisks,
-            dataoptionsmasterversion: nextProps.masterversionsdata
         });
     }
 
@@ -148,8 +144,7 @@ class FilterTableLaporanRisikoInheren extends React.Component{
           fetchdata,
           ismonth,
           isyear,
-          stringmonth,
-          dataoptionsmasterversion
+          stringmonth
         } = this.state;
         const {token} = this.props;
         return (
@@ -159,7 +154,7 @@ class FilterTableLaporanRisikoInheren extends React.Component{
                         (<Card title={<div style={{textAlign: "center"}}>
                             <img src={require("assets/images/logobjbs-old.png")} className="gx-logo-size" alt="bjbs"
                                  title="bjbs"/><br/>
-                            <label>Filter Laporan Risiko Inheren</label>
+                            <label>Filter Laporan KPMR Locked</label>
                         </div>}>
                             <div style={{textAlign: "center"}}>
                                 <Spin spinning={loading} tip="Loading...">
@@ -229,34 +224,6 @@ class FilterTableLaporanRisikoInheren extends React.Component{
                                         </FormItem>
 
                                         <FormItem {...formItemLayout}>
-                                            <div>Choose Version</div>
-                                            {getFieldDecorator('version_id', {
-                                                rules: [{
-                                                    required: true, message: 'Please choose risks.',
-                                                }],
-                                            })(
-                                                <Select id="version_id"
-                                                        style={{width: '40%', textAlignLast: 'center'}}
-                                                        showSearch
-                                                        allowClear
-                                                        placeholder="Select version"
-                                                        onChange={this.catchVersionName}
-                                                        optionFilterProp="children"
-                                                        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
-                                                    {
-                                                        dataoptionsmasterversion.map((prop, index) => {
-                                                            var value = prop.id;
-                                                            var label = prop.version_name;
-                                                            return (
-                                                                <Option key={index} value={value}>{label}</Option>
-                                                            )
-                                                        })
-                                                    }
-                                                </Select>
-                                            )}
-                                        </FormItem>
-
-                                        <FormItem {...formItemLayout}>
                                             {getFieldDecorator('token', {
                                                 initialValue: token,
                                                 rules: [{
@@ -268,19 +235,19 @@ class FilterTableLaporanRisikoInheren extends React.Component{
                                         </FormItem>
 
                                         <FormItem  {...formItemLayout}>
-                                            <Button type="primary" htmlType="submit" style={{width: '40%'}}>Report Preview</Button>
+                                            <Button type="primary" htmlType="submit" style={{width: '40%'}}>Check Laporan</Button>
                                         </FormItem>
                                     </Form>
                                 </Spin>
                             </div>
-                        </Card>) : <TableLaporanRisikoInheren fetchdata={fetchdata} clickCancelFilterButton={this.clickCancelFilterButton} />
+                         </Card>) :  <TableLaporanKpmr fetchdata={fetchdata} clickCancelFilterButton={this.clickCancelFilterButton} />
                 }
             </>
         );
     }
 }
 
-const WrappedFilterTableLaporanRisikoInheren = Form.create()(FilterTableLaporanRisikoInheren);
+const WrappedFilterTableLaporanKpmrLocked = Form.create()(FilterTableLaporanKpmrLocked);
 
 const mapStateToProps = ({
   auth,
@@ -289,15 +256,12 @@ const mapStateToProps = ({
 }) => {
     const {token} = auth;
     const {getallrisks} = jenisrisiko;
-    const {masterversionsdata} = masterversion;
     return {
       token,
-      getallrisks,
-      masterversionsdata
+      getallrisks
     }
 };
 
 export default connect(mapStateToProps, {
-  getAllRisks,
-  fetchAllMasterVersion
-})(WrappedFilterTableLaporanRisikoInheren);
+  getAllRisks
+})(WrappedFilterTableLaporanKpmrLocked);

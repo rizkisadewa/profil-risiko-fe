@@ -23,6 +23,8 @@ import Risikoinhereninputkuantitatif from './Risikoinhereninputkuantitatif';
 import Risikoinhereninputkualitatif from './Risikoinhereninputkualitatif';
 import Risikoinhereninputkualitatifdual from './Risikoinhereninputkualitatifdual';
 import Risikoinherenreport from './Risikoinherenreport';
+import ExportExcel from './Excel';
+import Lockedreport from './Lockedreport';
 
 const reducers = combineReducers({
   routing: routerReducer,
@@ -48,7 +50,9 @@ const reducers = combineReducers({
   risikoinhereninputkuantitatif : Risikoinhereninputkuantitatif,
   risikoinhereninputkualitatif : Risikoinhereninputkualitatif,
   risikoinhereninputkualitatifdual : Risikoinhereninputkualitatifdual,
-  risikoinherenreport: Risikoinherenreport
+  risikoinherenreport: Risikoinherenreport,
+  exportexcel: ExportExcel,
+  lockedreport: Lockedreport,
 });
 
 export default reducers;

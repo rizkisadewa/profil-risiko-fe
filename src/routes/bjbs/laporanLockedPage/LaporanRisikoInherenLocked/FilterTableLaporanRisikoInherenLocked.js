@@ -5,8 +5,7 @@ import { DatePicker } from 'antd';
 // import moment from 'moment';
 import connect from "react-redux/es/connect/connect";
 import {
-  getAllRisks,
-  fetchAllMasterVersion,
+  getAllRisks
 } from "../../../../appRedux/actions/index";
 import TableLaporanRisikoInheren from './TableLaporanRisikoInheren';
 
@@ -23,7 +22,6 @@ class FilterTableLaporanRisikoInherenLocked extends React.Component{
             loading:false,
             isInput:false,
             fetchdata:[],
-            dataoptionsmasterversion: [],
             ismonth:'',
             isyear:'',
             stringmonth:'',
@@ -34,14 +32,12 @@ class FilterTableLaporanRisikoInherenLocked extends React.Component{
 
     componentDidMount(){
         this.props.getAllRisks({token:this.props.token, page:'', jenis:'PR', nama:'', keterangan:''});
-        this.props.fetchAllMasterVersion({token: this.props.token});
     }
 
     componentWillReceiveProps(nextProps) {
         // this.handleProp(nextProps);
         this.setState({
             dataoptions: nextProps.getallrisks,
-            dataoptionsmasterversion: nextProps.masterversionsdata
         });
     }
 
@@ -148,8 +144,7 @@ class FilterTableLaporanRisikoInherenLocked extends React.Component{
           fetchdata,
           ismonth,
           isyear,
-          stringmonth,
-          dataoptionsmasterversion
+          stringmonth
         } = this.state;
         const {token} = this.props;
         return (
@@ -229,34 +224,6 @@ class FilterTableLaporanRisikoInherenLocked extends React.Component{
                                         </FormItem>
 
                                         <FormItem {...formItemLayout}>
-                                            <div>Choose Version</div>
-                                            {getFieldDecorator('version_id', {
-                                                rules: [{
-                                                    required: true, message: 'Please choose risks.',
-                                                }],
-                                            })(
-                                                <Select id="version_id"
-                                                        style={{width: '40%', textAlignLast: 'center'}}
-                                                        showSearch
-                                                        allowClear
-                                                        placeholder="Select version"
-                                                        onChange={this.catchVersionName}
-                                                        optionFilterProp="children"
-                                                        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
-                                                    {
-                                                        dataoptionsmasterversion.map((prop, index) => {
-                                                            var value = prop.id;
-                                                            var label = prop.version_name;
-                                                            return (
-                                                                <Option key={index} value={value}>{label}</Option>
-                                                            )
-                                                        })
-                                                    }
-                                                </Select>
-                                            )}
-                                        </FormItem>
-
-                                        <FormItem {...formItemLayout}>
                                             {getFieldDecorator('token', {
                                                 initialValue: token,
                                                 rules: [{
@@ -268,7 +235,7 @@ class FilterTableLaporanRisikoInherenLocked extends React.Component{
                                         </FormItem>
 
                                         <FormItem  {...formItemLayout}>
-                                            <Button type="primary" htmlType="submit" style={{width: '40%'}}>Input Data</Button>
+                                            <Button type="primary" htmlType="submit" style={{width: '40%'}}>Check Laporan</Button>
                                         </FormItem>
                                     </Form>
                                 </Spin>
@@ -289,15 +256,12 @@ const mapStateToProps = ({
 }) => {
     const {token} = auth;
     const {getallrisks} = jenisrisiko;
-    const {masterversionsdata} = masterversion;
     return {
       token,
-      getallrisks,
-      masterversionsdata
+      getallrisks
     }
 };
 
 export default connect(mapStateToProps, {
-  getAllRisks,
-  fetchAllMasterVersion
+  getAllRisks
 })(WrappedFilterTableLaporanRisikoInherenLocked);

@@ -576,7 +576,6 @@ function TableParameterKualitatifDualAlternatif ({
                     }
 
                     setFetchData([
-                      ...fetchdata,
                       {
                           id:parseInt(text.id),
                           risk:text.risk,

@@ -52,7 +52,8 @@ class EditKpmrParameterKualitatif extends React.Component{
             paramjenisnilai:'',
             paramindikatorpembilang:'',
             paramindikatorpenyebut:''
-        }
+        };
+
     }
 
     componentDidMount(){
@@ -170,6 +171,11 @@ class EditKpmrParameterKualitatif extends React.Component{
                                                 paramrisk_id:value,
                                             });
                                             this.props.getAllFaktorParameterDataOption({token: this.props.token, risk_id: value, jenisParamA: "KPMR"});
+                                            this.props.fetchAllIngredients({token: this.props.token, searchData: {
+                                              jenis: "KPMR",
+                                              jenis_nilai_id: 4,
+                                              risk_id: value,
+                                            }});
                                         }}
 
                                         style={paramrisk_id === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
@@ -211,11 +217,8 @@ class EditKpmrParameterKualitatif extends React.Component{
                                     required: true, message: 'Please input penomoran field.'
                                 }],
                             })(
-                                <InputNumber id="penomoran" placeholder="Input Penomoran"
+                                <Input id="penomoran" placeholder="Input Penomoran"
                                              className="w-100"
-                                             min={0}
-                                             max={99}
-                                             maxLength={2}
                                              onChange={(value)=>{
                                                  this.setState({
                                                      parampenomoran:value,

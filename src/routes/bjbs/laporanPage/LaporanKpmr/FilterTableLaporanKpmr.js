@@ -268,7 +268,7 @@ class FilterTableLaporanKpmr extends React.Component{
                                         </FormItem>
 
                                         <FormItem  {...formItemLayout}>
-                                            <Button type="primary" htmlType="submit" style={{width: '40%'}}>Input Data</Button>
+                                            <Button type="primary" htmlType="submit" style={{width: '40%'}}>Report Preview</Button>
                                         </FormItem>
                                     </Form>
                                 </Spin>

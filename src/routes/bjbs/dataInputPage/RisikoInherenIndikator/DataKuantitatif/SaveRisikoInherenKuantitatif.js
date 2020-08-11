@@ -1,24 +1,24 @@
 import React from "react";
-import {Button, Form, Card , InputNumber} from "antd";
+import {Form, Card} from "antd";
 // import {Button, Input, Form, Select, InputNumber, Spin} from "antd";
 import connect from "react-redux/es/connect/connect";
 import {
   fetchAllRisikoInherenInputKuantitatif,
   addRisikoInherenInputKuantitatif,
-  resetAddRisikoInherenInputKuantitatif
+  resetAddRisikoInherenInputKuantitatif,
+  fetchExportExcel,
+  resetFetchImportDataKuantitatifPR,
+  resetFetchAllRisikoInherenInputKuantitatif
 } from "../../../../../appRedux/actions/index";
 import {NotificationContainer, NotificationManager} from "react-notifications";
-import SweetAlerts from "react-bootstrap-sweetalert";
+import TableRisikoInherenKuantitatif from './TableRisikoInherenKuantitatif';
 // import local css
 import './mystyle.css';
-
-const FormItem = Form.Item;
 
 class SaveRisikoInherenKuantitatif extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            basic: false,
             datarisikoinhereninputkuantitatif : [],
             paramrisk_id : props.fetchdata ? props.fetchdata[0].risks : 0,
             parambulan : props.fetchdata ? props.fetchdata[0].ismonth : 0,
@@ -26,9 +26,50 @@ class SaveRisikoInherenKuantitatif extends React.Component {
             version_id : props.fetchdata ? props.fetchdata[0].version_id : 0,
             version_name: props.fetchdata ? props.fetchdata[0].version_name : '',
             risk_name : props.fetchdata ? props.fetchdata[0].risk_name : '',
-
+            tableloading: true,
+            isInput:false,
         }
     }
+
+    onRefresh = () => {
+      this.setState({
+          tableloading: true
+      });
+
+      this.props.fetchAllRisikoInherenInputKuantitatif({token: this.props.token, searchData: {
+        bulan: this.state.parambulan,
+        tahun: this.state.paramtahun,
+        jenis: 'PR',
+        version_id: this.state.version_id,
+        id_jenis_nilai: 1
+      }});
+
+      this.setState({
+          tableloading: false
+      });
+    }
+
+    clickImportSuccessButton = (props) => {
+        // this.props.getAllFaktorParameterTable({page:this.state.paging, token:this.props.token});
+        this.setState({
+          tableloading: true
+        });
+        this.props.resetFetchAllRisikoInherenInputKuantitatif();
+
+        this.props.fetchAllRisikoInherenInputKuantitatif({token: this.props.token, searchData: {
+          bulan: this.state.parambulan,
+          tahun: this.state.paramtahun,
+          jenis: 'PR',
+          version_id: this.state.version_id,
+          id_jenis_nilai: 1
+        }});
+
+        this.setState({
+          datarisikoinhereninputkuantitatif: this.state.risikoinhereninputkuantitatifdata,
+          tableloading: false
+        });
+    }
+
 
     componentDidMount(){
       this.props.fetchAllRisikoInherenInputKuantitatif({token: this.props.token, searchData: {
@@ -37,47 +78,56 @@ class SaveRisikoInherenKuantitatif extends React.Component {
         jenis: 'PR',
         version_id: this.state.version_id,
         id_jenis_nilai: 1
-      }})
+      }});
     }
 
     componentWillReceiveProps(nextProps){
+
         this.setState({
-          datarisikoinhereninputkuantitatif: nextProps.risikoinhereninputkuantitatifdata
+          datarisikoinhereninputkuantitatif: nextProps.risikoinhereninputkuantitatifdata.data
         });
 
-        switch(nextProps.addrisikoinhereninputkuantitatifresult.statusCode){
+        if(nextProps.risikoinhereninputkuantitatifdata.statusCode === 200 || nextProps.risikoinhereninputkuantitatifdata.statusCode === 201){
+          this.setState({
+            tableloading: false
+          })
+        }
+
+        // Notif import by excel
+        switch(nextProps.importdatakuantitatifpr.statusCode){
           case 200:
           case 201:
-            NotificationManager.success(nextProps.addrisikoinhereninputkuantitatifresult.message, "Success !!");
-            // reset all state
-            this.props.resetAddRisikoInherenInputKuantitatif();
+            this.clickImportSuccessButton(nextProps.risikoinhereninputkuantitatifdata.data);
+            NotificationManager.success(nextProps.importdatakuantitatifpr.message, "Success !!");
+            this.props.resetFetchImportDataKuantitatifPR();
             break;
           case 400:
-            NotificationManager.error(nextProps.addrisikoinhereninputkuantitatifresult.message, "Success !!");
-            // reset all state
-            this.props.resetAddRisikoInherenInputKuantitatif();
+            this.clickImportSuccessButton(nextProps.risikoinhereninputkuantitatifdata.data);
+            NotificationManager.error(nextProps.importdatakuantitatifpr.message, "Error !!");
+            this.props.resetFetchImportDataKuantitatifPR();
             break;
           default:
             break;
         }
+
+        // notif save per item
+        switch(nextProps.addrisikoinhereninputkuantitatifresult.statusCode){
+          case 200:
+          case 201:
+            NotificationManager.success(nextProps.addrisikoinhereninputkuantitatifresult.message, "Success !!");
+            this.props.resetAddRisikoInherenInputKuantitatif();
+            break;
+          case 400:
+            NotificationManager.error(nextProps.addrisikoinhereninputkuantitatifresult.message, "Failed !!");
+            this.props.resetAddRisikoInherenInputKuantitatif();
+            break
+          default:
+            break;
+        }
+
     }
 
-
-    onClickCancel = () => {
-        this.props.clickCancelFilterButton();
-    };
-
     render() {
-        const formItemLayout = {
-            labelCol: {
-                xs: 24,
-                sm: 20,
-            },
-            wrapperCol: {
-                xs: 24,
-                sm: 4,
-            },
-        };
 
         var monthText = '';
         switch(this.state.parambulan){
@@ -122,10 +172,8 @@ class SaveRisikoInherenKuantitatif extends React.Component {
         }
 
         const {
-            basic,
             datarisikoinhereninputkuantitatif
         } = this.state;
-        const {getFieldDecorator} = this.props.form;
 
         // const dataDummy = [
         //   {
@@ -149,76 +197,19 @@ class SaveRisikoInherenKuantitatif extends React.Component {
         // ]
 
         return (
-          <Card title={`Data Risiko Inheren Kuantitatif : ${monthText} ${this.state.paramtahun} (${this.state.version_name})`}>
+          <Card title={`Data Risiko Inheren Kuantitatif (hitungan dalam jutaan) : ${monthText} ${this.state.paramtahun} (${this.state.version_name})`}>
             <>
-                <Form onSubmit={(e)=>{
-                    e.preventDefault();
-
-                    this.props.form.validateFields((err, values) => {
-                        if (!err) {
-                          let listOfRatioIndikatorId = Object.getOwnPropertyNames(values);
-                          let listOfValues = Object.values(values);
-
-                          // make the object to submit
-                          let toSubmitBody = {};
-                          let toSubmitData = {};
-                          let ratio_indikator_data = [];
-
-                          // looping to parsing ratio_indikator_data
-                          for(let i=0;i<listOfValues.length;i++){
-                            toSubmitBody.id_indikator = parseInt(listOfRatioIndikatorId[i]);
-                            toSubmitBody.value = parseInt(listOfValues[i]);
-                            ratio_indikator_data.push(toSubmitBody);
-                            toSubmitBody = {};
-                          }
-
-                          // compile all the data
-                          toSubmitData.id_jenis_nilai = 1;
-                          toSubmitData.bulan = parseInt(this.state.parambulan);
-                          toSubmitData.tahun = parseInt(this.state.paramtahun);
-                          toSubmitData.parameter_version_id = this.state.version_id;
-                          toSubmitData.data_ratio_indikator = ratio_indikator_data;
-
-                          this.props.addRisikoInherenInputKuantitatif(this.props.token, toSubmitData)
-                        }
-                    });
-                }}>
-
-                    {
-                      datarisikoinhereninputkuantitatif.map((prop, index) => {
-                        return (
-                          <FormItem {...formItemLayout} label={prop.ratio_indikator.name}>
-                              {getFieldDecorator(`${prop.ratio_indikator.id}`, {
-                                  initialValue: prop.value
-                              })(
-                                <InputNumber
-                                  id={index}
-                                  className="w-100"
-                                  formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                                  parser={value => value.replace(/\$\s?|(,*)/g, '')}
-                                />
-                              )}
-                          </FormItem>
-                        )
-                      })
-
-                    }
-
-                    <FormItem style={{ float : "right", paddingRight : "1rem" }}>
-                        <Button onClick={this.onClickCancel}>Cancel</Button>
-                        <Button type="primary" htmlType="submit">Save</Button>
-                    </FormItem>
-
-                    <SweetAlerts show={basic}
-                                 customClass="gx-sweet-alert-top-space"
-                                 title={"Input must be 0-100 %"}
-                                 onConfirm={()=>{
-                                     this.setState({
-                                         basic: false,
-                                     })
-                    }}/>
-
-                </Form>
+                <TableRisikoInherenKuantitatif
+                  data={datarisikoinhereninputkuantitatif}
+                  tableloading={this.state.tableloading}
+                  bulan={this.state.parambulan}
+                  tahun={this.state.paramtahun}
+                  jenis='PR'
+                  version_id={this.state.version_id}
+                  id_jenis_nilai={1}
+                  token={this.props.token}
+                  clickCancelFilterButton={this.props.clickCancelFilterButton}
+                />
             </>
             <NotificationContainer/>
           </Card>
@@ -231,22 +222,32 @@ const WrappedSaveRisikoInherenKuantitatif = Form.create()(SaveRisikoInherenKuant
 
 const mapStateToProps = ({
   auth,
-  risikoinhereninputkuantitatif
+  risikoinhereninputkuantitatif,
+  exportexcel
 }) => {
     const {token} = auth;
     const {
       risikoinhereninputkuantitatifdata,
       addrisikoinhereninputkuantitatifresult
     } = risikoinhereninputkuantitatif;
+    const {
+      exportexceldata,
+      importdatakuantitatifpr
+    } = exportexcel;
     return {
       token,
       risikoinhereninputkuantitatifdata,
-      addrisikoinhereninputkuantitatifresult
+      addrisikoinhereninputkuantitatifresult,
+      exportexceldata,
+      importdatakuantitatifpr
     }
 };
 
 export default connect(mapStateToProps, {
   fetchAllRisikoInherenInputKuantitatif,
   addRisikoInherenInputKuantitatif,
-  resetAddRisikoInherenInputKuantitatif
+  resetAddRisikoInherenInputKuantitatif,
+  fetchExportExcel,
+  resetFetchImportDataKuantitatifPR,
+  resetFetchAllRisikoInherenInputKuantitatif
 })(WrappedSaveRisikoInherenKuantitatif);

@@ -28,7 +28,6 @@ class EditParameter extends React.Component{
         // this.handleProp=this.handleProp.bind(this);
         this.state = {
             dataoptions: [],
-            dataoptionsjenisnilai : [],
             dataoptionslevel : optionsLevel,
             ewarning: false,
             basic: false,
@@ -63,7 +62,6 @@ class EditParameter extends React.Component{
             dataoptionsmasterversion: nextProps.masterversionsdata,
             dataparameterversion: nextProps.parameterversiondata,
             history_parameter_version: nextProps.parameterversiondata,
-            dataoptionsjenisnilai : nextProps.jenisnilaiparam,
             fetchdataparameterversion: [],
         });
 
@@ -111,8 +109,7 @@ class EditParameter extends React.Component{
           basic,
           propsvalue,
           paramjenisnilai,
-          dataoptionsmasterversion,
-          dataoptionsjenisnilai
+          dataoptionsmasterversion
       } = this.state;
         const {fetchdata, token} = this.props;
         const {getFieldDecorator} = this.props.form;

@@ -37,8 +37,9 @@
     "react-instantsearch-dom": "^5.2.2",
     "react-intl": "^2.4.0",
     "react-notifications": "^1.4.3",
+    "react-number-format": "^4.4.1",
     "react-placeholder": "^3.0.1",
-    "react-redux": "^5.0.7",
+    "react-redux": "^5.1.2",
     "react-redux-notify": "^4.2.1",
     "react-resizable": "^1.10.1",
     "react-router-dom": "^4.3.1",
@@ -48,13 +49,16 @@
     "react-slick": "^0.23.1",
     "react-sortable-hoc": "^0.8.3",
     "react-star-rating-component": "^1.4.1",
+    "read-excel-file": "^4.0.6",
     "recharts": "^1.0.1",
     "redux": "^4.0.0",
     "redux-thunk": "^2.3.0",
+    "reqwest": "^2.0.5",
     "rheostat": "^3.0.1",
     "slick-carousel": "^1.8.1",
     "url-search-params": "^1.1.0",
-    "victory": "^0.27.2"
+    "victory": "^0.27.2",
+    "xlsx": "^0.16.4"
   },
   "scripts": {
     "start": "react-app-rewired start",

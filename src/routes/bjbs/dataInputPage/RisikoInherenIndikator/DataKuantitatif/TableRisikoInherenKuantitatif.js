@@ -1,868 +1,306 @@
 import React from "react";
-import {Divider, Button, Card, Table, Spin, Input, Pagination } from "antd";
-import SweetAlert from "react-bootstrap-sweetalert";
+import { Upload, Form, Button, Spin, Table } from 'antd';
+import { UploadOutlined  } from '@ant-design/icons';
 import {NotificationContainer, NotificationManager} from "react-notifications";
-import IntlMessages from "util/IntlMessages";
-import SaveRisikoInherenKuantitatif from "./SaveRisikoInherenKuantitatif";
-// import EditParameterManual from "./EditParameterManual";
-
-import {
-  getAllParameterManualTable,
-  countAllParameterManual,
-  deleteParameterManual
-} from "../../../../../appRedux/actions/Parametermanual";
-import {
-  fetchAllMasterVersion
-} from "../../../../../appRedux/actions/index";
-
-import {connect} from "react-redux";
-import {SearchOutlined} from "@ant-design/icons";
-import Highlighter from "react-highlight-words";
 import Grid from "@material-ui/core/Grid";
+import NumberFormat from 'react-number-format';
+import TextField from "@material-ui/core/TextField";
+import { connect } from 'react-redux';
+import {
+  fetchExportExcel,
+  fetchImportDataKuantitatifPR,
+  addRisikoInherenInputKuantitatifPerItem
+} from "../../../../../appRedux/actions/index";
+import moment from 'moment';
 
-class TableRisikoInherenKuantitatif extends  React.Component{
-    constructor(props) {
-        super(props);
-        this.state = {
-            sortedInfo: null,
-            warning:false,
-            deletestatus:'',
-            loading:false,
-            addbutton: false,
-            editbutton: false,
-            eid: "",
-            masterversionsdata: [],
-            statusallparametermanualtable :'',
-            statusallparametermanual:'',
-            paramname : '',
-            edname:'',
-            paging:1,
-            paramrisk_id : props.fetchdata ? props.fetchdata[0].risks : 0,
-            parambulan : props.fetchdata ? props.fetchdata[0].ismonth : 0,
-            paramtahun : props.fetchdata ? props.fetchdata[0].isyear : 0,
-            parambobot : 0,
-            parampr_low : '',
-            parampr_lowtomod : '',
-            parampr_mod : '',
-            parampr_modtohigh : '',
-            parampr_high : '',
-            edpr_low : '',
-            edpr_lowtomod : '',
-            edpr_mod : '',
-            edpr_modtohigh : '',
-            edpr_high : '',
-            edbobot : '',
-            idvalue: '',
-            name: '',
-            tahun: '',
-            induk_id: '',
-            version_id: 0
-        }
-    }
 
-    componentDidMount(){
-        this.props.getAllParameterManualTable({page:this.state.paging, token:this.props.token, name:this.state.paramname,
-            risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-            pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
-            bobot:this.state.parambobot
-        });
-        this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname,
-            risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-            pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
-            bobot:this.state.parambobot
-        });
-        this.props.fetchAllMasterVersion({token: this.props.token});
-    }
+function TableRisikoInherenKuantitatif(props){
 
-    componentWillReceiveProps(nextProps) {
-        // this.handleProp(nextProps);
-        this.setState({
-            statusallparametermanualtable : nextProps.statusallparametermanualtable,
-            statusallparametermanual : nextProps.statusallparametermanual,
-            masterversionsdata: nextProps.masterversionsdata
-        });
+  // state
+  const [newValue, setNewValue] = React.useState({
+    value: ''
+  });
+  const [loading, setLoading] = React.useState([]);
+  const [fileList, setFilelist] = React.useState([]);
+  const [uploading, setUploading] = React.useState(false);
+  const {
+    fetchExportExcel,
+    fetchImportDataKuantitatifPR,
+    addRisikoInherenInputKuantitatifPerItem
+  } = props;
 
-        // console.log(nextProps.deleteparameterfaktor);
-        if (nextProps.statusallparametermanualtable === 200 && nextProps.statusallparametermanual === 200){
-            if (nextProps.countallparametermanual){
-                if (nextProps.statusallparametermanualtable.rows) {
-                    this.setState({
-                        loading: false,
-                        lengthdata: nextProps.countallparametermanual,
-                        deletestatus: '',
-                        datatable: [],
-                    });
-                } else {
-                    this.setState({
-                        loading: false,
-                        lengthdata: nextProps.countallparametermanual,
-                        deletestatus: '',
-                        datatable: nextProps.getallparametermanualtable,
-                    });
-                }
-            } else {
-                this.setState({
-                    loading:false,
-                    lengthdata:0,
-                    deletestatus : '',
-                    datatable : [],
-                });
-            }
-        }
+  const enterLoading = (index) => {
+    setLoading(oldLoading => {
+      let newLoadings = [...oldLoading];
+      newLoadings[index] = true;
+      setLoading(newLoadings);
+    });
+  };
 
-        if(nextProps.deleteparametermanual === 200){
-            this.setState({
-                loading:false,
-                deletestatus: nextProps.deleteparametermanual
-            });
-        }
-    }
+  const enterLoadingFalse = (index) => {
+    setLoading(oldLoading => {
+      let newLoadings = [...oldLoading];
+      newLoadings[index] = false;
+      setLoading(newLoadings);
+    });
+  };
 
-    shouldComponentUpdate(nextProps, nextState) {
-        if (nextState.deletestatus !== this.state.deletestatus){
-            this.onRefresh();
-            this.setState({
-                deletestatus : nextProps.deleteparametermanual,
-            });
-        }
-        return true;
-    }
+  // Handle Change TextField
+  const handleChange = name => event => {
+    setNewValue({ ...newValue, [name]: event.target.value });
+  };
 
-    /* componentDidUpdate(){
-        if(this.state.loading){
-            setTimeout(() => {
-                this.setState({
-                    loading:false
-                })
-            },300)
-        }
-    } */
+  // handling add / edit dialog
+  const [changed, setChanged] = React.useState();
 
-    handleChange = (pagination, filters, sorter) => {
-        console.log('Various parameters', pagination, filters, sorter);
-        this.setState({
-            // filteredInfo: filters,
-            sortedInfo: sorter,
-        });
-    };
+  const handleChanged = value => {
+    setChanged(value);
+  };
 
-    getColumnSearchProps = dataIndex => ({
-        filterDropdown : ({setSelectedKeys, selectedKeys, confirm, clearFilters}) => (
-            <div style={{padding : 8}}>
-                <Input
-                    ref={node => {
-                        this.searchInput = node;
-                    }}
-                    placeholder={`Search ${dataIndex}`}
-                    value={
-                        (this.state.edname !== '' && dataIndex === 'name') ?
-                            this.state.edname :
-                                (this.state.edpr_low !== '' && dataIndex === 'pr_low') ?
-                                    this.state.edpr_low :
-                                    (this.state.edpr_lowtomod !== '' && dataIndex === 'pr_lowtomod') ?
-                                        this.state.edpr_lowtomod :
-                                        (this.state.edpr_mod !== '' && dataIndex === 'pr_mod') ?
-                                            this.state.edpr_mod :
-                                                (this.state.edpr_modtohigh !== '' && dataIndex === 'pr_modtohigh') ?
-                                                    this.state.edpr_modtohigh :
-                                                        (this.state.edpr_high !== '' && dataIndex === 'pr_high') ?
-                                                            this.state.edpr_high :
-                                                                (this.state.edbobot !== '' && dataIndex === 'bobot') ?
-                                                                    this.state.edbobot :
-                                                                    selectedKeys[0]
-                    }
-                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => this.handleSearch(selectedKeys, confirm, dataIndex)}
-                    style={{width:188, marginBottom:8, display:'block'}}
-                />
+  React.useEffect(() => {
 
-                <Button
-                    type="primary"
-                    onClick={() => this.handleSearch(selectedKeys, confirm, dataIndex)}
-                    icon={'<SearchOutlined/>'}
-                    size="small"
-                    style={{width:90, marginRight:8}}
-                >Search</Button>
+  }, [changed])
 
-                <Button onClick={() => this.handleReset(clearFilters, dataIndex)} size="small" style={{width:90}}>Reset</Button>
-            </div>
-        ),
-        filterIcon : filtered => <SearchOutlined style={{color:
-                (this.state.edname !== '' && dataIndex === 'name') ?
-                    '#1890ff' :
-                        (this.state.edpr_low !== '' && dataIndex === 'pr_low') ?
-                            '#1890ff' :
-                            (this.state.edpr_lowtomod !== '' && dataIndex === 'pr_lowtomod') ?
-                                '#1890ff' :
-                                (this.state.edpr_mod !== '' && dataIndex === 'pr_mod') ?
-                                    '#1890ff' :
-                                    (this.state.edpr_modtohigh !== '' && dataIndex === 'pr_modtohigh') ?
-                                        '#1890ff' :
-                                        (this.state.edpr_high !== '' && dataIndex === 'pr_high') ?
-                                            '#1890ff' :
-                                            (this.state.edbobot !== '' && dataIndex === 'bobot') ?
-                                                '#1890ff' :
-                                            filtered ? '#1890ff' :
-                                                undefined
-        }}/>,
-        onFilter : (value, record) =>
-            record[dataIndex]
-                .toString()
-                .toLowerCase()
-                .includes(value.toLowerCase()),
-        onFilterDropdownVisibleChange : visible => {
-            if (visible){
-                setTimeout(() => this.searchInput.select());
-            }
-        },
-        render : text =>
-            (
-                (this.state.edname !== '' && dataIndex === 'name') || (this.state.edpr_low !== '' && dataIndex === 'pr_low') ||
-                (this.state.edpr_lowtomod !== '' && dataIndex === 'pr_lowtomod') || (this.state.edpr_mod !== '' && dataIndex === 'pr_mod') ||
-                (this.state.edpr_modtohigh !== '' && dataIndex === 'pr_modtohigh') || (this.state.edpr_high !== '' && dataIndex === 'pr_high')||
-                (this.state.edbobot !== '' && dataIndex === 'bobot')) ? (
-                    <Highlighter
-                        highlightStyle={{backgroundColor: 'ffc069', padding:0}}
-                        searchWords={[(this.state.edname !== '' && dataIndex === 'name') ? this.state.edname :
-                                        (this.state.edpr_low !== '' && dataIndex === 'pr_low') ? this.state.edpr_low :
-                                            (this.state.edpr_lowtomod !== '' && dataIndex === 'pr_lowtomod') ? this.state.edpr_lowtomod :
-                                                (this.state.edpr_mod !== '' && dataIndex === 'pr_mod') ? this.state.edpr_mod :
-                                                    (this.state.edpr_modtohigh !== '' && dataIndex === 'pr_modtohigh') ? this.state.edpr_modtohigh :
-                                                        (this.state.edpr_high !== '' && dataIndex === 'pr_high') ? this.state.edpr_high :
-                                                            (this.state.edbobot !== '' && dataIndex === 'bobot') ? this.state.edbobot :
-                                                                this.state.searchText
-                        ]}
-                        autoEscape
-                        textToHighlight={text.toString()}
-                    />
-            ) :
-                this.state.searchedColumn === dataIndex ? (
-                    <Highlighter
-                        highlightStyle={{backgroundColor: 'ffc069', padding:0}}
-                        searchWords={[this.state.searchText]}
-                        autoEscape
-                        textToHighlight={text.toString()}
-                    />
-                ) : (text),
+  const beforeUpload = (file) => {
+
+      // console.log("====> FILE INFO : ");
+      // console.log(`File type : ${file.type}`);
+      // console.log(`File size : ${file.size}`);
+      // console.log(`File flag : ${file.flag}`);
+
+      // const isJPG = file.type === 'xls/';
+      // if (!isJPG) {
+      //   message.error('You can only upload JPG file!');
+      // }
+      // return false;
+      console.log(/xls|xlsx/.test(file.name));
+      if (!/xls|xlsx/.test(file.name)) {
+          NotificationManager.error(`Excel format error`)
+          return false;
+      }
+      NotificationManager.success(`Sudah memilih format file yg benar`)
+      setFilelist([file]);
+      return false;
+  }
+
+  const handleUpload = () => {
+    const formData = new FormData();
+
+    formData.append('datakuantitatifpr', fileList[0]);
+    console.log("====> FILE LIST THAT WOULD BE UPLOADED")
+    console.log(fileList);
+    console.log(formData);
+    console.log(props);
+
+    setUploading(true);
+
+    // handling upload file to backend
+    fetchImportDataKuantitatifPR(props.token, {bulan: props.bulan,
+      tahun: props.tahun,
+      version_id: props.version_id,
+      id_jenis_nilai: props.id_jenis_nilai
+    }, formData);
+
+    setTimeout(() => {
+      handleChanged(moment().unix());
+      setUploading(false);
+      setFilelist([]);
+    }, 2000);
+
+  };
+
+  const uploadProps = {
+    onRemove: file => {
+        setFilelist([])
+      },
+    beforeUpload: file => {
+      // console.log("====FILE ORIGINAL : ");
+      // console.log(file);
+      // handleChange(file);
+      beforeUpload(file);
+
+      return false;
+    },
+    fileList
+  };
+
+  const handleExcelExport = () => {
+    fetchExportExcel({
+      token: props.token,
+      props: {
+        bulan: props.bulan,
+        tahun: props.tahun,
+        jenis: props.jenis,
+        version_id: props.version_id,
+        id_jenis_nilai: props.id_jenis_nilai
+      }
+    });
+  }
+
+  const handleSavePerItem = (
+    text,
+    record,
+    index
+  ) => {
+    console.log("==> YOU CLICKED SAVE : ");
+    console.log(text);
+    console.log(record);
+    console.log(index);
+    console.log(newValue);
+    enterLoading(index);
+    let newValueFormated = newValue.value;
+    newValueFormated = newValueFormated.substring(4);
+    newValueFormated = newValueFormated.split(',').join('');
+    console.log(newValueFormated);
+    addRisikoInherenInputKuantitatifPerItem(props.token, {
+      id_indikator: record.ratio_indikator_id,
+    	id_jenis_nilai: 1,
+    	value: Number(newValueFormated),
+    	bulan: props.bulan,
+    	tahun: props.tahun,
+    	parameter_version_id: record.version_id
     });
 
-    handleSearch = (selectedKeys, confirm, dataIndex) => {
-        confirm();
-        this.setState({
-            searchText: (selectedKeys[0])?selectedKeys[0]:'',
-            searchedColumn: dataIndex,
-        });
+    enterLoadingFalse(index);
 
-        if (dataIndex === 'name'){
-            var paramnames = selectedKeys[0];
-            if (!paramnames){
-                paramnames = ''
-            }
+  }
 
-            this.setState({
-                paramname : paramnames,
-                loading : true,
-                edname : paramnames
-            })
-            this.props.getAllParameterManualTable({page:1, token:this.props.token, name:paramnames,
-                risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
-                bobot:this.state.parambobot
-            });
-            this.props.countAllParameterManual({token:this.props.token, name:paramnames,
-                risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
-                bobot:this.state.parambobot
-            });
-        }
+  // Back to filter
+  const onClickCancel = () => {
+      props.clickCancelFilterButton();
+  };
 
-        if (dataIndex === 'pr_low'){
-            var parampr_low = selectedKeys[0];
-            if (!parampr_low){
-                parampr_low = ''
-            }
+  const columns = [
+    {
+      title: 'Ratio Indikator',
+      dataIndex: 'ratio_indikator.name',
+      key: 'ratio_indikator.name',
+      width: '50%',
+    },
+    {
+      title: 'Input Nilai',
+      key: 'value',
+      dataIndex: 'value',
+      width: '40%',
+      render: (text, record) => (
+        // <TextField
+        //   style={{ width: '100%' }}
+        //   defaultValue={text}
+        //   InputProps={{
+        //     inputComponent: NumberFormatCustom
+        //   }}
+        //   onChange={handleChange("value")}
+        // />
+        <NumberFormat
+          style={{ width: '100%' }}
+          defaultValue={text}
+          customInput={TextField}
+          prefix={'Rp.  '}
+          type="text"
+          thousandSeparator={true}
+          onChange={handleChange("value")}
+        />
+      )
+    },
+    {
+      title: 'Action',
+      key: 'action',
+      width: '10%',
+      render: (text, record, index) => (
+        <React.Fragment>
+          <span>
+            <Button
+              className="ant-btn ant-btn-primary"
+              icon="save"
+              key={index}
+              loading={loading[index]}
+              onClick={() => {
+                handleSavePerItem(text, record, index);
+              }}
+            />
+          </span>
 
-            this.setState({
-                parampr_low : parampr_low,
-                loading : true,
-                edpr_low : parampr_low
-            })
-            this.props.getAllParameterManualTable({page:1, token:this.props.token, name:this.state.paramname,
-                risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
-                bobot:this.state.parambobot
-            });
-            this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname,
-                risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
-                bobot:this.state.parambobot
-            });
-        }
+          {/* <span>
+            <Button
+              className="ant-btn ant-btn-danger"
+              icon="smile"
+              onClick={() => {
+                enterLoadingFalse(index, {
+                  statusCode: 400,
+                  message: "Data berhasil diupdate"
+                })
+              }}
+            />
+          </span>
+          */}
+        </React.Fragment>
+      ),
+    },
+  ];
 
-        if (dataIndex === 'pr_lowtomod'){
-            var parampr_lowtomod = selectedKeys[0];
-            if (!parampr_lowtomod){
-                parampr_lowtomod = ''
-            }
+  return(
+    <div>
+      <Spin tip="Loading..." spinning={props.tableloading}>
+        <Grid container spacing={1}>
+          <Grid item xs={12} md={12} lg={3}>
+            <Button
+              className="ant-btn ant-btn-primary"
+              icon="download"
+              style={{ width: "100%" }}
+              onClick={() => {
+                handleExcelExport();
+              }}
+            >Download Template (Data Input)</Button>
+          </Grid>
+          <Grid item xs={12} md={12} lg={5}>
+            <Button className="ant-btn ant-btn-danger" onClick={onClickCancel}>Back Filter</Button>
+          </Grid>
+          <Grid item xs={12} md={12} lg={2}>
+            <Upload
+              {...uploadProps}
+              >
+              <Button>
+                <UploadOutlined
+                /> Select File
+              </Button>
+            </Upload>
+          </Grid>
+          <Grid item xs={12} md={12} lg={2}>
+            <Button
+              className="ant-btn ant-btn-secondary"
+              onClick={handleUpload}
+              style={{ width: "100%" }}
+              disabled={fileList.length === 0}
+              loading={uploading}
+            >
+              {uploading ? 'Uploading' : 'Start Upload'}
+            </Button>
+          </Grid>
+        </Grid>
+        <Table columns={columns} dataSource={props.data} />
+      </Spin>
+      <NotificationContainer/>
+    </div>
+  )
+}
 
-            this.setState({
-                parampr_lowtomod : parampr_lowtomod,
-                loading : true,
-                edpr_lowtomod : parampr_lowtomod
-            })
-            this.props.getAllParameterManualTable({page:1, token:this.props.token, name:this.state.paramname,
-                risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
-                bobot:this.state.parambobot
-            });
-            this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname,
-                risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
-                bobot:this.state.parambobot
-            });
-        }
+const WrappedTableRisikoInherenKuantitatif = Form.create()(TableRisikoInherenKuantitatif);
 
-        if (dataIndex === 'pr_mod'){
-            var parampr_mod = selectedKeys[0];
-            if (!parampr_mod){
-                parampr_mod = ''
-            }
+const mapStateToProps = state => {
+    return {
 
-            this.setState({
-                parampr_mod : parampr_mod,
-                loading : true,
-                edpr_mod : parampr_mod
-            })
-            this.props.getAllParameterManualTable({page:1, token:this.props.token, name:this.state.paramname,
-                risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
-                bobot:this.state.parambobot
-            });
-            this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname,
-                risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
-                bobot:this.state.parambobot
-            });
-        }
-
-        if (dataIndex === 'pr_modtohigh'){
-            var parampr_modtohigh = selectedKeys[0];
-            if (!parampr_modtohigh){
-                parampr_modtohigh = ''
-            }
-
-            this.setState({
-                parampr_modtohigh : parampr_modtohigh,
-                loading : true,
-                edpr_modtohigh : parampr_modtohigh
-            })
-            this.props.getAllParameterManualTable({page:1, token:this.props.token, name:this.state.paramname,
-                risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:parampr_modtohigh,pr_high:this.state.parampr_high,
-                bobot:this.state.parambobot
-            });
-            this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname,
-                risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:parampr_modtohigh,pr_high:this.state.parampr_high,
-                bobot:this.state.parambobot
-            });
-        }
-
-        if (dataIndex === 'pr_high'){
-            var parampr_high = selectedKeys[0];
-            if (!parampr_high){
-                parampr_high = ''
-            }
-
-            this.setState({
-                parampr_high : parampr_high,
-                loading : true,
-                edpr_high : parampr_high
-            })
-            this.props.getAllParameterManualTable({page:1, token:this.props.token, name:this.state.paramname,
-                risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:parampr_high,
-                bobot:this.state.parambobot
-            });
-            this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname,
-                risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:parampr_high,
-                bobot:this.state.parambobot
-            });
-        }
-
-        if (dataIndex === 'bobot'){
-            var parambobot = selectedKeys[0];
-            if (!parambobot){
-                parambobot = ''
-            }
-
-            this.setState({
-                parambobot : parambobot,
-                loading : true,
-                edbobot : parambobot
-            })
-            this.props.getAllParameterManualTable({page:1, token:this.props.token, name:this.state.paramname,
-                risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
-                bobot:parambobot
-            });
-            this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname,
-                risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
-                bobot:parambobot
-            });
-        }
-    };
-
-    handleReset = (clearFilters, dataIndex) => {
-        clearFilters();
-        this.setState({
-            searchText: ''
-        });
-
-        if (dataIndex === 'name'){
-            this.setState({
-                paramname : '',
-                loading : true,
-                edname : ''
-            })
-            this.props.getAllParameterManualTable({page:1, token:this.props.token, name:'',
-                risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
-                bobot:this.state.parambobot
-            });
-            this.props.countAllParameterManual({token:this.props.token, name:'',
-                risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
-                bobot:this.state.parambobot
-            });
-        }
-
-        if (dataIndex === 'pr_low'){
-            this.setState({
-                parampr_low : '',
-                loading : true,
-                edpr_low : ''
-            })
-            this.props.getAllParameterManualTable({page:1, token:this.props.token, name:this.state.paramname,
-                risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:'',
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
-                bobot:this.state.parambobot
-            });
-            this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname,
-                risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:'',
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
-                bobot:this.state.parambobot
-            });
-        }
-
-        if (dataIndex === 'pr_lowtomod'){
-            this.setState({
-                parampr_lowtomod : '',
-                loading : true,
-                edpr_lowtomod : ''
-            })
-            this.props.getAllParameterManualTable({page:1, token:this.props.token, name:this.state.paramname,
-                risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:'',pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
-                bobot:this.state.parambobot
-            });
-            this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname,
-                risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:'',pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
-                bobot:this.state.parambobot
-            });
-        }
-
-        if (dataIndex === 'pr_mod'){
-            this.setState({
-                parampr_mod : '',
-                loading : true,
-                edpr_mod : ''
-            })
-            this.props.getAllParameterManualTable({page:1, token:this.props.token, name:this.state.paramname,
-                risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:'',pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
-                bobot:this.state.parambobot
-            });
-            this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname,
-                risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:'',pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
-                bobot:this.state.parambobot
-            });
-        }
-
-        if (dataIndex === 'pr_modtohigh'){
-            this.setState({
-                parampr_modtohigh : '',
-                loading : true,
-                edpr_modtohigh : ''
-            })
-            this.props.getAllParameterManualTable({page:1, token:this.props.token, name:this.state.paramname,
-                risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:'',pr_high:this.state.parampr_high,
-                bobot:this.state.parambobot
-            });
-            this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname,
-                risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:'',pr_high:this.state.parampr_high,
-                bobot:this.state.parambobot
-            });
-        }
-
-        if (dataIndex === 'pr_high'){
-           this.setState({
-                parampr_high : '',
-                loading : true,
-                edpr_high : ''
-            })
-            this.props.getAllParameterManualTable({page:1, token:this.props.token, name:this.state.paramname,
-                risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:'',
-                bobot:this.state.parambobot
-            });
-            this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname,
-                risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:'',
-                bobot:this.state.parambobot
-            });
-        }
-
-        if (dataIndex === 'bobot'){
-           this.setState({
-                parambobot : '',
-                loading : true,
-                edbobot : ''
-            })
-            this.props.getAllParameterManualTable({page:1, token:this.props.token, name:this.state.paramname,
-                risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
-                bobot:''
-            });
-            this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname,
-                risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-                pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
-                bobot:''
-            });
-        }
-
-    };
-
-    onClickCancel = () => {
-        this.props.clickCancelFilterButton();
-    };
-
-    onCancelDelete = () => {
-        this.setState({
-            warning: false
-        });
-        this.onChangePagination(this.state.paging);
-    };
-
-    clickAddSuccessButton = (status) => {
-        this.setState({
-            addbutton: false,
-        });
-
-        if (status === 201 || status === 200){
-            this.onRefresh();
-            NotificationManager.success("Data has saved.", "Success !!");
-        }
-    };
-
-    clickAddButton = () => {
-        this.setState({
-            addbutton: true
-        })
-    };
-
-    clickCancelAddButton = () => {
-        this.setState({
-            addbutton: false
-        })
-        this.onRefresh();
-    };
-
-    clickCancelEditButton = () => {
-        this.setState({
-            editbutton: false,
-        })
-        this.onRefresh();
-    };
-
-    clickAddSuccessButton = (status) => {
-        // this.props.getAllFaktorParameterTable({page:this.state.paging, token:this.props.token});
-        this.setState({
-            addbutton: false
-        });
-
-        if (status === 201 || status === 200){
-            this.onRefresh();
-            NotificationManager.success("Data has saved.", "Success !!");
-        }
-    };
-
-    clickEditSuccessButton = (status) => {
-        // this.props.getAllFaktorParameterTable({page:this.state.paging, token:this.props.token});
-        this.setState({
-            editbutton: false,
-        });
-
-        if (status === 201 || status === 200) {
-            this.onRefresh();
-            NotificationManager.success("Data has updated.", "Success !!");
-        }
-    }
-
-    onChangePagination = page => {
-        this.setState({
-            paging: page,
-            loading:true
-        });
-        this.props.getAllParameterManualTable({page:page, token:this.props.token, name:this.state.paramname,
-            risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-            pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
-            bobot:this.state.parambobot
-        });
-        this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname,
-            risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-            pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
-            bobot:this.state.parambobot
-        });
-    };
-
-    onRefresh = () => {
-        this.setState({
-            loading:true,
-            paging:1
-        });
-        this.props.getAllParameterManualTable({page:1, token:this.props.token, name:this.state.paramname,
-            risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-            pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
-            bobot:this.state.parambobot
-        });
-        this.props.countAllParameterManual({token:this.props.token, name:this.state.paramname,
-            risk_id:this.state.paramrisk_id,bulan:this.state.parambulan,tahun : this.state.paramtahun,pr_low:this.state.parampr_low,
-            pr_lowtomod:this.state.parampr_lowtomod,pr_mod:this.state.parampr_mod,pr_modtohigh:this.state.parampr_modtohigh,pr_high:this.state.parampr_high,
-            bobot:this.state.parambobot
-        });
-    };
-
-
-
-    render() {
-        const {token} = this.props;
-        let {
-          sortedInfo,
-          name,
-          tahun,
-          induk_id,
-          warning,
-          loading,
-          addbutton,
-          editbutton,
-          eid,
-          paging,
-          lengthdata,
-          parambulan
-        } = this.state;
-        sortedInfo = sortedInfo || {};
-        
-        const dataDummy = [
-          {
-            id: 1321,
-            risk_id: 45,
-            name: "Agunan yang diambil alih",
-            bulan: 6,
-            tahun: 2020,
-            parameter_faktor: "K 20 - Sandi LBUSB kode 218 atau cross check ke P3 -- AYDA",
-            value: "13,847"
-          },
-          {
-            id: 1322,
-            risk_id: 45,
-            name: "Total Pembiayaan Non Bank",
-            bulan: 6,
-            tahun: 2020,
-            parameter_faktor: "Hasil Penjumlahan dari Kolektibilitas",
-            value: "20,628,243,896"
-          }
-        ]
-
-        const columns = [
-        {
-            title:"#",
-            dataIndex:"id",
-            key:"id",
-            sorter:(a, b) => a.id-b.id,
-            sortOrder: sortedInfo.columnKey === 'id' && sortedInfo.order,
-        }, {
-            title:"Nama Indikator",
-            dataIndex:"name",
-            key:"name",
-            sorter: (a, b) => a.name.localeCompare(b.name),
-            sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order
-        }, {
-            title:"Deskripsi",
-            dataIndex:"name",
-            key:"name",
-            ...this.getColumnSearchProps('name'),
-            sorter: (a, b) => a.name.localeCompare(b.name),
-            sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order
-        }, {
-            title:"Bulan",
-            dataIndex:"bulan",
-            key:"bulan",
-            sorter:(a, b) => a.bulan.localeCompare(b.bulan),
-            sortOrder:sortedInfo.columnKey === 'bulan' && sortedInfo.order,
-            render:(data) => {
-                var months = ["-","January","February","March","April","May","June","July","August","September","October","November","December"];
-                var bulan = '';
-                if (data > 12 || data < 0 || data === null){
-                    bulan = '-';
-                } else {
-                    bulan = months[parseInt(data)];
-                }
-
-                return bulan;
-            }
-        }, {
-            title:"Tahun",
-            dataIndex:"tahun",
-            key:"tahun",
-            sorter:(a, b) => a.tahun.localeCompare(b.tahun),
-            sortOrder:sortedInfo.columnKey === 'tahun' && sortedInfo.order
-        }, {
-            title:"Nilai",
-            dataIndex:"value",
-            key:"value",
-            sorter:(a, b) => a.value.localeCompare(b.value),
-            sortOrder:sortedInfo.columnKey === 'tahun' && sortedInfo.order
-        }, {
-            title:"Action",
-            key:"action",
-            render:(text, record) => (
-                <span>
-                    <span className="gx-link" onClick={() => {
-                        console.log('statusss');
-                        this.setState({
-                            eid : text.id,
-                            editbutton: true,
-                            fetchdata : [{
-                                id:text.id,
-                                risk:text.risk,
-                                name:text.name,
-                                pr_low:text.pr_low,
-                                pr_lowtomod:text.pr_lowtomod,
-                                pr_mod:text.pr_mod,
-                                pr_modtohigh:text.pr_modtohigh,
-                                pr_high:text.pr_high,
-                                bulan:text.bulan,
-                                tahun:text.tahun,
-                                penomoran:text.penomoran,
-                                level:text.level,
-                                induk_id:text.induk_id,
-                                risk_id:text.risk_id,
-                                ismonth:parambulan
-                            }]
-                        })
-                    }}>Edit</span>
-                    <Divider type="vertical"/>
-                    <span className="gx-link" onClick={() => {
-                        this.setState({
-                            warning: true,
-                            idvalue: text.id,
-                            name: text.name,
-                            tahun: text.tahun,
-                            induk_id: text.induk_id
-                        })
-                    }}>Delete</span>
-                </span>
-            )
-        }];
-
-        return (
-            <Card title={addbutton ? "Tambah Data Indikator" : editbutton ? "Edit Data : ID["+eid+"]"  : "Read Table Data Risiko Inheren Indikator"}>
-                {
-                  addbutton ? <SaveRisikoInherenKuantitatif clickCancelAddButton={this.clickCancelAddButton} clickAddSuccessButton={this.clickAddSuccessButton}/> :
-                    <>
-                            <Grid container spacing={1}>
-                              <Grid item xs={12} md={12} lg={12}>
-                                <Button className="ant-btn ant-btn-danger" onClick={this.onClickCancel}>Back Filter</Button>
-                                <Button className="ant-btn ant-btn-primary" onClick={this.clickAddButton}>Add</Button>
-                              </Grid>
-                            </Grid>
-                            <Spin tip="Loading..." spinning={loading}>
-                                <Table dataSource={dataDummy} className="gx-table-responsive" onChange={this.handleChange} rowKey="id" columns={columns}
-                                       pagination={false}/>
-                                <div className="table-operations" style={{ paddingTop : '1rem', float : 'right' }}>
-                                    {
-                                        (lengthdata) ?
-                                            lengthdata > 0 ?
-                                                <Pagination current={paging} total={lengthdata ? lengthdata : 1} onChange={this.onChangePagination}/> : ''
-                                            : ''
-
-                                    }
-                                </div>
-                            </Spin>
-                            <SweetAlert show={warning}
-                                        warning
-                                        showCancel
-                                        confirmBtnText={<IntlMessages id="sweetAlerts.yesDeleteIt"/>}
-                                        confirmBtnBsStyle="danger"
-                                        cancelBtnBsStyle="default"
-                                        title={<IntlMessages id="sweetAlerts.areYouSure"/>}
-                                        onConfirm={() => {
-                                            this.setState({
-                                                warning: false,
-                                                deletestatus:''
-                                            })
-                                            this.props.deleteParameterManual({
-                                              name: name,
-                                              induk_id: induk_id,
-                                              tahun: tahun,
-                                              token: token})
-                                            NotificationManager.success("Data has deleted.", "Success !!");
-                                        }}
-                                        onCancel={this.onCancelDelete}
-                            >
-                                <IntlMessages id="sweetAlerts.youWillNotAble"/>
-                            </SweetAlert>
-                        </>
-                }
-                <NotificationContainer/>
-            </Card>
-        );
     }
 }
 
-const mapStateToProps = ({auth, parametermanual, masterversion}) => {
-    const {token} = auth;
-    const {
-      getallparametermanualtable,
-      postparametermanual,
-      statusallparametermanualtable,
-      countallparametermanual,
-      statusallparametermanual,
-      deleteparametermanual
-    } = parametermanual;
-    const {masterversionsdata} = masterversion;
+const mapDispatchToProps = dispatch => {
     return {
-      token,
-      getallparametermanualtable,
-      postparametermanual,
-      statusallparametermanualtable,
-      countallparametermanual,
-      statusallparametermanual,
-      deleteparametermanual,
-      masterversionsdata
-    };
-};
+        fetchExportExcel: (token, props) => dispatch(fetchExportExcel(token, props)),
+        fetchImportDataKuantitatifPR: (token, props, formData) => dispatch(fetchImportDataKuantitatifPR(token, props, formData)),
+        addRisikoInherenInputKuantitatifPerItem: (token, newRisikoInherenInputKuantitatif) => dispatch(addRisikoInherenInputKuantitatifPerItem(token, newRisikoInherenInputKuantitatif))
+    }
+}
 
-export default connect(mapStateToProps, {
-  getAllParameterManualTable,
-  countAllParameterManual,
-  deleteParameterManual,
-  fetchAllMasterVersion
-})(TableRisikoInherenKuantitatif);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(WrappedTableRisikoInherenKuantitatif);

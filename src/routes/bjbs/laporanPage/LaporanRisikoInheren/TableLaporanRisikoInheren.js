@@ -16,7 +16,10 @@ import {
 import {
   fetchAllRisikoInherenInputKualitatif,
   addRisikoInherenInputKualitatif,
-  fetchAllRisikoInherenReport
+  fetchAllRisikoInherenReport,
+  lockedReportStatus,
+  addLockedReport,
+  resetAddLockedReport
 } from "../../../../appRedux/actions/index";
 
 import {connect} from "react-redux";
@@ -26,10 +29,10 @@ import Grid from "@material-ui/core/Grid";
 // import {dataDummy} from './dataDummy';
 import {
   renderColumn
-} from './ColumnProperties';
+} from '../../../../constants/LaporanColumnProperties';
 
 // import local css
-import './mystyle.css';
+import '../../../../assets/mystyle.css';
 
 
 class TableRisikoInheren extends  React.Component{
@@ -56,7 +59,9 @@ class TableRisikoInheren extends  React.Component{
             loading: false,
             visible: false,
             inputdataoptions: [],
-            answervalue: 0
+            answervalue: 0,
+            generatereportvalidate: false,
+            generatereportloading: false
         }
     }
 
@@ -67,13 +72,49 @@ class TableRisikoInheren extends  React.Component{
         bulan : this.state.parambulan,
         tahun : this.state.paramtahun,
         risk_id : this.state.paramrisk_id,
-      }})
+      }});
+      this.props.lockedReportStatus({token: this.props.token, searchData : {
+        bulan: this.state.parambulan,
+        tahun: this.state.paramtahun,
+        risk_id: this.state.paramrisk_id
+      }});
     }
 
     componentWillReceiveProps(nextProps) {
       this.setState({
-        datatable: nextProps.risikoinherenreportdata
-      })
+        datatable: nextProps.risikoinherenreportdata,
+        generatereportvalidate: nextProps.lockedreportstatus.data
+      });
+
+      // handling notifacation after adding data
+      if(typeof nextProps.lockedreportaddresult.statusCode !== "undefined"){
+        if(nextProps.lockedreportaddresult.statusCode === 201 || nextProps.lockedreportaddresult.statusCode === 200) {
+          NotificationManager.success("Report locked", `${nextProps.lockedreportaddresult.message}`);
+          this.props.lockedReportStatus({token: this.props.token, searchData : {
+            bulan: this.state.parambulan,
+            tahun: this.state.paramtahun,
+            risk_id: this.state.paramrisk_id
+          }});
+          this.setState({
+            loading: false,
+            generatereportloading: false
+          });
+          this.props.resetAddLockedReport();
+        } else {
+          NotificationManager.error("Report locked before", `${nextProps.lockedreportaddresult.message}`);
+          this.props.lockedReportStatus({token: this.props.token, searchData : {
+            bulan: this.state.parambulan,
+            tahun: this.state.paramtahun,
+            risk_id: this.state.paramrisk_id
+          }});
+          this.setState({
+            loading: false,
+            generatereportloading: false
+          });
+          this.props.resetAddLockedReport();
+        }
+      }
+
     }
 
     /* componentDidUpdate(){
@@ -200,13 +241,23 @@ class TableRisikoInheren extends  React.Component{
     onChangeAnswer = (selectedRowKeys, selectedRows) => {
       // console.log('radio1 checked', e.target.value);
       // console.log(this.state.lastanswervalue);
-      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+      // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
       this.setState({
         answervalue: selectedRows[0].value,
       });
     };
 
-
+    // handle generate report button
+    lockedReport = () => {
+      this.setState({
+        loading: true,
+        generatereportloading: true
+      });
+      this.props.addLockedReport({
+        token: this.props.token,
+        newData: this.state.datatable
+      });
+    }
 
     getColumnSearchProps = dataIndex => ({
         filterDropdown : ({setSelectedKeys, selectedKeys, confirm, clearFilters}) => (
@@ -659,7 +710,12 @@ class TableRisikoInheren extends  React.Component{
                             <Grid container spacing={1}>
                               <Grid item xs={12} md={12} lg={12}>
                                 <Button className="ant-btn ant-btn-danger" onClick={this.onClickCancel}>Back Filter</Button>
-                                <Button className="ant-btn ant-btn-primary" >Generate Report</Button>
+                                <Button
+                                  className="ant-btn ant-btn-primary"
+                                  disabled={this.state.generatereportvalidate}
+                                  onClick={this.lockedReport}
+                                  loading={this.state.generatereportloading}
+                                  >Generate Report</Button>
                               </Grid>
                             </Grid>
                             <Spin tip="Loading..." spinning={loading}>
@@ -719,13 +775,18 @@ class TableRisikoInheren extends  React.Component{
 
 const mapStateToProps = ({
   auth,
-  risikoinherenreport
+  risikoinherenreport,
+  lockedreport
 }) => {
     const {token} = auth;
     const {risikoinherenreportdata} = risikoinherenreport;
+    const {lockedreportstatus, lockedreportaddresult} = lockedreport;
+
     return {
       token,
-      risikoinherenreportdata
+      risikoinherenreportdata,
+      lockedreportstatus,
+      lockedreportaddresult
     };
 };
 
@@ -733,5 +794,8 @@ export default connect(mapStateToProps, {
   getAllParameterManualTable,
   fetchAllRisikoInherenReport,
   fetchAllRisikoInherenInputKualitatif,
-  addRisikoInherenInputKualitatif
+  addRisikoInherenInputKualitatif,
+  lockedReportStatus,
+  addLockedReport,
+  resetAddLockedReport
 })(TableRisikoInheren);

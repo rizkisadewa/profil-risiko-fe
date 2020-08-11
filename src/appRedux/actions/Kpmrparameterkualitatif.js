@@ -312,7 +312,7 @@ export const kpmrUpdateParameterKualitatif = ({id, token, altered}) => {
 }
 
 export const resetKpmrUpdateParameterKualitatif = () => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({
       type: KPMR_UPDATE_PARAMETER_KUALITATIF,
       payload: []

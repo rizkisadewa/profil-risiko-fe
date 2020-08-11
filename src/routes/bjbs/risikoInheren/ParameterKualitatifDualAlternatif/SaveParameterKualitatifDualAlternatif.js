@@ -320,6 +320,11 @@ class SaveParameterKualitatifDualAlternatif extends React.Component {
                                             paramrisk_id:value,
                                         });
                                         this.props.getAllFaktorParameterDataOption({token: this.props.token, risk_id: value});
+                                        this.props.fetchAllIngredients({token: this.props.token, searchData: {
+                                          jenis: "PR",
+                                          jenis_nilai_id: 21,
+                                          risk_id: value
+                                        }});
                                     }}
                                     style={paramrisk_id === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
                                     filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>

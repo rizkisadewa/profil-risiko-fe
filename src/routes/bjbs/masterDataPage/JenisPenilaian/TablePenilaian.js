@@ -1,7 +1,7 @@
 import React from "react";
 import SweetAlert from "react-bootstrap-sweetalert";
 import {NotificationContainer, NotificationManager} from "react-notifications";
-import {Divider, Button, Card, Table, Input, Pagination, Spin} from "antd";
+import {Button, Card, Table, Input, Pagination, Spin} from "antd";
 import IntlMessages from "util/IntlMessages";
 import Highlighter from "react-highlight-words";
 import {SearchOutlined} from "@ant-design/icons";

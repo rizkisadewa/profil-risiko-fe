@@ -24,8 +24,7 @@ const Option = Select.Option;
 
 const optionsLevel = [
     {label:"Level Kedua (2)", value:2},
-    {label:"Level Ketiga (3)", value:3},
-    {label:"Level Keempat (4)", value:4}
+    {label:"Level Ketiga (3)", value:3}
 ];
 
 class SaveKpmrParameterKualitatif extends React.Component{
@@ -149,7 +148,7 @@ class SaveKpmrParameterKualitatif extends React.Component{
                             risk_id: values.risk_id,
                             name: values.name,
                             level: values.level,
-                            induk_id: values.peringkatrisiko,
+                            induk_id: values.induk_id,
                             penomoran: values.penomoran,
                             pr_low: values.low,
                             pr_lowtomod: values.lowtomoderate,
@@ -194,6 +193,11 @@ class SaveKpmrParameterKualitatif extends React.Component{
                                             paramrisk_id:value,
                                         });
                                         this.props.getAllFaktorParameterDataOption({token: this.props.token, risk_id: value, jenisParamA: "KPMR"});
+                                        this.props.fetchAllIngredients({token: this.props.token, searchData: {
+                                          jenis: "KPMR",
+                                          jenis_nilai_id: 4,
+                                          risk_id: value,
+                                        }});
                                     }}
                                     style={paramrisk_id === '' ? { color: '#BFBFBF'} : {textAlign:'left'}}
                                     filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
@@ -403,10 +407,7 @@ class SaveKpmrParameterKualitatif extends React.Component{
                     <label style={{ textDecoration: 'underline', fontWeight: 'bold', textAlign: 'center'}}>Peringkat Risiko</label><br/>
                     <FormItem {...formItemLayout} label="Low">
                         {getFieldDecorator('low', {
-                            initialValue: addPropstate ? addPropstate.pklow : '',
-                            rules: [{
-                                required: true, message: 'Please input low field.',
-                            }],
+                            initialValue: addPropstate ? addPropstate.pklow : ''
                         })(
                             <Select id="low"
                                     showSearch
@@ -436,10 +437,7 @@ class SaveKpmrParameterKualitatif extends React.Component{
 
                     <FormItem {...formItemLayout} label="Low to Moderate">
                         {getFieldDecorator('lowtomoderate', {
-                            initialValue: addPropstate ? addPropstate.pklowtomoderate : '',
-                            rules: [{
-                                required: true, message: 'Please input low to moderate field.',
-                            }],
+                            initialValue: addPropstate ? addPropstate.pklowtomoderate : ''
                         })(
                             <Select id="lowtomoderate"
                                     showSearch
@@ -469,10 +467,7 @@ class SaveKpmrParameterKualitatif extends React.Component{
 
                     <FormItem {...formItemLayout} label="Moderate">
                         {getFieldDecorator('moderate', {
-                            initialValue: addPropstate ? addPropstate.pklmoderate : '',
-                            rules: [{
-                                required: true, message: 'Please input moderate field.',
-                            }],
+                            initialValue: addPropstate ? addPropstate.pkmoderate : ''
                         })(
                             <Select id="moderate"
                                     showSearch
@@ -502,10 +497,7 @@ class SaveKpmrParameterKualitatif extends React.Component{
 
                     <FormItem {...formItemLayout} label="Moderate to High">
                         {getFieldDecorator('moderatetohigh', {
-                            initialValue: addPropstate ? addPropstate.pkmoderatetohigh : '',
-                            rules: [{
-                                required: true, message: 'Please input moderate to high field.',
-                            }],
+                            initialValue: addPropstate ? addPropstate.pkmoderatetohigh : ''
                         })(
                             <Select id="moderatetohigh"
                                     showSearch
@@ -535,10 +527,7 @@ class SaveKpmrParameterKualitatif extends React.Component{
 
                     <FormItem {...formItemLayout} label="High">
                         {getFieldDecorator('high', {
-                            initialValue: addPropstate ? addPropstate.pkhigh : '',
-                            rules: [{
-                                required: true, message: 'Please input high field.',
-                            }],
+                            initialValue: addPropstate ? addPropstate.pklow : ''
                         })(
                             <Select id="high"
                                     showSearch
