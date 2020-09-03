@@ -81,7 +81,11 @@ export const renderRiskRateColumn = (value, row, index) => {
       <>
         {
           <Tag
-            color={value === 'H' ? 'red' : value === "MTH" ? 'orange' : value === "M" ? "yellow" : value === "LTM" ? 'green' : value === "L" ? "blue" : "black" }
+            color={value === 'Unsatisfactory' ? 'red' :
+                   value === "Marginal" ? 'orange' :
+                   value === "Fair" ? "yellow" :
+                   value === "Satisfactory" ? 'green' :
+                   value === "Strong" ? "blue" : "black" }
             key={value}
           > {value} </Tag>
         }
@@ -235,7 +239,11 @@ export const renderRiskRateParameterKualitatifDual = (value, row, index, risk_ra
       <>
         {
           <Tag
-            color={value === 'H' ? 'red' : value === "MTH" ? 'orange' : value === "M" ? "yellow" : value === "LTM" ? 'green' : value === "L" ? "blue" : "black" }
+            color={value === 'Unsatisfactory' ? 'red' :
+                   value === "Marginal" ? 'orange' :
+                   value === "Fair" ? "yellow" :
+                   value === "Satisfactory" ? 'green' :
+                   value === "Strong" ? "blue" : "black" }
             key={value}
           > {value} </Tag>
         }
@@ -383,7 +391,11 @@ export const renderRiskRateParameterKualitatifMulti = (value, row, index, risk_r
       <>
         {
           <Tag
-            color={value === 'H' ? 'red' : value === "MTH" ? 'orange' : value === "M" ? "yellow" : value === "LTM" ? 'green' : value === "L" ? "blue" : "black" }
+            color={value === 'Unsatisfactory' ? 'red' :
+                   value === "Marginal" ? 'orange' :
+                   value === "Fair" ? "yellow" :
+                   value === "Satisfactory" ? 'green' :
+                   value === "Strong" ? "blue" : "black" }
             key={value}
           > {value} </Tag>
         }

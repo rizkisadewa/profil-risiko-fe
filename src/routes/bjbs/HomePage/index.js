@@ -1,6 +1,10 @@
 import React from "react";
 
 import IntlMessages from "util/IntlMessages";
+import TableRisikoKomposit from "./TableRisikoKomposit";
+import TableRisikoKompositOnePriorMonth from "./TableRisikoKompositOnePriorMonth";
+import moment from 'moment';
+
 
 const DashboardPage = () => {
     return (
@@ -8,7 +12,11 @@ const DashboardPage = () => {
             <h2 className="title gx-mb-4"><IntlMessages id="sidebar.home"/></h2>
 
             <div className="gx-d-flex justify-content-center">
-                <h4>Home app. Bank BJB Syariah!</h4>
+                <TableRisikoKomposit />
+            </div>
+
+            <div className="gx-d-flex justify-content-center">
+                <TableRisikoKompositOnePriorMonth />
             </div>
 
         </div>

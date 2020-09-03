@@ -595,7 +595,7 @@ class TableKpmr extends  React.Component{
               sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order,
               render: (value, row, index) => renderColumn("name", value, row, index)
           }, {
-              title: 'Peringkat Risiko',
+              title: 'Rating Parameter',
               children: [
                   {
                       title:"L",
@@ -705,7 +705,7 @@ class TableKpmr extends  React.Component{
         ];
 
         return (
-            <Card title={`Data Laporan Risiko Inheren - ${this.state.risk_name} : ${monthText} ${this.state.paramtahun} (${this.state.version_name})`}>
+            <Card title={`Data Laporan - ${this.state.risk_name} : ${monthText} ${this.state.paramtahun} (${this.state.version_name})`}>
                 {
                   addbutton ? <h1>...To be advised</h1> :
                     <>

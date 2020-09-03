@@ -7,7 +7,7 @@ import FilterTableLaporanKpmr from './FilterTableLaporanKpmr';
 const LaporanKpmr = () => {
     return (
         <div>
-            <h2 className="title gx-mb-4"><IntlMessages id="sidebar.laporan.risikoinheren"/></h2>
+            <h2 className="title gx-mb-4"><IntlMessages id="sidebar.laporan.kpmr"/></h2>
 
             <div className="gx-d-flex justify-content-center">
               <Row className={"w-100"}>

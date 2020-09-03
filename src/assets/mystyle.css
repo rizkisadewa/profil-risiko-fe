@@ -23,3 +23,12 @@
 .tingkat-risiko-inheren:hover {
   color: black;
 }
+
+.risiko-komposit-total {
+  background-color: #002766;
+  color: #ffffff;
+}
+
+.risiko-komposit-total:hover {
+  color: black;
+}
