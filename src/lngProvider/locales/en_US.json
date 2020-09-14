@@ -210,6 +210,7 @@
   "sidebar.extraPages.500": "500 Error Page",
   "sidebar.extraPages": "Extra Pages",
   "app.userAuth": "User Auth",
+  "app.name": "Aplikasi Profil Risiko",
   "app.userAuth.login": "Login",
   "app.userAuth.signIn": "Sign In",
   "app.userAuth.send": "SEND",

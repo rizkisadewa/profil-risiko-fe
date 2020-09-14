@@ -3,8 +3,6 @@ import React from "react";
 import IntlMessages from "util/IntlMessages";
 import TableRisikoKomposit from "./TableRisikoKomposit";
 import TableRisikoKompositOnePriorMonth from "./TableRisikoKompositOnePriorMonth";
-import moment from 'moment';
-
 
 const DashboardPage = () => {
     return (

@@ -23,3 +23,4 @@ export * from './Risikoinhereninputkualitatifdual';
 export * from './Risikoinherenreport';
 export * from './Excel';
 export * from './Lockedreport';
+export * from './Dashboardreport';

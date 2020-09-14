@@ -102,15 +102,11 @@ export const renderColumn = (name, value, row, index) => {
   switch (name) {
     case "risk_level":
       return renderRiskLevel(value, row, index);
-      break;
     case "control_level":
       return renderControlLevel(value, row, index);
-      break;
     case "peringkat_komposit":
       return renderPeringkatKomposit(value, row, index);
-      break;
     default:
       return renderDefault(value, row, index);
-      break;
   }
 }

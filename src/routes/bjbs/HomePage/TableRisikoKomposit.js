@@ -1,18 +1,41 @@
-import React, {useState, useRef} from "react";
+import React from "react";
 import {Spin, Table, Card} from "antd";
-import { dataDummy } from './dummyData'
 import moment from 'moment';
 
 import {
   renderColumn
 } from '../../../constants/RisikoKompositColumnProperties';
 
+import {
+  fetchAllDashboardReport
+} from "../../../appRedux/actions/index";
+import {connect} from "react-redux";
+
 // import local css
 import '../../../assets/mystyle.css';
 
-function TableRisikoKomposit(){
+function TableRisikoKomposit({
+  authData,
+  dashboardreportData,
+  fetchAllDashboardReport
+}){
 
-  const [sortedInfo, setSortedInfo] = React.useState({});
+  const [sortedInfo] = React.useState({});
+
+  // use Effect
+  React.useEffect(() => {
+    let searchData = {
+      bulan: moment().format('M'),
+      tahun: moment().format('YYYY')
+    }
+    fetchAllDashboardReport(
+      authData.token,
+      searchData
+    )
+
+    console.log("Data Reducer : ");
+    console.log(dashboardreportData);
+  }, []);
 
   const columns = [
     {
@@ -99,25 +122,55 @@ function TableRisikoKomposit(){
     },
   ];
 
-  return(
-    <React.Fragment>
-      <Card title="Overall Profil Risiko">
-        <h4>Periode : {moment().format('YYYY-MMMM')}</h4>
-        <Spin tip="loading.." spinning={false}>
-          <div className="table-operations">
-            <Table dataSource={dataDummy}
-            className="gx-table-responsive"
-            columns={columns} rowKey="id" pagination={false}
-            />
-            <div className="table-operations"
-              style={{ paddingTop : '1rem', float : 'right' }}
-              >
-            </div>
+  return dashboardreportData.loading ? (
+    <Card title="Overall Profil Risiko">
+      <h4>Periode : {moment().format('YYYY-MMMM')}</h4>
+      <Spin tip="loading.." spinning={true}>
+        <div className="table-operations">
+          <Table dataSource={[]}
+          className="gx-table-responsive"
+          columns={columns} rowKey="id" pagination={false}
+          />
+          <div className="table-operations"
+            style={{ paddingTop : '1rem', float : 'right' }}
+            >
           </div>
-        </Spin>
-      </Card>
-    </React.Fragment>
+        </div>
+      </Spin>
+    </Card>
+  ) : (
+    <Card title="Overall Profil Risiko">
+      <h4>Periode : {moment().format('YYYY-MMMM')}</h4>
+      <Spin tip="loading.." spinning={false}>
+        <div className="table-operations">
+          <Table dataSource={dashboardreportData.dashboardreportdata.data}
+          className="gx-table-responsive"
+          columns={columns} rowKey="id" pagination={false}
+          />
+          <div className="table-operations"
+            style={{ paddingTop : '1rem', float : 'right' }}
+            >
+          </div>
+        </div>
+      </Spin>
+    </Card>
   )
 }
 
-export default TableRisikoKomposit;
+const mapStateToProps = state => {
+  return {
+    authData: state.auth,
+    dashboardreportData: state.dashboardreport
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchAllDashboardReport: (token, searchData) => dispatch(fetchAllDashboardReport({token, searchData}))
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TableRisikoKomposit);

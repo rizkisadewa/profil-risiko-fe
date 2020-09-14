@@ -25,6 +25,7 @@ import Risikoinhereninputkualitatifdual from './Risikoinhereninputkualitatifdual
 import Risikoinherenreport from './Risikoinherenreport';
 import ExportExcel from './Excel';
 import Lockedreport from './Lockedreport';
+import Dashboardreport from './Dashboardreport';
 
 const reducers = combineReducers({
   routing: routerReducer,
@@ -53,6 +54,7 @@ const reducers = combineReducers({
   risikoinherenreport: Risikoinherenreport,
   exportexcel: ExportExcel,
   lockedreport: Lockedreport,
+  dashboardreport: Dashboardreport,
 });
 
 export default reducers;
