@@ -26,7 +26,7 @@ export const userSignUp = ({email, password, name}) => {
         name: name
       }
     ).then(({data}) => {
-      console.log("data:", data);
+      console.log("data auth:", data);
       if (data.result) {
         localStorage.setItem("user", JSON.stringify(data.token.access_token));
         axios.defaults.headers.common['access-token'] = "Bearer " + data.token.access_token;
@@ -55,11 +55,11 @@ export const userSignIn = ({username, password}) => {
       console.log("userSignIn: ", data.data.user_data.user_real_name);
       if (data.data) {
         localStorage.setItem("token", JSON.stringify(data.data.token));
-        localStorage.setItem("user", JSON.stringify(data.data.user_data.user_real_name));
+        localStorage.setItem("user", JSON.stringify(data.data.user_data));
         axios.defaults.headers.common['access-token'] = "Bearer " + data.data.token;
         dispatch({type: FETCH_SUCCESS});
         dispatch({type: USER_TOKEN_SET, payload: data.data.token});
-        dispatch({type: USER_DATA, payload: data.data.user_data.user_real_name});
+        dispatch({type: USER_DATA, payload: data.data.user_data});
       } else {
         dispatch({type: FETCH_ERROR, payload: data.error});
       }

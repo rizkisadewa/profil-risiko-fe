@@ -21,7 +21,7 @@ class UserProfile extends Component {
     return (
 
       <span>
-        {authUser ? authUser : <IntlMessages id="sidebar.main"/>}
+        {authUser ? authUser.user_real_name : <IntlMessages id="sidebar.main"/>}
         {/*<Popover placement="bottomRight" content={userMenuOptions} trigger="click">
           <Avatar src='https://via.placeholder.com/150x150'
                   className="gx-size-40 gx-pointer gx-mr-3" alt=""/>
