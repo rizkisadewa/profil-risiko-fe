@@ -58,7 +58,7 @@
     "slick-carousel": "^1.8.1",
     "url-search-params": "^1.1.0",
     "victory": "^0.27.2",
-    "xlsx": "^0.16.4"
+    "xlsx": "^0.17.0"
   },
   "scripts": {
     "start": "react-app-rewired start",
